@@ -1,0 +1,133 @@
+:root {
+    --primary-color: #0047AB;
+    --secondary-color: #6c757d;
+    --background-color: #e9ecef;
+    --text-color: #333;
+    --border-radius: 5px;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    position: relative; /* Ajout pour positionner la vidéo */
+    overflow: hidden; /* Empêche le défilement si la vidéo est plus grande que la fenêtre */
+}
+
+#background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajuste la vidéo pour couvrir toute la fenêtre */
+    z-index: -1; /* Place la vidéo derrière le contenu */
+}
+
+.login-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative; /* Ajout pour que le contenu soit au-dessus de la vidéo */
+    z-index: 1; /* Place le contenu au-dessus de la vidéo */
+}
+
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .header h1 {
+        margin: 0;
+    }
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-area {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 350px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
+.input-icon {
+    position: relative;
+}
+
+    .input-icon i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    width: 100%;
+}
+
+    .btn-primary:hover {
+        background-color: #003380;
+    }
+
+.footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    max-height: 50px;
+}
