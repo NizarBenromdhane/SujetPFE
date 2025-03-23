@@ -20,7 +20,7 @@
         public float MontantDepot { get; set; }
         public string TypeProduit { get; set; } 
         public Client Client { get; set; }
-        public Employe Employe { get; set; }
+        public Employee Employe { get; set; }
       
     }
 }

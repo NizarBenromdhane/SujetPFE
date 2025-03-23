@@ -1,0 +1,102 @@
+﻿@model IEnumerable<SujetPFE.Domain.Entities.Objectif>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateDebut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateFin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValeurCible)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValeurActuelle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UniteMesure)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Statut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Matricule1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontantCredit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontantDepot)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeProduit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Client)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateDebut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateFin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValeurCible)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValeurActuelle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UniteMesure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Statut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Matricule1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MontantCredit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MontantDepot)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeProduit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client.Activite)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

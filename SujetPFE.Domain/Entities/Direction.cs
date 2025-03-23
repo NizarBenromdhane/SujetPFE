@@ -9,5 +9,5 @@ public class Direction
     public string Libelle { get; set; }
     public string Pole { get; set; }
     public string Shortname { get; set; }
-    public virtual ICollection<Employe> Employes { get; set; } = new List<Employe>();
+    public virtual ICollection<Employee> Employes { get; set; } = new List<Employee>();
 }

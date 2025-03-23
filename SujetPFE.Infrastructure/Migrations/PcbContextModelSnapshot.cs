@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SujetPFE.Infrastructure;
 
 #nullable disable
 
@@ -309,7 +310,7 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.ToTable("Directions");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Employe", b =>
+            modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,7 +345,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasIndex("DirectionId");
 
-                    b.ToTable("Employes");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Groupe", b =>
@@ -462,7 +463,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasIndex("EmployeId");
 
-                    b.ToTable("Objectifs");
+                    b.ToTable("Objectives");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -527,7 +528,7 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Groupe");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Employe", b =>
+            modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Direction", "Direction")
                         .WithMany("Employes")
@@ -557,7 +558,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SujetPFE.Domain.Entities.Employe", "Employe")
+                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employe")
                         .WithMany()
                         .HasForeignKey("EmployeId")
                         .OnDelete(DeleteBehavior.Cascade)

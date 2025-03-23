@@ -1,33 +1,32 @@
-﻿using SujetPFE.Infrastructure; // Add this line
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Domain.Entities;
+using SujetPFE.Infrastructure;
 
 namespace SujetPFE.Controllers
 {
-    [Authorize]
-    public class DirectionsController : Controller
+    public class ObjectifsController : Controller
     {
         private readonly PcbContext _context;
 
-        public DirectionsController(PcbContext context)
+        public ObjectifsController(PcbContext context)
         {
             _context = context;
         }
 
-        // GET: Directions
+        // GET: Objectifs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Directions.ToListAsync());
+            var pcbContext = _context.Objectives.Include(o => o.Client);
+            return View(await pcbContext.ToListAsync());
         }
 
-        // GET: Directions/Details/5
+        // GET: Objectifs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,39 +34,42 @@ namespace SujetPFE.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Directions
+            var objectif = await _context.Objectives
+                .Include(o => o.Client)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (direction == null)
+            if (objectif == null)
             {
                 return NotFound();
             }
 
-            return View(direction);
+            return View(objectif);
         }
 
-        // GET: Directions/Create
+        // GET: Objectifs/Create
         public IActionResult Create()
         {
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Activite");
             return View();
         }
 
-        // POST: Directions/Create
+        // POST: Objectifs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Libelle,Pole,Shortname")] Direction direction)
+        public async Task<IActionResult> Create([Bind("Id,Description,DateDebut,DateFin,ValeurCible,ValeurActuelle,UniteMesure,Statut,Matricule1,ClientId,MontantCredit,MontantDepot,TypeProduit")] Objectif objectif)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(direction);
+                _context.Add(objectif);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(direction);
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Activite", objectif.ClientId);
+            return View(objectif);
         }
 
-        // GET: Directions/Edit/5
+        // GET: Objectifs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +77,23 @@ namespace SujetPFE.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Directions.FindAsync(id);
-            if (direction == null)
+            var objectif = await _context.Objectives.FindAsync(id);
+            if (objectif == null)
             {
                 return NotFound();
             }
-            return View(direction);
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Activite", objectif.ClientId);
+            return View(objectif);
         }
 
-        // POST: Directions/Edit/5
+        // POST: Objectifs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Libelle,Pole,Shortname")] Direction direction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,DateDebut,DateFin,ValeurCible,ValeurActuelle,UniteMesure,Statut,Matricule1,ClientId,MontantCredit,MontantDepot,TypeProduit")] Objectif objectif)
         {
-            if (id != direction.Id)
+            if (id != objectif.Id)
             {
                 return NotFound();
             }
@@ -99,12 +102,12 @@ namespace SujetPFE.Controllers
             {
                 try
                 {
-                    _context.Update(direction);
+                    _context.Update(objectif);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DirectionExists(direction.Id))
+                    if (!ObjectifExists(objectif.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +118,11 @@ namespace SujetPFE.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(direction);
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Activite", objectif.ClientId);
+            return View(objectif);
         }
 
-        // GET: Directions/Delete/5
+        // GET: Objectifs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +130,35 @@ namespace SujetPFE.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Directions
+            var objectif = await _context.Objectives
+                .Include(o => o.Client)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (direction == null)
+            if (objectif == null)
             {
                 return NotFound();
             }
 
-            return View(direction);
+            return View(objectif);
         }
 
-        // POST: Directions/Delete/5
+        // POST: Objectifs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var direction = await _context.Directions.FindAsync(id);
-            if (direction != null)
+            var objectif = await _context.Objectives.FindAsync(id);
+            if (objectif != null)
             {
-                _context.Directions.Remove(direction);
+                _context.Objectives.Remove(objectif);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DirectionExists(int id)
+        private bool ObjectifExists(int id)
         {
-            return _context.Directions.Any(e => e.Id == id);
+            return _context.Objectives.Any(e => e.Id == id);
         }
     }
 }

@@ -1,33 +1,31 @@
-﻿using SujetPFE.Infrastructure; // Add this line
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Domain.Entities;
+using SujetPFE.Infrastructure;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SujetPFE.Controllers
 {
     [Authorize]
-    public class DirectionsController : Controller
+    public class EmployeesController : Controller
     {
         private readonly PcbContext _context;
 
-        public DirectionsController(PcbContext context)
+        public EmployeesController(PcbContext context)
         {
             _context = context;
         }
 
-        // GET: Directions
+        // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Directions.ToListAsync());
+            return View(await _context.Employees.Include(e => e.Direction).ToListAsync());
         }
 
-        // GET: Directions/Details/5
+        // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,39 +33,41 @@ namespace SujetPFE.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Directions
+            var employee = await _context.Employees
+                .Include(e => e.Direction)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (direction == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(direction);
+            return View(employee);
         }
 
-        // GET: Directions/Create
+        // GET: Employees/Create
         public IActionResult Create()
         {
+            ViewData["DirectionId"] = new SelectList(_context.Directions, "Id", "Libelle");
             return View();
         }
 
-        // POST: Directions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Employees/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Libelle,Pole,Shortname")] Direction direction)
+        public async Task<IActionResult> Create([Bind("Id,Matricule1,Matricule_t24_2,Nom,Profil,Statut,DirectionId")] Employee employee)
         {
+            ModelState.Remove("Direction");
             if (ModelState.IsValid)
             {
-                _context.Add(direction);
+                _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(direction);
+            ViewData["DirectionId"] = new SelectList(_context.Directions, "Id", "Libelle", employee.DirectionId);
+            return View(employee);
         }
 
-        // GET: Directions/Edit/5
+        // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +75,21 @@ namespace SujetPFE.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Directions.FindAsync(id);
-            if (direction == null)
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
             {
                 return NotFound();
             }
-            return View(direction);
+            ViewData["DirectionId"] = new SelectList(_context.Directions, "Id", "Libelle", employee.DirectionId);
+            return View(employee);
         }
 
-        // POST: Directions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Employees/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Libelle,Pole,Shortname")] Direction direction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Matricule1,Matricule_t24_2,Nom,Profil,Statut,DirectionId")] Employee employee)
         {
-            if (id != direction.Id)
+            if (id != employee.Id)
             {
                 return NotFound();
             }
@@ -99,12 +98,12 @@ namespace SujetPFE.Controllers
             {
                 try
                 {
-                    _context.Update(direction);
+                    _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DirectionExists(direction.Id))
+                    if (!_context.Employees.Any(e => e.Id == employee.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +114,11 @@ namespace SujetPFE.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(direction);
+            ViewData["DirectionId"] = new SelectList(_context.Directions, "Id", "Libelle", employee.DirectionId);
+            return View(employee);
         }
 
-        // GET: Directions/Delete/5
+        // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +126,31 @@ namespace SujetPFE.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Directions
+            var employee = await _context.Employees
+                .Include(e => e.Direction)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (direction == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(direction);
+            return View(employee);
         }
 
-        // POST: Directions/Delete/5
+        // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var direction = await _context.Directions.FindAsync(id);
-            if (direction != null)
-            {
-                _context.Directions.Remove(direction);
-            }
-
+            var employee = await _context.Employees.FindAsync(id);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DirectionExists(int id)
+        private bool EmployeeExists(int id)
         {
-            return _context.Directions.Any(e => e.Id == id);
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

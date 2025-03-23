@@ -1,13 +1,18 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using SujetPFE.Infrastructure; // This is the crucial line you need to add
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+// Modification ici : Utiliser la base de données aspnet-SujetPFE-...
+connectionString = "Server=(localdb)\\mssqllocaldb;Database=aspnet-SujetPFE-dfb7f9f4-3e2e-4ae5-8278-94fedf3e5338;Trusted_Connection=True;MultipleActiveResultSets=true";
+
 builder.Services.AddDbContext<PcbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("SujetPFE.Infrastructure")));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -36,18 +41,21 @@ else
 }
 
 app.UseHttpsRedirection();
+
+// Ajouter UseStaticFiles() avant UseRouting()
+app.UseStaticFiles();
+
 app.UseRouting();
+
+// Ajouter UseAuthentication() avant UseAuthorization() (si vous utilisez Identity)
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapRazorPages();
 
 app.Run();
