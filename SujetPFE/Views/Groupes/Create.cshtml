@@ -1,0 +1,54 @@
+﻿@model SujetPFE.Domain.Entities.Groupe
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Groupe</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdBct" class="control-label"></label>
+                <input asp-for="IdBct" class="form-control" />
+                <span asp-validation-for="IdBct" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nom" class="control-label"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Charge" class="control-label"></label>
+                <input asp-for="Charge" class="form-control" />
+                <span asp-validation-for="Charge" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AjouteLe" class="control-label"></label>
+                <input asp-for="AjouteLe" class="form-control" />
+                <span asp-validation-for="AjouteLe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PartieLiee" class="control-label"></label>
+                <input asp-for="PartieLiee" class="form-control" />
+                <span asp-validation-for="PartieLiee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

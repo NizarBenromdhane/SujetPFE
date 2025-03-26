@@ -17,5 +17,5 @@ public class Client
     public DateTime? SortieLe { get; set; }
 
     public Groupe Groupe { get; set; }
-    public ICollection<Objectif> Objectifs { get; set; }
+    public ICollection<Objective> Objectifs { get; set; }
 }

@@ -4,20 +4,108 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewData["Title"] - Pcb Portal</title>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-</head>
+    <style>
+        /* Ajoutez ici votre CSS personnalisé (style1.css) */
+        .sidebar {
+            width: 250px;
+            background-color: #003366;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
 
+            .sidebar .logo {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .navbar {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .sidebar .navbar a {
+                padding: 10px 15px;
+                color: white;
+                text-decoration: none;
+                display: block;
+            }
+
+                .sidebar .navbar a:hover {
+                    background-color: #00509e;
+                }
+
+        .nav-item.dropdown > .nav-link {
+            cursor: pointer;
+        }
+
+        .nav-item.dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #00509e;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0;
+        }
+
+        .nav-item.dropdown.show .dropdown-menu {
+            display: block;
+        }
+
+        .nav-item.dropdown .dropdown-menu a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+            .nav-item.dropdown .dropdown-menu a:hover {
+                background-color: #003366;
+            }
+
+        .dropdown-divider {
+            height: 0;
+            margin: 0.5rem 0;
+            overflow: hidden;
+            border-top: 1px solid #fff;
+            opacity: .2;
+        }
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdownToggle = document.querySelector('#objectivationDropdown');
+            const dropdownMenu = document.querySelector('.objectivation-menu');
+
+            if (dropdownToggle && dropdownMenu) {
+                dropdownToggle.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    dropdownToggle.parentElement.classList.toggle('show');
+                    dropdownMenu.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+</head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
-
             </ul>
-
             <ul class="nav navbar-nav navbar-right">
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -37,57 +125,83 @@
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="@Url.Action("Index", "Home")" class="brand-link">
+                <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="BIAT Logo" class="brand-image" style="opacity: .8; max-height: 35px; margin-right: 10px;">
                 <span class="brand-text font-weight-light">Pcb Portal</span>
             </a>
             @if (User.Identity.IsAuthenticated)
             {
                 <div class="sidebar">
                     <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                   
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Directions")" class="nav-link">
-                                <i class="nav-icon fas fa-map-marked-alt"></i>
-                                <p>
-                                    Directions
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Employees")" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Employees
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Objectives")" class="nav-link">
-                                <i class="nav-icon fas fa-bullseye"></i>
-                                <p>
-                                    Objectives
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "HistoricalObjectives")" class="nav-link">
-                                <i class="nav-icon fas fa-history"></i>
-                                <p>
-                                    Historical Objectives
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Clients")" class="nav-link">
-                                <i class="nav-icon fas fa-user-tie"></i>
-                                <p>
-                                    Clients
-                                </p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div> 
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "Home")" class="nav-link">
+                                    <i class="nav-icon fas fa-home"></i>
+                                    <p>
+                                        Accueil
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" id="objectivationDropdown" class="nav-link">
+                                    <i class="nav-icon fas fa-bullseye"></i>
+                                    <p>
+                                        Objectivation <i class="right fas fa-angle-down"></i>
+                                    </p>
+                                </a>
+                                <div class="dropdown-menu objectivation-menu" aria-labelledby="objectivationDropdown">
+                                    <a class="dropdown-item" asp-controller="Clients" asp-action="Index">Clients</a>
+                                    <a class="dropdown-item" asp-controller="Directions" asp-action="Index">Directions</a>
+                                    <a class="dropdown-item" asp-controller="Employees" asp-action="Index">Employés</a>
+                                    <a class="dropdown-item" asp-controller="Groupes" asp-action="Index">Groupes</a>
+                                    <a class="dropdown-item" asp-controller="HistoriqueObjectives" asp-action="Index">Historique Objectifs</a>
+                                    <a class="dropdown-item" asp-controller="Objectifs" asp-action="Index">Objectifs</a>
+                                    <div class="dropdown-divider"></div>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "Pacs")" class="nav-link">
+                                    <i class="nav-icon fas fa-tasks"></i>
+                                    <p>
+                                        PAC
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Pacs" asp-action="Create" class="nav-link">
+                                    <i class="nav-icon fas fa-tasks"></i>
+                                    <p>
+                                        Saisie PAC
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-briefcase"></i>
+                                    <p>
+                                        Portefeuille
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-users-cog"></i>
+                                    <p>
+                                        Pratiques Managériales
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>
+                                        Template Client
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             }
         </aside>
 
@@ -115,6 +229,7 @@
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
+    <script src="~/js/Script1.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

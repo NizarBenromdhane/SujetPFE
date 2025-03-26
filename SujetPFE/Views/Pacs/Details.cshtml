@@ -1,0 +1,40 @@
+﻿@model SujetPFE.Models.Pac
+
+@{
+    ViewData["Title"] = "Détails PAC";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Pac</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Titre)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Titre)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Description)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DateDebut)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.DateDebut)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DateFin)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.DateFin)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Responsable)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Responsable)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Statut)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Statut)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Groupe)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Groupe)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Affaire)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Affaire)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.KPL)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.KPL)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Recommandations)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Recommandations)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Limites)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Limites)</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a> |
+    <a asp-action="Index">Retour à la liste</a>
+</div>

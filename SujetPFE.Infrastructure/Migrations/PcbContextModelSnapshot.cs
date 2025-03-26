@@ -22,6 +22,34 @@ namespace SujetPFE.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("HistoriqueObjectif", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ObjectifId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ObjectiveId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObjectiveId");
+
+                    b.ToTable("HistoriqueObjectifs");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -377,35 +405,10 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groupe");
+                    b.ToTable("Groupes");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.HistoriqueObjectif", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ObjectifId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ObjectifId");
-
-                    b.ToTable("HistoriqueObjectifs");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Objectif", b =>
+            modelBuilder.Entity("SujetPFE.Domain.Entities.Objective", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -419,14 +422,14 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Property<DateTime>("DateDebut")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateFin")
+                    b.Property<DateTime?>("DateFin")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmployeId")
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Matricule1")
@@ -461,9 +464,101 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("EmployeId");
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Objectives");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.KPIValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("KPI")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PacId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Valeur")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PacId");
+
+                    b.ToTable("KPIValues");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.Pac", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Affaire")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateDebut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Groupe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KPL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Limites")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Recommandations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Responsable")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Statut")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pacs");
+                });
+
+            modelBuilder.Entity("HistoriqueObjectif", b =>
+                {
+                    b.HasOne("SujetPFE.Domain.Entities.Objective", "Objective")
+                        .WithMany()
+                        .HasForeignKey("ObjectiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Objective");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -539,18 +634,7 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Direction");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.HistoriqueObjectif", b =>
-                {
-                    b.HasOne("SujetPFE.Domain.Entities.Objectif", "Objectif")
-                        .WithMany()
-                        .HasForeignKey("ObjectifId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Objectif");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Objectif", b =>
+            modelBuilder.Entity("SujetPFE.Domain.Entities.Objective", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Client", "Client")
                         .WithMany("Objectifs")
@@ -558,15 +642,26 @@ namespace SujetPFE.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employe")
+                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeId")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Client");
 
-                    b.Navigation("Employe");
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.KPIValue", b =>
+                {
+                    b.HasOne("SujetPFE.Models.Pac", "Pac")
+                        .WithMany("KPIValues")
+                        .HasForeignKey("PacId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pac");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Client", b =>
@@ -577,6 +672,11 @@ namespace SujetPFE.Infrastructure.Migrations
             modelBuilder.Entity("SujetPFE.Domain.Entities.Direction", b =>
                 {
                     b.Navigation("Employes");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.Pac", b =>
+                {
+                    b.Navigation("KPIValues");
                 });
 #pragma warning restore 612, 618
         }

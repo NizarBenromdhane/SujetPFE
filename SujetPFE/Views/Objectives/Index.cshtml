@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SujetPFE.Domain.Entities.Objective>
+
+@{
+    ViewData["Title"] = "Objectivation";
+}
+
+<h2>Liste des Objectifs</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Date Début</th>
+                <th>Date Fin</th>
+                <th>Valeur Cible</th>
+                <th>Valeur Actuelle</th>
+                <th>Unité Mesure</th>
+                <th>Statut</th>
+                <th>Matricule1</th>
+                <th>Montant Crédit</th>
+                <th>Montant Dépot</th>
+                <th>Type Produit</th>
+                <th>Client</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DateDebut)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DateFin)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ValeurCible)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ValeurActuelle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.UniteMesure)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Statut)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Matricule1)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MontantCredit)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MontantDepot)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TypeProduit)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Client != null ? item.Client.Activite : "")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

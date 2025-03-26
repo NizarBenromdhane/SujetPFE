@@ -9,66 +9,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body class="bg-light">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow p-4">
-                    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
-                    <section>
-                        <form id="account" method="post">
-                            <h2 class="mb-3">Use a local account to log in.</h2>
-                            <hr class="mb-4" />
-                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
-                            <div class="form-group">
-                                <label asp-for="Input.Email">Email</label>
-                                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-                                <span asp-validation-for="Input.Email" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Input.Password">Password</label>
-                                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                                <span asp-validation-for="Input.Password" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label" asp-for="Input.RememberMe">
-                                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary btn-block">Log in</button>
-                            </div>
-                            <div class="form-group text-center">
-                                <p>
-                                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                                </p>
-                                <p>
-                                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                                </p>
-                                <p>
-                                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                                </p>
-                            </div>
-                        </form>
-                    </section>
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="background-video">
+        <source src="~/videos/background-video.mp4" type="video/mp4">
+    </video>
+
+    <section class="login-form">
+        <form id="account" method="post">
+            <h4 class="text-center">Use a local account to log in.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label asp-for="Input.RememberMe">
+                        <input asp-for="Input.RememberMe" />
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">Log in</button>
+            </div>
+            <div class="form-group">
+                <p><a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a></p>
+                <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a></p>
+            </div>
+        </form>
+    </section>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿$(document).ready(function () {
+    $('#objectivation-link').click(function () {
+        $('#crud-links').show();
+        $('#crud-links').html(`
+            <a href="/Directions">Directions</a>
+            <a href="/Employees">Employees</a>
+            <a href="/HistoriqueObjectifs">Historique Objectifs</a>
+            <a href="/Clients">Clients</a>
+        `);
+    });
+});

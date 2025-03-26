@@ -1,0 +1,102 @@
+﻿@model IEnumerable<SujetPFE.Domain.Entities.Client>
+
+@{
+    ViewData["Title"] = "Index";
+ 
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RaisonSociale)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Charge)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Activite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SousActivite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Segments)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AjouteLe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pole)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CTX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SortieLe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Groupe)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RaisonSociale)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Charge)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Activite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SousActivite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Segments)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AjouteLe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pole)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RC)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CTX)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SortieLe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Groupe.Charge)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

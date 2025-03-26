@@ -1,0 +1,40 @@
+﻿@model IEnumerable<SujetPFE.Models.Pac>
+@* Affiche la liste des Pacs *@
+
+@{
+    ViewData["Title"] = "Liste des PACs";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Créer un nouveau PAC</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Titre)</th>
+            <th>@Html.DisplayNameFor(model => model.DateDebut)</th>
+            <th>@Html.DisplayNameFor(model => model.DateFin)</th>
+            <th>@Html.DisplayNameFor(model => model.Responsable)</th>
+            <th>@Html.DisplayNameFor(model => model.Statut)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Titre)</td>
+                <td>@Html.DisplayFor(modelItem => item.DateDebut)</td>
+                <td>@Html.DisplayFor(modelItem => item.DateFin)</td>
+                <td>@Html.DisplayFor(modelItem => item.Responsable)</td>
+                <td>@Html.DisplayFor(modelItem => item.Statut)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Modifier</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Détails</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
