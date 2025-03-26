@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        /* Ajoutez ici votre CSS personnalisé (style1.css) */
+        /* Your existing CSS styles */
         .sidebar {
             width: 250px;
             background-color: #003366;
@@ -84,7 +85,6 @@
             border-top: 1px solid #fff;
             opacity: .2;
         }
-
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -111,7 +111,9 @@
                 {
                     <li>
                         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                            <button type="submit" class="btn btn-info btn-sm" style="margin-top: 8px; margin-right: 10px;">
+                                <span class="glyphicon glyphicon-log-out"></span> Log out
+                            </button>
                         </form>
                     </li>
                 }
@@ -154,7 +156,7 @@
                                     <a class="dropdown-item" asp-controller="Employees" asp-action="Index">Employés</a>
                                     <a class="dropdown-item" asp-controller="Groupes" asp-action="Index">Groupes</a>
                                     <a class="dropdown-item" asp-controller="HistoriqueObjectives" asp-action="Index">Historique Objectifs</a>
-                                    <a class="dropdown-item" asp-controller="Objectifs" asp-action="Index">Objectifs</a>
+                                    <a class="dropdown-item" asp-controller="Objectives" asp-action="Index">Objectives</a>
                                     <div class="dropdown-divider"></div>
                                 </div>
                             </li>

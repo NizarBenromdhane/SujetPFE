@@ -18,7 +18,7 @@ namespace SujetPFE.Controllers
         }
 
         // GET: Objectives
-        [HttpGet("/Objectives")]
+        [HttpGet("/Objectives")]  // <-- Explicit route attribute
         public async Task<IActionResult> Index()
         {
             try
