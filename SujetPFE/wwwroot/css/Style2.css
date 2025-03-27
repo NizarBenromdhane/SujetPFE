@@ -1,0 +1,62 @@
+﻿body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4; /* Fond légèrement gris */
+}
+
+.kpi-dashboard {
+    margin-top: 30px;
+}
+
+.kpi-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrer les cartes */
+}
+
+.kpi-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px; /* Coins plus arrondis */
+    padding: 25px;
+    width: 250px; /* Largeur augmentée */
+    margin: 20px; /* Marges augmentées */
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée */
+    transition: transform 0.3s ease-in-out; /* Animation au survol */
+}
+
+    .kpi-card:hover {
+        transform: translateY(-5px); /* Légère élévation au survol */
+    }
+
+    .kpi-card h3 {
+        margin-bottom: 15px;
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #333; /* Couleur du titre */
+    }
+
+.kpi-value {
+    font-size: 2em; /* Taille de police augmentée pour les valeurs */
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #003366; /* Couleur des valeurs (bleu foncé) */
+}
+
+.kpi-difference {
+    font-size: 1em;
+    color: #666;
+}
+
+/* Styles pour le logo */
+.logo-container {
+    text-align: center;
+    margin-bottom: 40px; /* Marge augmentée */
+}
+
+    .logo-container img {
+        max-width: 300px; /* Taille maximale du logo */
+        height: auto;
+    }

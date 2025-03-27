@@ -15,9 +15,31 @@
     kpiValues.forEach(value => {
         const text = value.textContent;
         if (text.startsWith('+')) {
-            value.style.color = 'green';
+            value.classList.add('positive'); // Ajouter une classe pour le style positif
         } else if (text.startsWith('-')) {
-            value.style.color = 'red';
+            value.classList.add('negative'); // Ajouter une classe pour le style négatif
         }
     });
+
+    // Gestion du menu déroulant Objectivation (si nécessaire)
+    const objectivationDropdown = document.querySelector('#objectivationDropdown');
+    const objectivationMenu = document.querySelector('.objectivation-menu');
+
+    if (objectivationDropdown && objectivationMenu) {
+        objectivationDropdown.addEventListener('click', function (event) {
+            event.preventDefault();
+            objectivationDropdown.parentElement.classList.toggle('show');
+            objectivationMenu.classList.toggle('show');
+        });
+    }
+
+    // Gestion du clic sur le bouton de déconnexion (si nécessaire)
+    const logoutLink = document.querySelector('a[href="/Home/Logout"]');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function (event) {
+            if (!confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                event.preventDefault(); // Empêche le comportement par défaut du lien
+            }
+        });
+    }
 });

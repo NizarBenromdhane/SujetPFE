@@ -10,9 +10,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        /* Your existing CSS styles */
-        .sidebar {
-            width: 250px;
+        .main-sidebar {
+            width: 12%;
             background-color: #003366;
             color: white;
             height: 100vh;
@@ -23,31 +22,31 @@
             overflow-y: auto;
         }
 
-            .sidebar .logo {
+            .main-sidebar .logo {
                 text-align: center;
                 margin-bottom: 20px;
             }
 
-        .logo img {
-            width: 100%;
-            margin-bottom: 20px;
-        }
+                .main-sidebar .logo img {
+                    width: 100%;
+                    margin-bottom: 20px;
+                }
 
-        .sidebar .navbar {
-            display: flex;
-            flex-direction: column;
-        }
-
-            .sidebar .navbar a {
-                padding: 10px 15px;
-                color: white;
-                text-decoration: none;
-                display: block;
+            .main-sidebar .navbar {
+                display: flex;
+                flex-direction: column;
             }
 
-                .sidebar .navbar a:hover {
-                    background-color: #00509e;
+                .main-sidebar .navbar a {
+                    padding: 10px 15px;
+                    color: white;
+                    text-decoration: none;
+                    display: block;
                 }
+
+                    .main-sidebar .navbar a:hover {
+                        background-color: #00509e;
+                    }
 
         .nav-item.dropdown > .nav-link {
             cursor: pointer;
@@ -85,6 +84,100 @@
             border-top: 1px solid #fff;
             opacity: .2;
         }
+
+        .sidebar-logo {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 10px;
+        }
+
+            .sidebar-logo img {
+                max-width: 70%;
+                height: auto;
+            }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+
+        .navbar-user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+        }
+
+        .user-name {
+            margin-right: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .kpi-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .kpi-header {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 10px 15px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .kpi-body {
+            padding: 15px;
+        }
+
+        .kpi-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .kpi-difference {
+            font-size: 14px;
+        }
+
+        .positive {
+            color: #28a745;
+        }
+
+        .negative {
+            color: #dc3545;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .welcome-btn {
+            background-color: white;
+            color: #003366;
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+            .welcome-btn:hover {
+                background-color: #f8f9fa;
+            }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -109,10 +202,12 @@
             <ul class="nav navbar-nav navbar-right">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <li>
-                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                            <button type="submit" class="btn btn-info btn-sm" style="margin-top: 8px; margin-right: 10px;">
-                                <span class="glyphicon glyphicon-log-out"></span> Log out
+                    <li class="navbar-user-info">
+                        <span class="user-name">@User.Identity.Name</span>
+                        <img src="~/images/user-avatar.png" class="user-avatar" alt="User Avatar">
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "Identity" })" method="post">
+                            <button type="submit" class="btn btn-info btn-sm">
+                                <i class="fas fa-sign-out-alt"></i> Déconnexion
                             </button>
                         </form>
                     </li>
@@ -127,7 +222,9 @@
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="@Url.Action("Index", "Home")" class="brand-link">
-                <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="BIAT Logo" class="brand-image" style="opacity: .8; max-height: 35px; margin-right: 10px;">
+                <div class="sidebar-logo">
+                    <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="BIAT Logo" class="sidebar-logo-img">
+                </div>
                 <span class="brand-text font-weight-light">Pcb Portal</span>
             </a>
             @if (User.Identity.IsAuthenticated)
@@ -138,17 +235,13 @@
                             <li class="nav-item">
                                 <a href="@Url.Action("Index", "Home")" class="nav-link">
                                     <i class="nav-icon fas fa-home"></i>
-                                    <p>
-                                        Accueil
-                                    </p>
+                                    <p>Accueil</p>
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a href="#" id="objectivationDropdown" class="nav-link">
                                     <i class="nav-icon fas fa-bullseye"></i>
-                                    <p>
-                                        Objectivation <i class="right fas fa-angle-down"></i>
-                                    </p>
+                                    <p>Objectivation <i class="right fas fa-angle-down"></i></p>
                                 </a>
                                 <div class="dropdown-menu objectivation-menu" aria-labelledby="objectivationDropdown">
                                     <a class="dropdown-item" asp-controller="Clients" asp-action="Index">Clients</a>
@@ -160,45 +253,34 @@
                                     <div class="dropdown-divider"></div>
                                 </div>
                             </li>
-
                             <li class="nav-item">
                                 <a href="@Url.Action("Index", "Pacs")" class="nav-link">
                                     <i class="nav-icon fas fa-tasks"></i>
-                                    <p>
-                                        PAC
-                                    </p>
+                                    <p>PAC</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a asp-controller="Pacs" asp-action="Create" class="nav-link">
                                     <i class="nav-icon fas fa-tasks"></i>
-                                    <p>
-                                        Saisie PAC
-                                    </p>
+                                    <p>Saisie PAC</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-briefcase"></i>
-                                    <p>
-                                        Portefeuille
-                                    </p>
+                                    <p>Portefeuille</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-users-cog"></i>
-                                    <p>
-                                        Pratiques Managériales
-                                    </p>
+                                    <p>Pratiques Managériales</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-user"></i>
-                                    <p>
-                                        Template Client
-                                    </p>
+                                    <p>Template Client</p>
                                 </a>
                             </li>
                         </ul>
@@ -210,6 +292,11 @@
         <div class="content-wrapper">
             <div class="content-header">
                 <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">@ViewData["Title"]</h1>
+                        </div>
+                    </div>
                 </div>
             </div>
             <section class="content">
@@ -222,16 +309,13 @@
         <footer class="main-footer">
             <strong>Copyright &copy; 2025 <a href="#">Biat Bank</a></strong> Tous droits réservés.
         </footer>
-
-        <aside class="control-sidebar control-sidebar-dark">
-        </aside>
     </div>
 
     <script src="~/plugins/jquery/jquery.min.js"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
-    <script src="~/js/Script1.js"></script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
