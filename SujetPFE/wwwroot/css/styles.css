@@ -85,3 +85,46 @@
         background-color: #c82333;
         border-color: #bd2130;
     }
+
+/* Styles pour les icônes d'action */
+.btn-sm i {
+    font-size: 1.2em;
+    margin: 0 5px;
+}
+
+/* Styles pour les info-bulles */
+[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+/* Styles pour les filtres et la recherche */
+.form-control {
+    margin-bottom: 10px;
+}
+
+/* Styles pour la pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 6px 12px;
+    margin-left: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
