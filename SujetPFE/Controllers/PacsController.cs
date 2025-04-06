@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Infrastructure;
 using SujetPFE.Models;
-using Newtonsoft.Json; // N'oubliez pas d'ajouter cette directive using
+using Newtonsoft.Json;
 
 namespace SujetPFE.Controllers
 {
@@ -23,9 +23,8 @@ namespace SujetPFE.Controllers
         // GET: Pacs
         public async Task<IActionResult> Index()
         {
-            // Eager loading des KPIs (si nécessaire)
             var pacsWithKpis = await _context.Pacs
-                .Include(p => p.KPIValues) // Assurez-vous que le nom de votre propriété est correct (KPIValues)
+                .Include(p => p.KPIValues)
                 .ToListAsync();
             return View(pacsWithKpis);
         }
@@ -39,8 +38,9 @@ namespace SujetPFE.Controllers
             }
 
             var pac = await _context.Pacs
-                .Include(p => p.KPIValues) // Charger les KPIs pour la page de détails
+                .Include(p => p.KPIValues)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (pac == null)
             {
                 return NotFound();
@@ -56,31 +56,36 @@ namespace SujetPFE.Controllers
         }
 
         // POST: Pacs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Pac pac, string kpiData) // Récupérer les données des KPIs
+        public async Task<IActionResult> Create(Pac pac, string kpiData)
         {
             if (ModelState.IsValid)
             {
-                // Deserialiser les données des KPIs
                 if (!string.IsNullOrEmpty(kpiData))
                 {
                     try
                     {
                         var kpiValues = JsonConvert.DeserializeObject<List<KPIValue>>(kpiData);
-                        pac.KPIValues = kpiValues; // Assigner les KPIs au PAC
+                        pac.KPIValues = kpiValues;
                     }
                     catch (JsonException ex)
                     {
-                        ModelState.AddModelError("kpiData", "Invalid KPI data format.");
-                        return View(pac); // Retourner à la vue avec l'erreur
+                        ModelState.AddModelError("kpiData", "Format de données KPI invalide.");
+                        return View(pac);
                     }
                 }
 
                 _context.Add(pac);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError("", "Erreur lors de l'enregistrement du PAC.");
+                    return View(pac);
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(pac);
@@ -95,22 +100,21 @@ namespace SujetPFE.Controllers
             }
 
             var pac = await _context.Pacs
-                .Include(p => p.KPIValues) // Charger les KPIs pour l'édition
+                .Include(p => p.KPIValues)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (pac == null)
             {
                 return NotFound();
             }
+
             return View(pac);
         }
 
         // POST: Pacs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Pac pac, string kpiData) // Récupérer les données des KPIs
+        public async Task<IActionResult> Edit(int id, Pac pac, string kpiData)
         {
             if (id != pac.Id)
             {
@@ -121,21 +125,19 @@ namespace SujetPFE.Controllers
             {
                 try
                 {
-                    // Deserialiser les données des KPIs
                     if (!string.IsNullOrEmpty(kpiData))
                     {
                         try
                         {
                             var kpiValues = JsonConvert.DeserializeObject<List<KPIValue>>(kpiData);
-                            // Mettre à jour les KPIs existants
                             var existingKpis = await _context.KPIValues.Where(k => k.PacId == pac.Id).ToListAsync();
-                            _context.KPIValues.RemoveRange(existingKpis); // Supprimer les anciens KPIs
-                            pac.KPIValues = kpiValues; // Ajouter les nouveaux KPIs
+                            _context.KPIValues.RemoveRange(existingKpis);
+                            pac.KPIValues = kpiValues;
                         }
                         catch (JsonException ex)
                         {
-                            ModelState.AddModelError("kpiData", "Invalid KPI data format.");
-                            return View(pac); // Retourner à la vue avec l'erreur
+                            ModelState.AddModelError("kpiData", "Format de données KPI invalide.");
+                            return View(pac);
                         }
                     }
                     else
@@ -143,6 +145,7 @@ namespace SujetPFE.Controllers
                         var existingKpis = await _context.KPIValues.Where(k => k.PacId == pac.Id).ToListAsync();
                         _context.KPIValues.RemoveRange(existingKpis);
                     }
+
                     _context.Update(pac);
                     await _context.SaveChangesAsync();
                 }
@@ -156,6 +159,11 @@ namespace SujetPFE.Controllers
                     {
                         throw;
                     }
+                }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError("", "Erreur lors de la mise à jour du PAC.");
+                    return View(pac);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -171,8 +179,9 @@ namespace SujetPFE.Controllers
             }
 
             var pac = await _context.Pacs
-                .Include(p => p.KPIValues) // Charger les KPIs pour la confirmation de suppression
+                .Include(p => p.KPIValues)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (pac == null)
             {
                 return NotFound();
@@ -182,20 +191,29 @@ namespace SujetPFE.Controllers
         }
 
         // POST: Pacs/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var pac = await _context.Pacs.FindAsync(id);
             if (pac == null)
             {
-                return NotFound(); // Handle the case where the entity to delete doesn't exist
+                return NotFound();
             }
-            // Supprimer les KPIs associés
+
             var kpisToDelete = await _context.KPIValues.Where(k => k.PacId == id).ToListAsync();
             _context.KPIValues.RemoveRange(kpisToDelete);
+
             _context.Pacs.Remove(pac);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError("", "Erreur lors de la suppression du PAC.");
+                return View(pac);
+            }
             return RedirectToAction(nameof(Index));
         }
 

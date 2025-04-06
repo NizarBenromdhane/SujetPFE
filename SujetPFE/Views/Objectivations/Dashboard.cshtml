@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Objectifs";
+}
+
+<h1>Tableau de Bord des Objectifs</h1>
+
+<div class="dashboard-selection">
+    <h2>Choisissez le type de tableau de bord que vous souhaitez afficher :</h2>
+    <button onclick="location.href='@Url.Action("CreditDashboard", "Objectivations")'">Dashboard Crédit</button>
+    <button onclick="location.href='@Url.Action("DepotDashboard", "Objectivations")'">Dashboard Dépôt</button>
+</div>
+
+<style>
+    /* Vous pouvez ajouter ici des styles CSS spécifiques à cette vue si nécessaire */
+    .dashboard-selection {
+        padding: 20px;
+    }
+
+        .dashboard-selection button {
+            padding: 10px 20px;
+            margin-right: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+</style>

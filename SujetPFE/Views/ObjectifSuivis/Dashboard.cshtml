@@ -1,0 +1,80 @@
+﻿@using SujetPFE.Domain.Entities
+@model List<ObjectifSuivi>
+
+@{
+    ViewData["Title"] = "Tableau de bord des objectifs";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ajoutez cette ligne
+}
+
+<h1>Tableau de bord des objectifs</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Vue d'ensemble</h2>
+        <p>Total des réalisations : @ViewBag.TotalRealisations</p>
+        <p>Écart moyen : @ViewBag.EcartMoyen</p>
+    </div>
+    <div class="col-md-8">
+        <h2>Graphiques de suivi</h2>
+        <canvas id="chart"></canvas>
+    </div>
+</div>
+
+<h2>Tableau de données</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Objectif</th>
+            <th>Employé</th>
+            <th>Réalisation</th>
+            <th>Écart</th>
+            <th>Date de suivi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var suivi in Model)
+        {
+            <tr>
+                <td>@suivi.Objective.Description</td>
+                <td>@suivi.Objective.Employee.Nom</td>
+                <td>@suivi.Realisation</td>
+                <td>@suivi.Ecart</td>
+                <td>@suivi.DateSuivi</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Code JavaScript pour créer le graphique
+        var ctx = document.getElementById('chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar', // Type de graphique (barres, lignes, etc.)
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Select(s => s.Objective.Description).ToArray())), // Utilisez Description au lieu de Nom
+                datasets: [{
+                    label: 'Réalisation',
+                    data: @Html.Raw(Json.Serialize(Model.Select(s => s.Realisation).ToArray())),
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Écart',
+                    data: @Html.Raw(Json.Serialize(Model.Select(s => s.Ecart).ToArray())),
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

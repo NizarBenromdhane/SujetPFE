@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 // Modification ici : Utiliser la base de données aspnet-SujetPFE-...
-connectionString = "Server=(localdb)\\mssqllocaldb;Database=aspnet-SujetPFE-dfb7f9f4-3e2e-4ae5-8278-94fedf3e5338;Trusted_Connection=True;MultipleActiveResultSets=true";
 
 builder.Services.AddDbContext<PcbContext>(options =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("SujetPFE.Infrastructure")));

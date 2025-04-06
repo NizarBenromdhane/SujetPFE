@@ -2,101 +2,67 @@
 
 @{
     ViewData["Title"] = "Index";
- 
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/styles.css" />
+
+<h1>Liste des clients</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Créer un client</a>
 </p>
-<table class="table">
+<form asp-action="Upload" enctype="multipart/form-data" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label for="excelFile">Select Excel File (.xlsx):</label>
+        <input type="file" name="excelFile" id="excelFile" class="form-control-file" accept=".xlsx" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-upload"></i> Upload and Process
+    </button>
+</form>
+<table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.RaisonSociale)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Charge)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Activite)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SousActivite)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PP)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Segments)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AjouteLe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pole)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RC)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CTX)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SortieLe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Groupe)
-            </th>
-            <th></th>
+            <th>Raison sociale</th>
+            <th>Chargé de compte</th>
+            <th>Activité</th>
+            <th>Sous-activité</th>
+            <th>Personne à contacter</th>
+            <th>Segments</th>
+            <th>Date d'ajout</th>
+            <th>Pôle</th>
+            <th>RC</th>
+            <th>CTX</th>
+            <th>Date de sortie</th>
+            <th>Groupe</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RaisonSociale)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Charge)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Activite)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SousActivite)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PP)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Segments)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AjouteLe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pole)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RC)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CTX)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SortieLe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Groupe.Charge)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.RaisonSociale)</td>
+                <td>@Html.DisplayFor(modelItem => item.Charge)</td>
+                <td>@Html.DisplayFor(modelItem => item.Activite)</td>
+                <td>@Html.DisplayFor(modelItem => item.SousActivite)</td>
+                <td>@Html.DisplayFor(modelItem => item.PP)</td>
+                <td>@(item.Segments != null ? string.Join(", ", item.Segments) : "N/A")</td>
+@*                 <td>@(item.AjouteLe?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+ *@                <td>@Html.DisplayFor(modelItem => item.Pole)</td>
+                <td>@Html.DisplayFor(modelItem => item.RC)</td>
+                <td>@Html.DisplayFor(modelItem => item.CTX)</td>
+                <td>@(item.SortieLe?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                <td>@(item.Groupe != null ? item.Groupe.Charge : "N/A")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Modifier</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Détails</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Supprimer</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

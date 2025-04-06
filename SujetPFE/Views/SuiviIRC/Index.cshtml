@@ -1,0 +1,142 @@
+﻿@model IEnumerable<SujetPFE.Domain.Entities.SuiviIRC>
+
+@{
+    ViewData["Title"] = "Suivi IRC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <header>
+        <div class="logo">
+            <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="Logo" class="small-logo">
+        </div>
+        <nav class="top-nav">
+            <a href="#">HOME</a>
+            <a href="/portefeuille">Portefeuille</a>
+        </nav>
+    </header>
+
+    <div class="filters-container">
+        <div class="filters">
+            <div class="date-filter">
+                <label for="date-range-start">Du:</label>
+                <input type="date" id="date-range-start" value="2020-02-01">
+                <label for="date-range-end">Au:</label>
+                <input type="date" id="date-range-end" value="2020-03-31">
+            </div>
+            <div class="direction-filter">
+                <label for="direction">Direction:</label>
+                <select id="direction">
+                    <option value="">Tous</option>
+                    <option value="direction1">Direction 1</option>
+                    <option value="direction2">Direction 2</option>
+                </select>
+            </div>
+            <div class="agent-filter">
+                <label for="agent">Chargé IRC:</label>
+                <select id="agent">
+                    <option value="">Tous</option>
+                    <option value="Amine KAROUI">Amine KAROUI</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <div class="general-info">
+            <h2>Suivi IRC</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Nombre des RDV / Période:</strong> <span id="rdv-count">@Model.Count()</span>
+                </div>
+                <div class="info-item">
+                    <strong>Moyenne RDV / Charge:</strong>
+                    @{
+                        double average = Model != null && Model.Any() ? Model.Average(s => s.NombreRDV) : 0;
+                    }
+                    <span id="rdv-average">@average</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="rdv-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Chargé d'affaires</th>
+                        <th>Groupe / Client</th>
+                        <th>Affaire</th>
+                        <th>Nombre visites</th>
+                        <th>Détails</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ChargeAffaires</td>
+                            <td>@item.Client.RaisonSociale</td>
+                            <td>@item.Commentaires</td>
+                            <td class="visit-count">@item.NombreVisites</td>
+                            <td><button class="details-btn">Détails</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pac-list">
+            <h3>Plans d'Action (PAC)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gpe</th>
+                        <th>Échéance</th>
+                        <th>Orientation</th>
+                        <th>Autres</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Groupe A</td>
+                        <td>2024-03-15</td>
+                        <td>Développement marché</td>
+                        <td>Suivi client</td>
+                    </tr>
+                    <tr>
+                        <td>Client B</td>
+                        <td>2024-04-01</td>
+                        <td>Amélioration produit</td>
+                        <td>Réunion technique</td>
+                    </tr>
+                    <tr>
+                        <td>Partenaire C</td>
+                        <td>2024-04-10</td>
+                        <td>Formation équipe</td>
+                        <td>Documentation</td>
+                    </tr>
+                    <tr>
+                        <td>Groupe D</td>
+                        <td>2024-05-01</td>
+                        <td>Campagne marketing</td>
+                        <td>Analyse des ventes</td>
+                    </tr>
+                    <tr>
+                        <td>Client E</td>
+                        <td>2024-05-15</td>
+                        <td>Support technique</td>
+                        <td>Mise à jour logiciel</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="rdv-actions">
+            <button id="add-rdv" class="action-btn"><i class="fas fa-plus"></i> Ajouter un RDV</button>
+            <button id="modify-rdv" class="action-btn"><i class="fas fa-edit"></i> Modifier un RDV</button>
+            <button id="report-rdv" class="action-btn"><i class="fas fa-file-alt"></i> Compte Rendu</button>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/script3.js"></script>

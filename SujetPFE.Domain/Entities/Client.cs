@@ -2,6 +2,7 @@
 
 public class Client
 {
+    public string IDString { get; set; } // Assuming ID is a string, adjust if it's an int
     public int Id { get; set; }
     public string RaisonSociale { get; set; }
     public int GroupeId { get; set; }

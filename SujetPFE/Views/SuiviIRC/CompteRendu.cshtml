@@ -1,0 +1,15 @@
+﻿@model SujetPFE.Domain.Entities.CompteRendu
+
+<h2>Compte Rendu</h2>
+
+@if (Model == null)
+{
+    <p>Aucun compte rendu trouvé pour ce RDV.</p>
+}
+else
+{
+    <div>
+        <p><strong>Date de création :</strong> @Model.DateCreation</p>
+        <p><strong>Contenu :</strong> @Model.Contenu</p>
+    </div>
+}

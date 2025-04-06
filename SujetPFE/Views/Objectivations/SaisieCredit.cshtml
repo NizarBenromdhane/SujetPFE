@@ -1,0 +1,222 @@
+﻿@* @{
+    ViewData["Title"] = "Saisie Crédit";
+    var periodes = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "2025-03", Text = "Mars 2025" },
+        new SelectListItem { Value = "2025-06", Text = "Juin 2025" },
+        new SelectListItem { Value = "2025-09", Text = "Septembre 2025" },
+        new SelectListItem { Value = "2025-12", Text = "Décembre 2025" }
+    };
+    var typesCredit = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "Immobilier", Text = "Crédit Immobilier" },
+        new SelectListItem { Value = "Consommation", Text = "Crédit à la Consommation" },
+        new SelectListItem { Value = "Entreprise", Text = "Crédit aux Entreprises" }
+    };
+    var employes = ViewBag.Employes as List<SelectListItem>;
+    var groupes = ViewBag.Groupes as List<SelectListItem>;
+}
+
+<h1>Saisie Objectifs Solde Crédits</h1>
+
+<div class="saisie-credit-container biat-theme">
+    <h2>Saisie des Objectifs de Crédit</h2>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert @(ViewBag.IsSuccess ? "alert-success" : "alert-danger")">
+            @ViewBag.Message
+        </div>
+    }
+
+    <form method="post">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="periode">Période :</label>
+                <select asp-for="Periode" asp-items="periodes" class="form-control" required>
+                    <option value="">-- Sélectionner une période --</option>
+                </select>
+                <span asp-validation-for="Periode" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="typeCredit">Type de Crédit :</label>
+                <select asp-for="TypeCredit" asp-items="typesCredit" class="form-control" required>
+                    <option value="">-- Sélectionner un type de crédit --</option>
+                </select>
+                <span asp-validation-for="TypeCredit" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="montantObjectif">Montant Objectif :</label>
+            <div class="input-group">
+                <input asp-for="MontantObjectif" type="number" class="form-control" required />
+                <div class="input-group-append">
+                    <span class="input-group-text">TND</span>
+                </div>
+            </div>
+            <span asp-validation-for="MontantObjectif" class="text-danger"></span>
+        </div>
+
+        @if (employes != null && employes.Any())
+        {
+            <div class="form-group">
+                <label for="EmployeId">Employé (Optionnel) :</label>
+                <select asp-for="EmployeId" asp-items="employes" class="form-control">
+                    <option value="">-- Sélectionner un employé --</option>
+                </select>
+                <span asp-validation-for="EmployeId" class="text-danger"></span>
+            </div>
+        }
+
+        @if (groupes != null && groupes.Any())
+        {
+            <div class="form-group">
+                <label for="GroupeId">Groupe (Optionnel) :</label>
+                <select asp-for="GroupeId" asp-items="groupes" class="form-control">
+                    <option value="">-- Sélectionner un groupe --</option>
+                </select>
+                <span asp-validation-for="GroupeId" class="text-danger"></span>
+            </div>
+        }
+
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Enregistrer l'Objectif</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .biat-theme {
+        --primary-color: #0047AB;
+        --secondary-color: #F0F0F0;
+        --accent-color: #FFA500;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+
+    .saisie-credit-container {
+        padding: 40px;
+        background-color: var(--secondary-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        max-width: 700px;
+        margin: 30px auto;
+    }
+
+        .saisie-credit-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 35px;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 1em;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 71, 171, 0.25);
+        }
+
+    .input-group {
+        display: flex;
+        align-items: stretch;
+    }
+
+        .input-group input.form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+    .input-group-append {
+        margin-left: -1px;
+    }
+
+    .input-group-text {
+        background-color: #e9ecef;
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 0 8px 8px 0;
+        font-size: 1em;
+        color: #555;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 18px 35px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+
+    .alert {
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 1em;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .form-group.col-md-6 {
+        padding-right: 15px;
+        padding-left: 15px;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .form-group.text-center {
+        margin-top: 30px;
+    }
+</style> *@

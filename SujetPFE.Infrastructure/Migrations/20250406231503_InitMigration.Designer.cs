@@ -12,8 +12,8 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    [Migration("20250324144114_AddKPIsTable")]
-    partial class AddKPIsTable
+    [Migration("20250406231503_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -281,6 +281,10 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Property<int>("GroupeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("IDString")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PP")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -313,6 +317,59 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.HasIndex("GroupeId");
 
                     b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("SujetPFE.Domain.Entities.CompteRendu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Contenu")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RDVId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ComptesRendus");
+                });
+
+            modelBuilder.Entity("SujetPFE.Domain.Entities.CreditObjectif", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EmployeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GroupeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MontantObjectif")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Periode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeCredit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CreditObjectifs");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Direction", b =>
@@ -408,7 +465,63 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groupe");
+                    b.ToTable("Groupes");
+                });
+
+            modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifCreditDepot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateDebut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Montant")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TypeObjectif")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ObjectifsCreditDepot");
+                });
+
+            modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifSuivi", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateSuivi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Ecart")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ObjectifId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ObjectiveId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Realisation")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObjectiveId");
+
+                    b.ToTable("ObjectifsSuivis");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Objective", b =>
@@ -472,7 +585,7 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.ToTable("Objectives");
                 });
 
-            modelBuilder.Entity("SujetPFE.Models.KPIs", b =>
+            modelBuilder.Entity("SujetPFE.Domain.Entities.RDV", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -480,20 +593,143 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Evolution")
+                    b.Property<string>("Client")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nom")
+                    b.Property<string>("Commentaires")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Valeur")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NombreVisites")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("KPIs");
+                    b.ToTable("RDVs");
+                });
+
+            modelBuilder.Entity("SujetPFE.Domain.Entities.SuiviIRC", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ChargeAffaires")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Commentaires")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateVisite")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("MoyenneRDV")
+                        .HasColumnType("float");
+
+                    b.Property<int>("NombreRDV")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NombreVisites")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("SuivisIRC");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.KPIValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("KPI")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PacId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Valeur")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PacId");
+
+                    b.ToTable("KPIValues");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.Pac", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Affaire")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateDebut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Groupe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KPL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Limites")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Recommandations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Responsable")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Statut")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pacs");
                 });
 
             modelBuilder.Entity("HistoriqueObjectif", b =>
@@ -580,6 +816,17 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Direction");
                 });
 
+            modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifSuivi", b =>
+                {
+                    b.HasOne("SujetPFE.Domain.Entities.Objective", "Objective")
+                        .WithMany()
+                        .HasForeignKey("ObjectiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Objective");
+                });
+
             modelBuilder.Entity("SujetPFE.Domain.Entities.Objective", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Client", "Client")
@@ -599,6 +846,28 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("SujetPFE.Domain.Entities.SuiviIRC", b =>
+                {
+                    b.HasOne("SujetPFE.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.KPIValue", b =>
+                {
+                    b.HasOne("SujetPFE.Models.Pac", "Pac")
+                        .WithMany("KPIValues")
+                        .HasForeignKey("PacId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pac");
+                });
+
             modelBuilder.Entity("SujetPFE.Domain.Entities.Client", b =>
                 {
                     b.Navigation("Objectifs");
@@ -607,6 +876,11 @@ namespace SujetPFE.Infrastructure.Migrations
             modelBuilder.Entity("SujetPFE.Domain.Entities.Direction", b =>
                 {
                     b.Navigation("Employes");
+                });
+
+            modelBuilder.Entity("SujetPFE.Models.Pac", b =>
+                {
+                    b.Navigation("KPIValues");
                 });
 #pragma warning restore 612, 618
         }

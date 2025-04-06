@@ -1,48 +1,243 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿/* Styles généraux */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
 }
 
-a {
-  color: #0077cc;
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.content-wrapper {
+    flex: 1;
+    padding: 20px;
+    margin-left: 20%; /* Ajustement de la marge */
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* Styles de la barre de navigation latérale */
+.main-sidebar {
+    width: 20%; /* Ajustement de la largeur */
+    background-color: #003366;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    .main-sidebar .logo {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .main-sidebar .logo img {
+            max-width: 80%; /* Ajustement de la taille du logo */
+            height: auto;
+        }
+
+    .main-sidebar .navbar {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .main-sidebar .navbar a {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+            .main-sidebar .navbar a:hover {
+                background-color: #00509e;
+            }
+
+/* Styles des menus déroulants */
+.nav-item.dropdown > .nav-link {
+    cursor: pointer;
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+.nav-item.dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #00509e;
+    min-width: 220px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 4px;
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.nav-item.dropdown.show .dropdown-menu {
+    display: block;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+.nav-item.dropdown .dropdown-menu a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
 }
+
+    .nav-item.dropdown .dropdown-menu a:hover {
+        background-color: #003366;
+    }
+
+.dropdown-divider {
+    height: 0;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #fff;
+    opacity: 0.2;
+}
+
+/* Styles du logo de la barre latérale */
+.sidebar-logo {
+    text-align: left;
+    margin-bottom: 20px;
+    padding-left: 10px;
+}
+
+    .sidebar-logo img {
+        max-width: 70%;
+        height: auto;
+    }
+
+/* Styles de l'avatar utilisateur */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid #fff;
+}
+
+/* Styles des informations utilisateur dans la barre de navigation */
+.navbar-user-info {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+}
+
+.user-name {
+    margin-right: 15px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Styles des cartes KPI */
+.kpi-card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border: none;
+    background-color: #fff;
+}
+
+.kpi-header {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 12px 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.kpi-body {
+    padding: 18px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.kpi-difference {
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.positive {
+    color: #28a745;
+}
+
+.negative {
+    color: #dc3545;
+}
+
+/* Styles de la section de bienvenue */
+.welcome-section {
+    background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.welcome-title {
+    font-size: 32px;
+    font-weight: 300;
+}
+
+.welcome-btn {
+    background-color: white;
+    color: #003366;
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 6px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+    .welcome-btn:hover {
+        background-color: #f8f9fa;
+    }
+
+/* Styles du pied de page */
+.main-footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #f4f6f9;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Styles pour les écrans de petite taille */
+@media (max-width: 768px) {
+    .main-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .content-wrapper {
+        padding: 10px;
+    }
+
+    .kpi-card {
+        margin-bottom: 15px;
+    }
+}
+
+/* Styles du tableau des objectifs */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .table th, .table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }

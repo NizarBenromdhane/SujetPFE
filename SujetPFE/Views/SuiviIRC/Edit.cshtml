@@ -1,0 +1,62 @@
+﻿@model SujetPFE.Domain.Entities.SuiviIRC
+
+@{
+    ViewData["Title"] = "Modifier un suivi IRC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Modifier</h1>
+
+<h4>Suivi IRC</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="ClientId" class="control-label">Client</label>
+                <select asp-for="ClientId" class="form-control" asp-items="ViewBag.ClientId"></select>
+                <span asp-validation-for="ClientId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateVisite" class="control-label">Date de la visite</label>
+                <input asp-for="DateVisite" class="form-control" type="datetime-local" />
+                <span asp-validation-for="DateVisite" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChargeAffaires" class="control-label">Chargé d'affaires</label>
+                <input asp-for="ChargeAffaires" class="form-control" />
+                <span asp-validation-for="ChargeAffaires" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreVisites" class="control-label">Nombre de visites</label>
+                <input asp-for="NombreVisites" class="form-control" type="number" />
+                <span asp-validation-for="NombreVisites" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreRDV" class="control-label">Nombre de rendez-vous</label>
+                <input asp-for="NombreRDV" class="form-control" type="number" />
+                <span asp-validation-for="NombreRDV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commentaires" class="control-label">Commentaires</label>
+                <textarea asp-for="Commentaires" class="form-control"></textarea>
+                <span asp-validation-for="Commentaires" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Retour à la liste</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

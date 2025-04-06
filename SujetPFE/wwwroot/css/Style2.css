@@ -1,62 +1,107 @@
 ﻿body {
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4; /* Fond légèrement gris */
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.5; /* Réduire l'interligne */
+    font-size: 14px; /* Réduire la taille de la police par défaut */
 }
 
-.kpi-dashboard {
-    margin-top: 30px;
+.logo-container {
+    text-align: center;
+    padding: 20px 0; /* Réduire le padding */
+    background-color: #003366;
+}
+
+.logo {
+    max-width: 150px; /* Réduire la taille du logo */
+    height: auto;
+}
+
+.main-content {
+    padding: 15px; /* Réduire le padding */
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 20px; /* Réduire la marge inférieure */
+    color: #003366;
+    font-size: 1.8em; /* Réduire la taille de la police */
+    font-weight: 500;
 }
 
 .kpi-cards {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centrer les cartes */
+    justify-content: center;
 }
 
 .kpi-card {
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px; /* Coins plus arrondis */
-    padding: 25px;
-    width: 250px; /* Largeur augmentée */
-    margin: 20px; /* Marges augmentées */
+    border-radius: 12px;
+    padding: 20px; /* Réduire le padding */
+    width: 250px; /* Réduire la largeur */
+    margin: 15px; /* Réduire la marge */
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée */
-    transition: transform 0.3s ease-in-out; /* Animation au survol */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
     .kpi-card:hover {
-        transform: translateY(-5px); /* Légère élévation au survol */
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
     }
 
-    .kpi-card h3 {
-        margin-bottom: 15px;
-        font-size: 1.3em;
-        font-weight: bold;
-        color: #333; /* Couleur du titre */
-    }
+.kpi-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px; /* Réduire la marge inférieure */
+}
+
+.kpi-icon {
+    font-size: 1.8em; /* Réduire la taille de la police */
+    margin-right: 10px; /* Réduire la marge à droite */
+    color: #00509e;
+}
+
+.kpi-title {
+    font-size: 1.3em; /* Réduire la taille de la police */
+    font-weight: 500;
+    color: #003366;
+}
 
 .kpi-value {
-    font-size: 2em; /* Taille de police augmentée pour les valeurs */
+    font-size: 2em; /* Réduire la taille de la police */
     font-weight: bold;
-    margin-bottom: 10px;
-    color: #003366; /* Couleur des valeurs (bleu foncé) */
+    margin-bottom: 10px; /* Réduire la marge inférieure */
+    color: #00509e;
+}
+
+.kpi-progress {
+    width: 80%;
+    height: 8px; /* Réduire la hauteur */
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 8px auto; /* Réduire la marge */
+}
+
+.kpi-progress-bar {
+    height: 100%;
+    background-color: #00509e;
+    border-radius: 5px;
 }
 
 .kpi-difference {
-    font-size: 1em;
+    font-size: 1em; /* Réduire la taille de la police */
     color: #666;
 }
 
-/* Styles pour le logo */
-.logo-container {
-    text-align: center;
-    margin-bottom: 40px; /* Marge augmentée */
-}
-
-    .logo-container img {
-        max-width: 300px; /* Taille maximale du logo */
-        height: auto;
+/* Responsive design */
+@media (max-width: 768px) {
+    .kpi-card {
+        width: 100%;
+        margin: 10px 0; /* Réduire la marge */
     }
+}

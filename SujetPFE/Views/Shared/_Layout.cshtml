@@ -1,321 +1,106 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - Pcb Portal</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/Layout.css">
+    <link rel="stylesheet" href="~/css/styleirc.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        .main-sidebar {
-            width: 12%;
-            background-color: #003366;
-            color: white;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
-            overflow-y: auto;
+        /* Styles CSS supplémentaires pour gérer les sous-menus */
+        .nav-group .nav-sub-links {
+            display: none; /* Initialement cachés */
+            margin-left: 15px;
         }
 
-            .main-sidebar .logo {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-
-                .main-sidebar .logo img {
-                    width: 100%;
-                    margin-bottom: 20px;
-                }
-
-            .main-sidebar .navbar {
-                display: flex;
-                flex-direction: column;
-            }
-
-                .main-sidebar .navbar a {
-                    padding: 10px 15px;
-                    color: white;
-                    text-decoration: none;
-                    display: block;
-                }
-
-                    .main-sidebar .navbar a:hover {
-                        background-color: #00509e;
-                    }
-
-        .nav-item.dropdown > .nav-link {
-            cursor: pointer;
+        .nav-group.open .nav-sub-links {
+            display: block;
         }
 
-        .nav-item.dropdown .dropdown-menu {
+        .nav-group .nav-sub-sub-links {
             display: none;
-            position: absolute;
-            background-color: #00509e;
-            min-width: 200px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            border-radius: 0;
+            margin-left: 15px;
         }
 
-        .nav-item.dropdown.show .dropdown-menu {
+        .nav-group.open .nav-sub-sub-links {
             display: block;
         }
 
-        .nav-item.dropdown .dropdown-menu a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
+        .nav-link.sub-link, .nav-link.sub-sub-link {
+            font-size: 0.9em;
+            padding-left: 30px; /* Indentation */
         }
-
-            .nav-item.dropdown .dropdown-menu a:hover {
-                background-color: #003366;
-            }
-
-        .dropdown-divider {
-            height: 0;
-            margin: 0.5rem 0;
-            overflow: hidden;
-            border-top: 1px solid #fff;
-            opacity: .2;
-        }
-
-        .sidebar-logo {
-            text-align: left;
-            margin-bottom: 20px;
-            padding-left: 10px;
-        }
-
-            .sidebar-logo img {
-                max-width: 70%;
-                height: auto;
-            }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            border: 2px solid #fff;
-        }
-
-        .navbar-user-info {
-            display: flex;
-            align-items: center;
-            padding: 8px 15px;
-        }
-
-        .user-name {
-            margin-right: 15px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .kpi-card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            border: none;
-        }
-
-        .kpi-header {
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            padding: 10px 15px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .kpi-body {
-            padding: 15px;
-        }
-
-        .kpi-value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .kpi-difference {
-            font-size: 14px;
-        }
-
-        .positive {
-            color: #28a745;
-        }
-
-        .negative {
-            color: #dc3545;
-        }
-
-        .welcome-section {
-            background: linear-gradient(135deg, #003366 0%, #00509e 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-
-        .welcome-title {
-            font-size: 28px;
-            font-weight: 300;
-        }
-
-        .welcome-btn {
-            background-color: white;
-            color: #003366;
-            border: none;
-            padding: 10px 25px;
-            font-weight: 600;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
-            .welcome-btn:hover {
-                background-color: #f8f9fa;
-            }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdownToggle = document.querySelector('#objectivationDropdown');
-            const dropdownMenu = document.querySelector('.objectivation-menu');
-
-            if (dropdownToggle && dropdownMenu) {
-                dropdownToggle.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    dropdownToggle.parentElement.classList.toggle('show');
-                    dropdownMenu.classList.toggle('show');
-                });
-            }
-        });
-    </script>
 </head>
-<body class="hold-transition sidebar-mini">
+<body>
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <li class="navbar-user-info">
-                        <span class="user-name">@User.Identity.Name</span>
-                        <img src="~/images/user-avatar.png" class="user-avatar" alt="User Avatar">
-                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "Identity" })" method="post">
-                            <button type="submit" class="btn btn-info btn-sm">
-                                <i class="fas fa-sign-out-alt"></i> Déconnexion
-                            </button>
-                        </form>
-                    </li>
-                }
-                else
-                {
-                    <li><a asp-page="/Account/Register" asp-area="Identity">Register</a></li>
-                    <li><a asp-page="/Account/Login" asp-area="Identity">Login</a></li>
-                }
-            </ul>
-        </nav>
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="Logo BIAT" class="logo">
+            </div>
+            <nav class="navigation">
+                <a href="@Url.Action("Index", "Home")" class="nav-link"><i class="fas fa-home"></i> Accueil</a>
 
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="@Url.Action("Index", "Home")" class="brand-link">
-                <div class="sidebar-logo">
-                    <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="BIAT Logo" class="sidebar-logo-img">
+                <div class="nav-group">
+                    <a href="#" class="nav-link"><i class="fas fa-bullseye"></i> Objectivation</a>
+                    <div class="nav-sub-links">
+                        <a href="@Url.Action("SaisieDepot", "Objectivations")" class="nav-link sub-link"><i class="fas fa-arrow-right"></i> Saisie Dépôt</a>
+                        <a href="@Url.Action("SaisieCredit", "Objectivations")" class="nav-link sub-link"><i class="fas fa-arrow-right"></i> Saisie Crédit</a>
+                        <a href="@Url.Action("Dashboard", "Objectivations")" class="nav-link sub-link"><i class="fas fa-arrow-right"></i> Dashboard</a>
+                    </div>
                 </div>
-                <span class="brand-text font-weight-light">Pcb Portal</span>
-            </a>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="sidebar">
-                    <nav class="mt-2">
-                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                            <li class="nav-item">
-                                <a href="@Url.Action("Index", "Home")" class="nav-link">
-                                    <i class="nav-icon fas fa-home"></i>
-                                    <p>Accueil</p>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" id="objectivationDropdown" class="nav-link">
-                                    <i class="nav-icon fas fa-bullseye"></i>
-                                    <p>Objectivation <i class="right fas fa-angle-down"></i></p>
-                                </a>
-                                <div class="dropdown-menu objectivation-menu" aria-labelledby="objectivationDropdown">
-                                    <a class="dropdown-item" asp-controller="Clients" asp-action="Index">Clients</a>
-                                    <a class="dropdown-item" asp-controller="Directions" asp-action="Index">Directions</a>
-                                    <a class="dropdown-item" asp-controller="Employees" asp-action="Index">Employés</a>
-                                    <a class="dropdown-item" asp-controller="Groupes" asp-action="Index">Groupes</a>
-                                    <a class="dropdown-item" asp-controller="HistoriqueObjectives" asp-action="Index">Historique Objectifs</a>
-                                    <a class="dropdown-item" asp-controller="Objectives" asp-action="Index">Objectives</a>
-                                    <div class="dropdown-divider"></div>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a href="@Url.Action("Index", "Pacs")" class="nav-link">
-                                    <i class="nav-icon fas fa-tasks"></i>
-                                    <p>PAC</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-controller="Pacs" asp-action="Create" class="nav-link">
-                                    <i class="nav-icon fas fa-tasks"></i>
-                                    <p>Saisie PAC</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-briefcase"></i>
-                                    <p>Portefeuille</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-users-cog"></i>
-                                    <p>Pratiques Managériales</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-user"></i>
-                                    <p>Template Client</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            }
-        </aside>
 
-        <div class="content-wrapper">
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">@ViewData["Title"]</h1>
+                <a href="@Url.Action("Index", "Pacs")" class="nav-link"><i class="fas fa-tasks"></i> PAC</a>
+                <a href="@Url.Action("Index", "SuiviIRC")" class="nav-link"><i class="fas fa-chart-line"></i> Suivi IRC</a>
+
+                <div class="nav-group">
+                    <a href="#" class="nav-link"><i class="fas fa-briefcase"></i> Portefeuille</a>
+                    <div class="nav-sub-links">
+                        <a href="#" class="nav-link sub-link"><i class="fas fa-arrow-right"></i> MAJ</a>
+                        <div class="nav-sub-sub-links">
+                            <a href="@Url.Action("Index", "Clients")" class="nav-link sub-sub-link">Clients</a>
+                            <a href="@Url.Action("Index", "Directions")" class="nav-link sub-sub-link">Directions</a>
+                            <a href="@Url.Action("Index", "Employees")" class="nav-link sub-sub-link">Employés</a>
+                            <a href="@Url.Action("Index", "Groupes")" class="nav-link sub-sub-link">Groupes</a>
+                            <a href="@Url.Action("Index", "HistoriqueObjectives")" class="nav-link sub-sub-link">Historique Objectifs</a>
+                            <a href="@Url.Action("Index", "Objectives")" class="nav-link sub-sub-link">Objectives</a>
+                            <a href="@Url.Action("Index", "ObjectifCreditDepots")" class="nav-link sub-sub-link">Objectifs Crédit/Dépôt</a>
+                            <a href="@Url.Action("Index", "ObjectifSuivis")" class="nav-link sub-sub-link">Suivi Objectifs</a>
                         </div>
                     </div>
                 </div>
-            </div>
-            <section class="content">
-                <div class="container-fluid">
-                    @RenderBody()
+
+                <a href="#" class="nav-link"><i class="fas fa-users-cog"></i> Pratiques Managériales</a>
+                <a href="#" class="nav-link"><i class="fas fa-user"></i> Template Client</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <header class="header">
+                <div class="user-info">
+                    <span class="user-name">@User.Identity.Name</span>
+                    <img src="~/images/user-avatar.png" alt="Avatar Utilisateur" class="user-avatar">
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "Identity" })" method="post">
+                        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+                    </form>
                 </div>
-            </section>
-        </div>
-
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2025 <a href="#">Biat Bank</a></strong> Tous droits réservés.
-        </footer>
+            </header>
+            <div class="main-content">
+                @RenderBody()
+            </div>
+        </main>
     </div>
-
-    <script src="~/plugins/jquery/jquery.min.js"></script>
-    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/dist/js/adminlte.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.nav-group > a').click(function(e) {
+                e.preventDefault(); // Empêche le lien de naviguer si c'est un parent
+                $(this).parent('.nav-group').toggleClass('open');
+            });
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -5,153 +5,96 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <header class="header">
+        <h1 class="title"><i class="fas fa-file-signature"></i> Créer un PAC</h1>
+    </header>
 
-<h4>Pac</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form id="pac-form" asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Titre" class="control-label"></label>
-                <input asp-for="Titre" class="form-control" />
-                <span asp-validation-for="Titre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateDebut" class="control-label"></label>
-                <input asp-for="DateDebut" type="date" class="form-control" />
-                <span asp-validation-for="DateDebut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateFin" class="control-label"></label>
-                <input asp-for="DateFin" type="date" class="form-control" />
-                <span asp-validation-for="DateFin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Responsable" class="control-label"></label>
-                <input asp-for="Responsable" class="form-control" />
-                <span asp-validation-for="Responsable" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Statut" class="control-label"></label>
-                <input asp-for="Statut" class="form-control" />
-                <span asp-validation-for="Statut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Groupe" class="control-label"></label>
-                <input asp-for="Groupe" class="form-control" />
-                <span asp-validation-for="Groupe" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Affaire" class="control-label"></label>
-                <input asp-for="Affaire" class="form-control" />
-                <span asp-validation-for="Affaire" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="KPL" class="control-label"></label>
-                <input asp-for="KPL" class="form-control" />
-                <span asp-validation-for="KPL" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Recommandations" class="control-label"></label>
-                <textarea asp-for="Recommandations" class="form-control"></textarea>
-                <span asp-validation-for="Recommandations" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Limites" class="control-label"></label>
-                <textarea asp-for="Limites" class="form-control"></textarea>
-                <span asp-validation-for="Limites" class="text-danger"></span>
-            </div>
+    <main class="content">
+        <section class="form-section">
+            <h2 class="section-title"><i class="fas fa-folder-plus"></i> Informations Générales</h2>
+            <form id="pac-form" asp-action="Create" class="form-grid">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label class="control-label">Indicateurs de Performance (KPIs)</label>
-                <table class="table table-bordered" id="kpi-table">
-                    <thead>
-                        <tr>
-                            <th>KPI</th>
-                            <th>Valeur</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="kpi-table-body">
-                        <tr>
-                            <td><input type="text" class="form-control kpi-name" /></td>
-                            <td><input type="text" class="form-control kpi-value" /></td>
-                            <td><button type="button" class="btn btn-primary add-kpi-row">Ajouter</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Titre">Titre:</label>
+                    <input asp-for="Titre" class="form-input" placeholder="Entrez le titre">
+                    <span asp-validation-for="Titre" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Créer" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+                <div class="form-group">
+                    <label asp-for="Description">Description:</label>
+                    <textarea asp-for="Description" class="form-textarea" placeholder="Ajoutez une description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
 
-<div>
-    <a asp-action="Index">Retour à la liste</a>
+                <div class="form-group">
+                    <label asp-for="DateDebut">Date de début:</label>
+                    <input asp-for="DateDebut" type="date" class="form-input" />
+                    <span asp-validation-for="DateDebut" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DateFin">Date de fin:</label>
+                    <input asp-for="DateFin" type="date" class="form-input" />
+                    <span asp-validation-for="DateFin" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Responsable">Responsable:</label>
+                    <input asp-for="Responsable" class="form-input" placeholder="Entrez le responsable">
+                    <span asp-validation-for="Responsable" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Statut">Statut:</label>
+                    <input asp-for="Statut" class="form-input" placeholder="Entrez le statut">
+                    <span asp-validation-for="Statut" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Groupe">Groupe:</label>
+                    <input asp-for="Groupe" class="form-input" placeholder="Entrez le groupe">
+                    <span asp-validation-for="Groupe" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Affaire">Affaire:</label>
+                    <input asp-for="Affaire" class="form-input" placeholder="Entrez l'affaire">
+                    <span asp-validation-for="Affaire" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="KPL">KPI:</label>
+                    <input asp-for="KPL" class="form-input" placeholder="Indiquez le KPI">
+                    <span asp-validation-for="KPL" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Recommandations">Recommandations:</label>
+                    <textarea asp-for="Recommandations" class="form-textarea" placeholder="Ajoutez vos recommandations"></textarea>
+                    <span asp-validation-for="Recommandations" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Limites">Limites:</label>
+                    <textarea asp-for="Limites" class="form-textarea" placeholder="Spécifiez les limites"></textarea>
+                    <span asp-validation-for="Limites" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" id="add-action" class="form-button"><i class="fas fa-plus-circle"></i> Ajouter une action</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const addKpiRowButtons = document.querySelectorAll('.add-kpi-row');
-            const kpiTableBody = document.getElementById('kpi-table-body');
-            const pacForm = document.getElementById('pac-form');
-
-            addKpiRowButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `
-                        <td><input type="text" class="form-control kpi-name" /></td>
-                        <td><input type="text" class="form-control kpi-value" /></td>
-                        <td><button type="button" class="btn btn-danger remove-kpi-row">Supprimer</button></td>
-                    `;
-                    kpiTableBody.appendChild(newRow);
-
-                    const removeButton = newRow.querySelector('.remove-kpi-row');
-                    removeButton.addEventListener('click', function () {
-                        this.parentNode.parentNode.remove();
-                    });
-                });
-            });
-
-            pacForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                const kpis = [];
-                const kpiNameInputs = document.querySelectorAll('.kpi-name');
-                const kpiValueInputs = document.querySelectorAll('.kpi-value');
-
-                for (let i = 0; i < kpiNameInputs.length; i++) {
-                    const kpiName = kpiNameInputs[i].value;
-                    const kpiValue = kpiValueInputs[i].value;
-                    if(kpiName && kpiValue){ // only add if both not empty
-                       kpis.push({ kPI: kpiName, valeur: kpiValue });
-                    }
-                }
-
-                const kpiJson = JSON.stringify(kpis);
-
-                const kpiInput = document.createElement('input');
-                kpiInput.type = 'hidden';
-                kpiInput.name = 'kpiData';
-                kpiInput.value = kpiJson;
-                this.appendChild(kpiInput);
-
-                this.submit();
-            });
-        });
-    </script>
+    <script src="~/js/pac.js"></script>
+    <link rel="stylesheet" href="~/css/pac.css" />
 }

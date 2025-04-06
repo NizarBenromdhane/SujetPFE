@@ -1,0 +1,25 @@
+﻿@model SujetPFE.Domain.Entities.RDV
+
+<h2>Modifier un RDV</h2>
+
+<form asp-action="ModifierRDV" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Client"></label>
+        <input asp-for="Client" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Commentaires"></label>
+        <input asp-for="Commentaires" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="NombreVisites"></label>
+        <input asp-for="NombreVisites" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+</form>

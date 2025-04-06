@@ -1,0 +1,227 @@
+﻿/* Variables CSS */
+:root {
+    --primary-color: #007bff;
+    --primary-color-dark: #0056b3;
+    --success-color: #28a745;
+    --text-color: #333;
+    --text-color-light: #555;
+    --bg-color: #f4f7f9;
+    --bg-color-light: #f9f9f9;
+    --border-color: #ddd;
+    --font-size-base: 16px;
+    --font-size-large: 24px;
+    --font-size-xlarge: 28px;
+    --border-radius: 5px;
+    --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles généraux */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center; /* Centrer le texte dans l'en-tête */
+    padding: 20px 0;
+}
+
+.title {
+    margin: 0;
+    font-size: var(--font-size-xlarge);
+    text-align: center; /* Centrer le texte du titre */
+}
+
+.content {
+    padding: 20px;
+}
+
+/* Sections */
+.form-section,
+.kpi-section,
+.additional-sections {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+}
+
+.section-title {
+    color: var(--primary-color);
+    font-size: var(--font-size-large);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+    .section-title i {
+        margin-right: 10px;
+    }
+
+/* Formulaire */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        color: var(--text-color-light);
+        margin-bottom: 5px;
+    }
+
+.form-input,
+.form-textarea {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: border-color 0.3s;
+}
+
+    .form-input:focus,
+    .form-textarea:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .form-button:hover {
+        background-color: var(--primary-color-dark);
+    }
+
+/* Tableau KPI */
+.kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+    .kpi-table th,
+    .kpi-table td {
+        border: 1px solid var(--border-color);
+        padding: 8px;
+        text-align: center;
+    }
+
+    .kpi-table th {
+        background-color: #f0f0f0;
+    }
+
+/* KPI Header et Formulaire */
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#add-kpi-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--bg-color-light);
+    border-radius: var(--border-radius);
+}
+
+    #add-kpi-form input {
+        padding: 10px;
+        margin-right: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        width: calc(50% - 10px);
+    }
+
+#save-kpi-btn {
+    background-color: var(--success-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+/* Boutons d'action du tableau KPI */
+.kpi-table .action-btn {
+    background-color: transparent;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: var(--primary-color);
+}
+
+    .kpi-table .action-btn:hover {
+        color: var(--primary-color-dark);
+    }
+
+/* Sections supplémentaires */
+.additional-sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.additional-section {
+    background-color: var(--bg-color-light);
+    padding: 15px;
+    border-radius: var(--border-radius);
+}
+
+    .additional-section h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+/* Icônes */
+.form-button i,
+.kpi-table .action-btn i {
+    margin-right: 5px;
+}
+
+/* Réactivité */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #add-kpi-form input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
