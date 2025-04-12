@@ -1,5 +1,7 @@
-﻿@* @{
-    ViewData["Title"] = "Saisie Crédit";
+﻿@model List<SujetPFE.Domain.Entities.CreditObjectif>
+
+@{
+    ViewData["Title"] = "Saisie Crédit Multiple";
     var periodes = new List<SelectListItem>
     {
         new SelectListItem { Value = "2025-03", Text = "Mars 2025" },
@@ -13,13 +15,12 @@
         new SelectListItem { Value = "Consommation", Text = "Crédit à la Consommation" },
         new SelectListItem { Value = "Entreprise", Text = "Crédit aux Entreprises" }
     };
-    var employes = ViewBag.Employes as List<SelectListItem>;
-    var groupes = ViewBag.Groupes as List<SelectListItem>;
+    var employesSelectList = ViewBag.Employes as List<SelectListItem>;
+    var groupesSelectList = ViewBag.Groupes as List<SelectListItem>;
 }
 
-<h1>Saisie Objectifs Solde Crédits</h1>
-
 <div class="saisie-credit-container biat-theme">
+    <h1>Saisie Multiple Objectifs Solde Crédits</h1>
     <h2>Saisie des Objectifs de Crédit</h2>
 
     @if (ViewBag.Message != null)
@@ -30,63 +31,31 @@
     }
 
     <form method="post">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="periode">Période :</label>
-                <select asp-for="Periode" asp-items="periodes" class="form-control" required>
-                    <option value="">-- Sélectionner une période --</option>
-                </select>
-                <span asp-validation-for="Periode" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="typeCredit">Type de Crédit :</label>
-                <select asp-for="TypeCredit" asp-items="typesCredit" class="form-control" required>
-                    <option value="">-- Sélectionner un type de crédit --</option>
-                </select>
-                <span asp-validation-for="TypeCredit" class="text-danger"></span>
-            </div>
-        </div>
+        <table class="objectifs-table">
+            <thead>
+                <tr class="header-row">
+                    <th style="width: 15%;">Période</th>
+                    <th style="width: 20%;">Type de Crédit</th>
+                    <th style="width: 15%;">Montant Objectif (TND)</th>
+                    <th style="width: 25%;">Employé (Optionnel)</th>
+                    <th style="width: 15%;">Groupe (Optionnel)</th>
+                    <th style="width: 10%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="objectifs-body">
+            </tbody>
+        </table>
 
-        <div class="form-group">
-            <label for="montantObjectif">Montant Objectif :</label>
-            <div class="input-group">
-                <input asp-for="MontantObjectif" type="number" class="form-control" required />
-                <div class="input-group-append">
-                    <span class="input-group-text">TND</span>
-                </div>
-            </div>
-            <span asp-validation-for="MontantObjectif" class="text-danger"></span>
-        </div>
+        <button type="button" id="ajouter-objectif" class="btn btn-secondary mt-2">Ajouter un Objectif</button>
 
-        @if (employes != null && employes.Any())
-        {
-            <div class="form-group">
-                <label for="EmployeId">Employé (Optionnel) :</label>
-                <select asp-for="EmployeId" asp-items="employes" class="form-control">
-                    <option value="">-- Sélectionner un employé --</option>
-                </select>
-                <span asp-validation-for="EmployeId" class="text-danger"></span>
-            </div>
-        }
-
-        @if (groupes != null && groupes.Any())
-        {
-            <div class="form-group">
-                <label for="GroupeId">Groupe (Optionnel) :</label>
-                <select asp-for="GroupeId" asp-items="groupes" class="form-control">
-                    <option value="">-- Sélectionner un groupe --</option>
-                </select>
-                <span asp-validation-for="GroupeId" class="text-danger"></span>
-            </div>
-        }
-
-        <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary btn-lg">Enregistrer l'Objectif</button>
+        <div class="form-group text-center mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">Enregistrer les Objectifs</button>
         </div>
     </form>
 </div>
 
 <style>
+    /* Styles CSS ajustés pour une meilleure visibilité */
     .biat-theme {
         --primary-color: #0047AB;
         --secondary-color: #F0F0F0;
@@ -96,127 +65,215 @@
     }
 
     .saisie-credit-container {
-        padding: 40px;
+        padding: 20px;
         background-color: var(--secondary-color);
-        border-radius: 12px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        max-width: 700px;
-        margin: 30px auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-        .saisie-credit-container h2 {
+        .saisie-credit-container h1 {
             color: var(--primary-color);
-            margin-bottom: 35px;
-            font-size: 2.5em;
-            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 2em;
             text-align: center;
         }
 
-    .form-row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -15px;
-    }
-
-    .form-group {
-        margin-bottom: 25px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
+        .saisie-credit-container h2 {
             color: #555;
-            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: normal;
         }
 
-    .form-control {
+    .objectifs-table {
         width: 100%;
-        padding: 15px;
-        border: 1px solid #ccc;
+        border-collapse: collapse;
+        margin-top: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         border-radius: 8px;
-        box-sizing: border-box;
-        font-size: 1em;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        table-layout: fixed; /* Ajouté pour un contrôle précis des largeurs */
     }
 
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0, 71, 171, 0.25);
+        .objectifs-table .header-row th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
         }
 
-    .input-group {
-        display: flex;
-        align-items: stretch;
-    }
-
-        .input-group input.form-control {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+        .objectifs-table td {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9em;
+            vertical-align: middle; /* Alignement vertical au centre */
         }
 
-    .input-group-append {
-        margin-left: -1px;
-    }
+        .objectifs-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    .input-group-text {
-        background-color: #e9ecef;
+    /* Styles spécifiques pour les champs de formulaire */
+    .form-control {
+        padding: 6px;
         border: 1px solid #ccc;
-        padding: 15px;
-        border-radius: 0 8px 8px 0;
-        font-size: 1em;
-        color: #555;
+        border-radius: 4px;
+        font-size: 0.9em;
+        width: 100%; /* Prend toute la largeur disponible */
+        box-sizing: border-box;
+        height: 34px; /* Hauteur fixe pour uniformité */
     }
+
+    select.form-control {
+        height: 34px; /* Hauteur spécifique pour les select */
+        padding: 5px;
+    }
+
+    input[type="number"].form-control {
+        padding: 6px 10px;
+    }
+
+    /* Boutons */
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
 
     .btn-primary {
         background-color: var(--primary-color);
         color: white;
-        padding: 18px 35px;
+        padding: 10px 20px;
         border: none;
-        border-radius: 10px;
+        border-radius: 6px;
         cursor: pointer;
-        font-size: 1.2em;
+        font-size: 1em;
         font-weight: bold;
         transition: background-color 0.3s ease;
     }
 
         .btn-primary:hover {
-            background-color: darken(var(--primary-color), 10%);
+            background-color: #003d82;
         }
 
-    .text-danger {
-        color: #dc3545;
-        font-size: 0.9em;
-        margin-top: 5px;
+    .actions-column {
+        text-align: center;
     }
 
-    .alert {
-        margin-bottom: 30px;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 1em;
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8em;
+        transition: background-color 0.3s ease;
     }
 
-    .alert-success {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    /* Ajustements spécifiques pour les colonnes */
+    .objectifs-table th:nth-child(1),
+    .objectifs-table td:nth-child(1) {
+        width: 15%; /* Période */
     }
 
-    .alert-danger {
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        color: #721c24;
+    .objectifs-table th:nth-child(2),
+    .objectifs-table td:nth-child(2) {
+        width: 20%; /* Type de Crédit */
     }
 
-    .form-group.col-md-6 {
-        padding-right: 15px;
-        padding-left: 15px;
-        flex: 0 0 50%;
-        max-width: 50%;
+    .objectifs-table th:nth-child(3),
+    .objectifs-table td:nth-child(3) {
+        width: 15%; /* Montant Objectif */
     }
 
-    .form-group.text-center {
-        margin-top: 30px;
+    .objectifs-table th:nth-child(4),
+    .objectifs-table td:nth-child(4) {
+        width: 25%; /* Employé */
     }
-</style> *@
+
+    .objectifs-table th:nth-child(5),
+    .objectifs-table td:nth-child(5) {
+        width: 15%; /* Groupe */
+    }
+
+    .objectifs-table th:nth-child(6),
+    .objectifs-table td:nth-child(6) {
+        width: 10%; /* Actions */
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function addCreditObjectifRow() {
+                var newRow = $('<tr>');
+                var periodSelect = $('<select>', { class: 'form-control', name: '[].Periode' });
+        @foreach (var periode in periodes)
+        {
+            @:periodSelect.append($('<option>', { value: '@periode.Value', text: '@periode.Text' }));
+        }
+                var typeCreditSelect = $('<select>', { class: 'form-control', name: '[].TypeCredit' });
+        @foreach (var type in typesCredit)
+        {
+            @:typeCreditSelect.append($('<option>', { value: '@type.Value', text: '@type.Text' }));
+        }
+                var employeSelect = $('<select>', { class: 'form-control', name: '[].EmployeId' });
+                employeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
+        @if (employesSelectList != null)
+        {
+            foreach (var employe in employesSelectList)
+            {
+                @:employeSelect.append($('<option>', { value: '@employe.Value', text: '@employe.Text' }));
+            }
+        }
+                var groupeSelect = $('<select>', { class: 'form-control', name: '[].GroupeId' });
+                groupeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
+        @if (groupesSelectList != null)
+        {
+            foreach (var groupe in groupesSelectList)
+            {
+                @:groupeSelect.append($('<option>', { value: '@groupe.Value', text: '@groupe.Text' }));
+            }
+        }
+                var montantInput = $('<input>', { type: 'number', class: 'form-control', name: '[].MontantObjectif', required: true });
+                var actions = $('<td class="actions-column">').append($('<button>', { type: 'button', class: 'btn btn-danger btn-sm', text: 'Supprimer' }).on('click', function () {
+                    $(this).closest('tr').remove();
+                }));
+
+                newRow.append($('<td>').append(periodSelect));
+                newRow.append($('<td>').append(typeCreditSelect));
+                newRow.append($('<td>').append(montantInput));
+                newRow.append($('<td>').append(employeSelect));
+                newRow.append($('<td>').append(groupeSelect));
+                newRow.append(actions);
+
+                $('#objectifs-body').append(newRow);
+            }
+
+            $('#ajouter-objectif').on('click', addCreditObjectifRow);
+
+            // Ajouter une première ligne au chargement de la page
+            addCreditObjectifRow();
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,7 +1,8 @@
-﻿@{
+﻿@using SujetPFE.Domain.Entities // Make SURE this namespace matches where your Groupe.cs is located
+@{
     ViewData["Title"] = "Saisie Dépôt";
-    var clients = ViewBag.Clients as List<string>;
-    var employes = ViewBag.Commerciaux as List<string>; // Supposant que vous ayez renommé ViewBag.Commerciaux en ViewBag.Employes dans le contrôleur
+    var employesSelectList = ViewBag.Employes as List<SelectListItem>;
+    var groupesList = ViewBag.Groupes as List<Groupe>; // Get the list of groups
 }
 
 <div class="saisie-depot-container biat-theme">
@@ -17,13 +18,13 @@
 
     <div class="commercial-selector-center">
         <label for="commercial">Employé :</label>
-        <select id="commercial">
+        <select id="commercial" class="form-control">
             <option value="">-- Sélectionner un employé --</option>
-            @if (employes != null && employes.Any())
+            @if (employesSelectList != null && employesSelectList.Any())
             {
-                foreach (var employeName in employes)
+                foreach (var employe in employesSelectList)
                 {
-                    <option value="@employeName">@employeName</option>
+                    <option value="@employe.Value">@employe.Text</option>
                 }
             }
         </select>
@@ -57,22 +58,22 @@
             </tr>
         </thead>
         <tbody>
-            @if (clients != null && clients.Any())
+            @if (groupesList != null && groupesList.Any())
             {
-                foreach (var clientName in clients)
+                foreach (var groupe in groupesList)
                 {
                     <tr>
-                        <td>@clientName</td>
+                        <td>@groupe.Nom</td>
                         <td>TND</td>
-                        <td>1 234</td>
-                        <td>10 567</td>
-                        <td>11 801</td>
-                        <td>11 801</td>
+                        <td><input type="text" value="1 234" /></td>
+                        <td><input type="text" value="10 567" /></td>
+                        <td><span class="readonly-value">11 801</span></td>
+                        <td><input type="text" value="11 801" /></td>
                         <td>TND</td>
-                        <td>1 357</td>
-                        <td>11 624</td>
-                        <td>12 981</td>
-                        <td>12 981</td>
+                        <td><input type="text" value="1 357" /></td>
+                        <td><input type="text" value="11 624" /></td>
+                        <td><span class="readonly-value">12 981</span></td>
+                        <td><input type="text" value="12 981" /></td>
                         <td>TND</td>
                         <td><input type="text" value="0" /></td>
                         <td><input type="text" value="0" /></td>
@@ -80,12 +81,11 @@
                         <td><input type="text" value="0" /></td>
                         <td class="actions-column"><button class="save-button">Sauvegarder</button></td>
                     </tr>
-                    // Ajoutez d'autres lignes de données factices ici si nécessaire
                 }
             }
             else
             {
-                <tr><td colspan="17">Aucun client trouvé.</td></tr>
+                <tr><td colspan="17">Aucun groupe trouvé.</td></tr>
             }
         </tbody>
     </table>

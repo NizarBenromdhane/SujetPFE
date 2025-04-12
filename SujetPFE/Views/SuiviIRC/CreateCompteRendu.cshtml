@@ -1,0 +1,55 @@
+﻿@model SujetPFE.Domain.Entities.CompteRendu
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Créer un compte rendu" : "Modifier le compte rendu";
+    Layout = "_Layout";
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title">
+            <i class="fas fa-file-alt"></i> @ViewData["Title"]
+        </h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="@(Model.Id == 0 ? "CreateCompteRendu" : "EditCompteRendu")">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RDVId" />
+
+            @if (Model.Id != 0)
+            {
+                <input type="hidden" asp-for="DateCreation" />
+            }
+
+            <div class="form-group">
+                <label asp-for="Contenu" class="control-label"></label>
+                <textarea asp-for="Contenu" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="Contenu" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-right">
+                <a href="@Url.Action("Details", new { id = Model.RDVId })" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#Contenu',
+            plugins: 'lists link image table code help wordcount',
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+            height: 500
+        });
+    </script>
+}

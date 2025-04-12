@@ -1,23 +1,311 @@
 ﻿@model SujetPFE.Domain.Entities.RDV
+@{
+    ViewData["Title"] = "Ajouter un Rendez-vous";
+}
 
-<h2>Ajouter un RDV</h2>
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "SuiviIRC")" class="text-decoration-none">Suivi IRC</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ajouter RDV</li>
+        </ol>
+    </nav>
 
-<form asp-action="AjouterRDV" method="post">
-    <div class="form-group">
-        <label asp-for="Date"></label>
-        <input asp-for="Date" class="form-control" />
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title text-primary fw-bold mb-0">
+            <i class="bi bi-calendar-plus me-2"></i> Ajouter un Rendez-vous
+        </h1>
+        <a href="@Url.Action("Index", "SuiviIRC")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i> Retour à la liste
+        </a>
     </div>
-    <div class="form-group">
-        <label asp-for="Client"></label>
-        <input asp-for="Client" class="form-control" />
+
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white py-3">
+            <h2 class="card-title mb-0 fs-4 fw-semibold">
+                <i class="bi bi-clipboard2-plus me-2"></i> Nouveau Rendez-vous
+            </h2>
+        </div>
+        <div class="card-body p-4">
+            <form id="addRdvForm" asp-action="AjouterRDV" method="post" class="needs-validation" novalidate>
+                <fieldset class="section section-general mb-4 border p-3 rounded">
+                    <legend class="fw-semibold fs-5 px-3 text-primary">Informations Générales</legend>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="ChargeAffaires" class="form-select" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="Chargé 1">Chargé 1</option>
+                                    <option value="Chargé 2">Chargé 2</option>
+                                    <option value="Chargé 3">Chargé 3</option>
+                                </select>
+                                <label asp-for="ChargeAffaires" class="form-label">Chargé d'affaires</label>
+                                <span asp-validation-for="ChargeAffaires" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="Groupe" class="form-select" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="Groupe 1">Groupe 1</option>
+                                    <option value="Groupe 2">Groupe 2</option>
+                                    <option value="Groupe 3">Groupe 3</option>
+                                </select>
+                                <label asp-for="Groupe" class="form-label">Groupe</label>
+                                <span asp-validation-for="Groupe" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="Affaire" class="form-select" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="Affaire 1">Affaire 1</option>
+                                    <option value="Affaire 2">Affaire 2</option>
+                                    <option value="Affaire 3">Affaire 3</option>
+                                </select>
+                                <label asp-for="Affaire" class="form-label">Affaire</label>
+                                <span asp-validation-for="Affaire" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="datetime-local" asp-for="Date" class="form-control" required>
+                                <label asp-for="Date" class="form-label">Date et Heure</label>
+                                <span asp-validation-for="Date" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="section section-details mb-4 border p-3 rounded">
+                    <legend class="fw-semibold fs-5 px-3 text-primary">Détails du RDV</legend>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold mb-2">RDV à la demande:</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="RdvDemande" id="client" value="Client" autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="client">Client</label>
+
+                                    <input type="radio" class="btn-check" name="RdvDemande" id="biat" value="BIAT" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="biat">BIAT</label>
+                                </div>
+                                <div class="form-floating mt-2">
+                                    <input type="text" id="rdvDetails" name="RdvDetails" class="form-control" placeholder="Détails (Client/BIAT)" style="display: none;">
+                                    <label for="rdvDetails">Détails (Client/BIAT)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="PresentsBiat" class="form-select">
+                                    <option value="">Sélectionner...</option>
+                                    <option value="DG">DG</option>
+                                    <option value="DEP">DEP</option>
+                                    <option value="POLE">POLE</option>
+                                    <option value="DGGE">DGGE</option>
+                                    <option value="CA">CA</option>
+                                    <option value="Analyste">Analyste</option>
+                                    <option value="Expert Métier">Expert Métier</option>
+                                </select>
+                                <label asp-for="PresentsBiat" class="form-label">Présents chez BIAT</label>
+                                <span asp-validation-for="PresentsBiat" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold mb-2">Lieu:</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="Lieu" id="chezClient" value="Chez Client" autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="chezClient">Chez Client</label>
+
+                                    <input type="radio" class="btn-check" name="Lieu" id="chezBiat" value="Chez BIAT" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="chezBiat">Chez BIAT</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="PresentsClient" class="form-select" onchange="toggleAutresInput()">
+                                    <option value="">Sélectionner...</option>
+                                    <option value="Actionnaire">Actionnaire</option>
+                                    <option value="DG">DG</option>
+                                    <option value="DAF">DAF</option>
+                                    <option value="Autres">Autres</option>
+                                </select>
+                                <label asp-for="PresentsClient" class="form-label">Présents chez Client</label>
+                                <span asp-validation-for="PresentsClient" class="text-danger small"></span>
+                                <div class="form-floating mt-2">
+                                    <input type="text" id="autresClientInput" name="AutresClientInput" class="form-control" style="display: none;" placeholder="Précisez...">
+                                    <label for="autresClientInput">Précisez...</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold mb-2">Objet de la visite:</label>
+                                <div class="table-responsive border rounded">
+                                    <table id="objetVisiteTable" class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="py-2">Orientation</th>
+                                                <th class="py-2">Action</th>
+                                                <th class="py-2">Objet</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (int i = 0; i < 3; i++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-floating">
+                                                            <select name="ObjetsVisite[@i].Orientation" class="form-select">
+                                                                <option value="">Sélectionner...</option>
+                                                                <option value="Axe 1">Axe 1</option>
+                                                                <option value="Axe 2">Axe 2</option>
+                                                                <option value="Axe 3">Axe 3</option>
+                                                            </select>
+                                                            <label>Orientation</label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-floating">
+                                                            <select name="ObjetsVisite[@i].Action" class="form-select">
+                                                                <option value="">Sélectionner...</option>
+                                                                <option value="PAC1">PAC1</option>
+                                                                <option value="PAC2">PAC2</option>
+                                                                <option value="PAC3">PAC3</option>
+                                                            </select>
+                                                            <label>Action</label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-floating">
+                                                            <input type="text" name="ObjetsVisite[@i].Objet" class="form-control" placeholder="Détails">
+                                                            <label>Objet</label>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea asp-for="Commentaires" class="form-control" style="height: 120px" placeholder="Informations supplémentaires"></textarea>
+                                <label asp-for="Commentaires" class="form-label">Informations supplémentaires</label>
+                                <span asp-validation-for="Commentaires" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="reset" class="btn btn-outline-danger me-2 px-4">
+                        <i class="bi bi-x-circle me-2"></i> Annuler
+                    </button>
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle me-2"></i> Enregistrer le RDV
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Commentaires"></label>
-        <input asp-for="Commentaires" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="NombreVisites"></label>
-        <input asp-for="NombreVisites" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
-</form>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .page-title {
+            /* Styled with Bootstrap classes */
+        }
+
+        .breadcrumb-item a {
+            color: var(--bs-primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--bs-secondary);
+        }
+
+        .card-header {
+            /* Styled with Bootstrap classes */
+        }
+
+        .section legend {
+            /* Styled with Bootstrap classes */
+        }
+
+        .form-floating > label {
+            color: var(--bs-gray-600);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--bs-primary);
+            color: var(--bs-white);
+            border-color: var(--bs-primary);
+        }
+
+        
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // Fonction pour afficher/masquer le champ de détails
+        function toggleAutresInput() {
+            const select = document.getElementById('PresentsClient');
+            const input = document.getElementById('autresClientInput');
+            input.style.display = select.value === 'Autres' ? 'block' : 'none';
+        }
+
+        // Gestion des boutons radio pour les détails
+        document.querySelectorAll('input[name="RdvDemande"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('rdvDetails').style.display =
+                    (this.value === 'Client' || this.value === 'BIAT') ? 'block' : 'none';
+            });
+        });
+
+        // Bootstrap Form Validation
+        (function() {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleAutresInput();
+            const firstRadio = document.querySelector('input[name="RdvDemande"]:checked');
+            if (firstRadio) {
+                firstRadio.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+}

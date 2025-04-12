@@ -1,25 +1,112 @@
-﻿@{
+﻿@* Views/Objectivations/Dashboard.cshtml *@
+@{
     ViewData["Title"] = "Dashboard Objectifs";
 }
 
-<h1>Tableau de Bord des Objectifs</h1>
+<div class="dashboard-container biat-theme">
+    <h1>Tableau de Bord des Objectifs</h1>
 
-<div class="dashboard-selection">
-    <h2>Choisissez le type de tableau de bord que vous souhaitez afficher :</h2>
-    <button onclick="location.href='@Url.Action("CreditDashboard", "Objectivations")'">Dashboard Crédit</button>
-    <button onclick="location.href='@Url.Action("DepotDashboard", "Objectivations")'">Dashboard Dépôt</button>
+    <div class="dashboard-selection">
+        <h2>Choisissez le type de tableau de bord que vous souhaitez afficher :</h2>
+        <div class="dashboard-buttons">
+            <button onclick="location.href='@Url.Action("CreditDashboard", "Objectivations")'" class="btn btn-primary btn-lg dashboard-button">
+                <i class="bi bi-credit-card me-2"></i> Dashboard Crédit
+            </button>
+            <button onclick="location.href='@Url.Action("DepotDashboard", "Objectivations")'" class="btn btn-success btn-lg dashboard-button">
+                <i class="bi bi-bank me-2"></i> Dashboard Dépôt
+            </button>
+        </div>
+    </div>
 </div>
 
 <style>
-    /* Vous pouvez ajouter ici des styles CSS spécifiques à cette vue si nécessaire */
-    .dashboard-selection {
-        padding: 20px;
+    /* Styles généraux pour le conteneur du dashboard */
+    .dashboard-container {
+        padding: 30px;
+        margin: 20px auto;
+        max-width: 800px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
     }
 
-        .dashboard-selection button {
-            padding: 10px 20px;
-            margin-right: 15px;
-            font-size: 1.1em;
-            cursor: pointer;
+        .dashboard-container h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.5em;
         }
+
+    /* Styles pour la section de sélection du dashboard */
+    .dashboard-selection {
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+        .dashboard-selection h2 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+    /* Styles pour les boutons de sélection du dashboard */
+    .dashboard-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+        .dashboard-buttons button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+        }
+
+            .dashboard-buttons button:hover {
+                transform: scale(1.05);
+            }
+
+    /* Thème BIAT (à adapter selon vos couleurs) */
+    .biat-theme {
+        --primary-color: #0047AB; /* Bleu BIAT */
+        --success-color: #28a745; /* Vert succès */
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: darken(var(--primary-color), 10%);
+            border-color: darken(var(--primary-color), 10%);
+        }
+
+    .btn-success {
+        background-color: var(--success-color);
+        border-color: var(--success-color);
+        color: white;
+    }
+
+        .btn-success:hover {
+            background-color: darken(var(--success-color), 10%);
+            border-color: darken(var(--success-color), 10%);
+        }
+
+    /* Style pour les icônes (nécessite l'inclusion de Bootstrap Icons ou une librairie d'icônes similaire) */
+    .bi {
+        font-size: 1.2em;
+    }
 </style>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

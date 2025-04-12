@@ -1,15 +1,125 @@
 ﻿@model SujetPFE.Domain.Entities.CompteRendu
-
-<h2>Compte Rendu</h2>
-
-@if (Model == null)
-{
-    <p>Aucun compte rendu trouvé pour ce RDV.</p>
+@{
+    ViewData["Title"] = "Compte Rendu";
+    Layout = "_Layout";
 }
-else
-{
-    <div>
-        <p><strong>Date de création :</strong> @Model.DateCreation</p>
-        <p><strong>Contenu :</strong> @Model.Contenu</p>
-    </div>
+
+@section Styles {
+    <style>
+        .compte-rendu-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .compte-rendu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .compte-rendu-title {
+            color: #0047AB;
+            font-weight: 600;
+        }
+
+        .compte-rendu-content {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 200px;
+            white-space: pre-line;
+        }
+
+        .compte-rendu-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .no-compte-rendu {
+            text-align: center;
+            padding: 40px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+}
+
+<div class="compte-rendu-container">
+    @if (Model == null)
+    {
+        <div class="no-compte-rendu">
+            <i class="fas fa-file-alt fa-3x mb-3" style="color: #6c757d;"></i>
+            <h4>Aucun compte rendu trouvé pour ce RDV</h4>
+            <p class="text-muted">Vous pouvez créer un nouveau compte rendu en cliquant sur le bouton ci-dessous</p>
+            <a href="@Url.Action("CreateCompteRendu", "SuiviIRC", new { rdvId = ViewBag.RDVId })" class="btn btn-primary mt-3">
+                <i class="fas fa-plus"></i> Créer un compte rendu
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="compte-rendu-header">
+            <div>
+                <h3 class="compte-rendu-title">
+                    <i class="fas fa-file-alt"></i> Compte Rendu
+                </h3>
+                <p class="text-muted">
+                    <i class="far fa-calendar-alt"></i> Créé le @Model.DateCreation.ToString("dd/MM/yyyy à HH:mm")
+                </p>
+            </div>
+            <div class="btn-group">
+                <a href="@Url.Action("EditCompteRendu", "SuiviIRC", new { id = Model.Id })" class="btn btn-outline-primary">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <button class="btn btn-outline-danger" id="delete-compte-rendu" data-id="@Model.Id">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+
+        <div class="compte-rendu-content">
+            @Model.Contenu
+        </div>
+
+        <div class="compte-rendu-actions">
+            <a href="@Url.Action("Details", "SuiviIRC", new { id = ViewBag.RDVId })" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour au RDV
+            </a>
+            <a href="@Url.Action("PrintCompteRendu", "SuiviIRC", new { id = Model.Id })" class="btn btn-outline-info ml-auto">
+                <i class="fas fa-print"></i> Imprimer
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#delete-compte-rendu').click(function() {
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce compte rendu ?')) {
+                    const id = $(this).data('id');
+                    $.ajax({
+                        url: '@Url.Action("DeleteCompteRendu", "SuiviIRC")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function() {
+                            window.location.href = '@Url.Action("Details", "SuiviIRC", new { id = ViewBag.RDVId })';
+                        },
+                        error: function() {
+                            alert('Une erreur est survenue lors de la suppression');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 }

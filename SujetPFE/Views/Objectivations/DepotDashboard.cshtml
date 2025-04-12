@@ -1,0 +1,337 @@
+﻿@using SujetPFE.Domain.Entities
+@{
+    ViewData["Title"] = "Dashboard Dépôt";
+}
+
+<div class="dashboard-container biat-theme">
+    <!-- Fil d'Ariane -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Objectivations")">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Objectifs Dépôt</li>
+        </ol>
+    </nav>
+
+    <!-- En-tête avec bouton d'action -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="dashboard-title">
+            <i class="bi bi-piggy-bank me-2"></i> Tableau de Bord des Objectifs Dépôt
+        </h1>
+        <div class="dashboard-actions">
+            <a href="@Url.Action("SaisieDepot", "Objectivations")" class="btn btn-success">
+                <i class="bi bi-plus-circle me-2"></i> Nouvel Objectif
+            </a>
+        </div>
+    </div>
+
+    <!-- Cartes de synthèse -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card summary-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="summary-icon bg-success bg-opacity-10">
+                            <i class="bi bi-bullseye text-success"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="summary-label mb-0">Total Objectifs</h5>
+                            <h3 class="summary-value mb-0">@ViewBag.TotalDepotObjectives</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card summary-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="summary-icon bg-primary bg-opacity-10">
+                            <i class="bi bi-cash-stack text-primary"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="summary-label mb-0">Valeur Totale</h5>
+                            <h3 class="summary-value mb-0">@ViewBag.TotalDepotValue.ToString("N2") TND</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card summary-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="summary-icon bg-info bg-opacity-10">
+                            <i class="bi bi-graph-up text-info"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="summary-label mb-0">Valeur Moyenne</h5>
+                            <h3 class="summary-value mb-0">@ViewBag.AverageDepotValue.ToString("N2") TND</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphique d'évolution -->
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h2 class="card-title mb-0">
+                <i class="bi bi-bar-chart-line me-2"></i> Évolution des Dépôts
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="depotTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des objectifs -->
+    <div class="card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h2 class="card-title mb-0">
+                <i class="bi bi-table me-2"></i> Objectifs de Dépôt
+            </h2>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-funnel me-1"></i>Filtrer
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <li><a class="dropdown-item" href="#">En cours</a></li>
+                    <li><a class="dropdown-item" href="#">Terminés</a></li>
+                    <li><a class="dropdown-item" href="#">À venir</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Tous</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.DepotData != null && (ViewBag.DepotData as List<ObjectifCreditDepot>).Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-tag me-1"></i> Type</th>
+                                <th class="text-end"><i class="bi bi-currency-exchange me-1"></i> Montant</th>
+                                <th><i class="bi bi-calendar me-1"></i> Période</th>
+                                <th><i class="bi bi-calendar-check me-1"></i> Statut</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var objectif in ViewBag.DepotData as List<ObjectifCreditDepot>)
+                            {
+                                var statusClass = "";
+                                var statusText = "";
+                                var today = DateTime.Today;
+
+                                if (today < objectif.DateDebut)
+                                {
+                                    statusClass = "bg-info";
+                                    statusText = "À venir";
+                                }
+                                else if (today > objectif.DateFin)
+                                {
+                                    statusClass = "bg-secondary";
+                                    statusText = "Terminé";
+                                }
+                                else
+                                {
+                                    statusClass = "bg-success";
+                                    statusText = "En cours";
+                                }
+
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">@objectif.TypeObjectif</span>
+                                    </td>
+                                    <td class="text-end fw-bold">@objectif.Montant.ToString("N2") TND</td>
+                                    <td>
+                                        @objectif.DateDebut.ToShortDateString() - @objectif.DateFin.ToShortDateString()
+                                    </td>
+                                    <td>
+                                        <span class="badge @statusClass">@statusText</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-3">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Précédent</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Suivant</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>Aucun objectif de dépôt n'a été enregistré pour le moment.
+                    <div class="mt-2">
+                        <a href="@Url.Action("SaisieDepot", "Objectivations")" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-circle me-1"></i>Créer un objectif
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Bouton de retour -->
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Dashboard", "Objectivations")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-2"></i> Retour au menu principal
+        </a>
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        background-color: #f8f9fa;
+    }
+
+    .dashboard-title {
+        color: var(--success-color);
+        font-weight: 600;
+    }
+
+    .summary-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .summary-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .summary-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .summary-value {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .biat-theme {
+        --primary-color: #0047AB;
+        --success-color: #28a745;
+    }
+
+    .chart-container {
+        position: relative;
+        min-height: 300px;
+    }
+
+    .table th {
+        background-color: var(--success-color);
+        color: white;
+        font-weight: 500;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+
+    .progress {
+        height: 8px;
+    }
+</style>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données pour le graphique d'évolution
+            const ctx = document.getElementById('depotTrendChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+                    datasets: [{
+                        label: 'Objectifs Dépôt (TND)',
+                        data: [12000, 19000, 15000, 18000, 22000, 25000, 21000, 24000, 28000, 30000, 32000, 35000],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw.toLocaleString() + ' TND';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' TND';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gestion des filtres
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filterText = this.textContent;
+                    document.getElementById('filterDropdown').innerHTML =
+                        `<i class="bi bi-funnel me-1"></i>${filterText}`;
+                    // Ici vous pourriez ajouter la logique de filtrage
+                });
+            });
+        });
+    </script>
+}

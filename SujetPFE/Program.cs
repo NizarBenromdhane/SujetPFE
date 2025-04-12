@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Infrastructure; // This is the crucial line you need to add
+using SujetPFE.Services; // Ajoutez cette ligne pour accéder à ExcelServicesemployee
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedAccount = false; // For newer templates
 });
 builder.Services.AddControllersWithViews();
+
+// Ajouter l'enregistrement de votre service ExcelServicesemployee ici
+builder.Services.AddScoped<ExcelServicesemployee>();
+builder.Services.AddScoped<ExcelToGroupeMapper>();
+
 
 var app = builder.Build();
 

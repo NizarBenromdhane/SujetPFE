@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Domain.Entities;
 using SujetPFE.Infrastructure;
+using SujetPFE.Services; // Assurez-vous que le namespace de vos services est correct
+using Microsoft.Extensions.Configuration; // Pour accéder à la configuration
 
 namespace SujetPFE.Controllers
 {
@@ -10,15 +12,19 @@ namespace SujetPFE.Controllers
     {
         private readonly PcbContext _context;
         private readonly ILogger<ObjectivesController> _logger;
+        private readonly ExcelToClientMapper _excelToClientMapper; // Injecter ExcelToClientMapper
+        private readonly IConfiguration _configuration; // Injecter IConfiguration
 
-        public ObjectivesController(PcbContext context, ILogger<ObjectivesController> logger)
+        public ObjectivesController(PcbContext context, ILogger<ObjectivesController> logger, ExcelToClientMapper excelToClientMapper, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
+            _excelToClientMapper = excelToClientMapper;
+            _configuration = configuration;
         }
 
         // GET: Objectives
-        [HttpGet("/Objectives")]  // <-- Explicit route attribute
+        [HttpGet("/Objectives")]
         public async Task<IActionResult> Index()
         {
             try
@@ -70,7 +76,16 @@ namespace SujetPFE.Controllers
         public IActionResult Create()
         {
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "RaisonSociale");
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Nom");
+
+            // Récupérer la liste des employés depuis Excel
+            string employesExcelPath = _configuration["CheminFichierEmployesExcel"];
+            List<SelectListItem> employesFromExcel = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(employesExcelPath) && System.IO.File.Exists(employesExcelPath))
+            {
+                employesFromExcel = _excelToClientMapper.MapEmployesFromExcel(employesExcelPath);
+            }
+            ViewData["EmployeeId"] = new SelectList(employesFromExcel, "Value", "Text");
+
             return View();
         }
 
@@ -100,7 +115,16 @@ namespace SujetPFE.Controllers
             }
 
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "RaisonSociale", objective.ClientId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Nom", objective.EmployeeId);
+
+            // Repopuler la liste des employés en cas d'erreur
+            string employesExcelPath = _configuration["CheminFichierEmployesExcel"];
+            List<SelectListItem> employesFromExcel = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(employesExcelPath) && System.IO.File.Exists(employesExcelPath))
+            {
+                employesFromExcel = _excelToClientMapper.MapEmployesFromExcel(employesExcelPath);
+            }
+            ViewData["EmployeeId"] = new SelectList(employesFromExcel, "Value", "Text", objective.EmployeeId);
+
             return View(objective);
         }
 
@@ -120,7 +144,16 @@ namespace SujetPFE.Controllers
                     return NotFound();
                 }
                 ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "RaisonSociale", objective.ClientId);
-                ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Nom", objective.EmployeeId);
+
+                // Récupérer la liste des employés depuis Excel pour l'édition (si nécessaire)
+                string employesExcelPath = _configuration["CheminFichierEmployesExcel"];
+                List<SelectListItem> employesFromExcel = new List<SelectListItem>();
+                if (!string.IsNullOrEmpty(employesExcelPath) && System.IO.File.Exists(employesExcelPath))
+                {
+                    employesFromExcel = _excelToClientMapper.MapEmployesFromExcel(employesExcelPath);
+                }
+                ViewData["EmployeeId"] = new SelectList(employesFromExcel, "Value", "Text", objective.EmployeeId);
+
                 return View(objective);
             }
             catch (Exception ex)
@@ -166,9 +199,17 @@ namespace SujetPFE.Controllers
                 }
                 return View(objective);
             }
-
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "RaisonSociale", objective.ClientId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Nom", objective.EmployeeId);
+
+            // Repopuler la liste des employés en cas d'erreur
+            string employesExcelPath = _configuration["CheminFichierEmployesExcel"];
+            List<SelectListItem> employesFromExcel = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(employesExcelPath) && System.IO.File.Exists(employesExcelPath))
+            {
+                employesFromExcel = _excelToClientMapper.MapEmployesFromExcel(employesExcelPath);
+            }
+            ViewData["EmployeeId"] = new SelectList(employesFromExcel, "Value", "Text", objective.EmployeeId);
+
             return View(objective);
         }
 

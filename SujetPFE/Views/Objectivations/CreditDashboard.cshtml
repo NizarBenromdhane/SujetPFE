@@ -1,0 +1,344 @@
+﻿@using SujetPFE.Domain.Entities
+@{
+    ViewData["Title"] = "Dashboard Crédit";
+}
+
+<div class="dashboard-container biat-theme">
+
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Objectivations")">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Objectifs Crédit</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="dashboard-title">
+            <i class="bi bi-credit-card-2-front me-2"></i> Tableau de Bord des Objectifs Crédit
+        </h1>
+        <div class="dashboard-actions">
+            <a href="@Url.Action("SaisieCredit", "Objectivations")" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i> Nouvel Objectif
+            </a>
+        </div>
+    </div>
+
+    <!-- Cartes de synthèse -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card summary-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="summary-icon bg-primary bg-opacity-10">
+                            <i class="bi bi-bullseye text-primary"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="summary-label mb-0">Total Objectifs</h5>
+                            <h3 class="summary-value mb-0">@ViewBag.TotalCreditObjectives</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card summary-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="summary-icon bg-success bg-opacity-10">
+                            <i class="bi bi-cash-stack text-success"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="summary-label mb-0">Valeur Totale</h5>
+                            <h3 class="summary-value mb-0">@ViewBag.TotalCreditValue.ToString("N2") TND</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card summary-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="summary-icon bg-info bg-opacity-10">
+                            <i class="bi bi-graph-up text-info"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="summary-label mb-0">Valeur Moyenne</h5>
+                            <h3 class="summary-value mb-0">@ViewBag.AverageCreditValue.ToString("N2") TND</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section graphique -->
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h2 class="card-title mb-0">
+                <i class="bi bi-pie-chart me-2"></i> Répartition par Type de Crédit
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="chart-container" style="height: 400px;">
+                <canvas id="creditPieChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des objectifs -->
+    <div class="card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h2 class="card-title mb-0">
+                <i class="bi bi-table me-2"></i> Objectifs de Crédit
+            </h2>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-funnel me-1"></i>Filtrer
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <li><a class="dropdown-item" href="#">Ce mois</a></li>
+                    <li><a class="dropdown-item" href="#">Ce trimestre</a></li>
+                    <li><a class="dropdown-item" href="#">Cette année</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.CreditData != null && (ViewBag.CreditData as List<CreditObjectif>).Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-calendar me-1"></i> Période</th>
+                                <th><i class="bi bi-tag me-1"></i> Type</th>
+                                <th class="text-end"><i class="bi bi-currency-exchange me-1"></i> Montant</th>
+                                <th><i class="bi bi-person me-1"></i> Employé</th>
+                                <th><i class="bi bi-people me-1"></i> Groupe</th>
+                                <th><i class="bi bi-clock me-1"></i> Date</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var objectif in ViewBag.CreditData as List<CreditObjectif>)
+                            {
+                                <tr>
+                                    <td>@objectif.Periode</td>
+                                    <td>
+                                        <span class="badge bg-primary">@objectif.TypeCredit</span>
+                                    </td>
+                                    <td class="text-end fw-bold">@objectif.MontantObjectif.ToString("N2") TND</td>
+                                    <td>@(objectif.EmployeId?.ToString() ?? "N/A")</td>
+                                    <td>@(objectif.GroupeId?.ToString() ?? "N/A")</td>
+                                    <td>@DateTime.Now.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-3">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Précédent</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Suivant</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>Aucun objectif de crédit n'a été enregistré pour le moment.
+                    <div class="mt-2">
+                        <a href="@Url.Action("SaisieCredit", "Objectivations")" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Ajouter un objectif
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Bouton de retour -->
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Dashboard", "Objectivations")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-2"></i> Retour au menu principal
+        </a>
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        background-color: #f8f9fa;
+    }
+
+    .dashboard-title {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .summary-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .summary-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .summary-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .summary-value {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .biat-theme {
+        --primary-color: #0047AB;
+        --secondary-color: #2E8B57;
+    }
+
+    .chart-container {
+        position: relative;
+        min-height: 400px;
+    }
+
+    .table th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 500;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+</style>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données pour le graphique
+            const creditData = @Html.Raw(Json.Serialize(ViewBag.CreditData));
+            const creditTypes = {};
+
+            // Agrégation des données par type de crédit
+            creditData.forEach(item => {
+                if (!creditTypes[item.typeCredit]) {
+                    creditTypes[item.typeCredit] = 0;
+                }
+                creditTypes[item.typeCredit] += item.montantObjectif;
+            });
+
+            const labels = Object.keys(creditTypes);
+            const data = Object.values(creditTypes);
+            const total = data.reduce((a, b) => a + b, 0);
+
+            // Couleurs personnalisées
+            const backgroundColors = [
+                '#0047AB', '#2E8B57', '#FF6347', '#9370DB', '#FFD700',
+                '#20B2AA', '#FF69B4', '#1E90FF', '#FF8C00', '#32CD32'
+            ];
+
+            // Création du graphique
+            const ctx = document.getElementById('creditPieChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${context.label}: ${value.toLocaleString()} TND (${percentage}%)`;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            formatter: (value, ctx) => {
+                                const percentage = Math.round((value / total) * 100);
+                                return `${percentage}%`;
+                            },
+                            color: '#fff',
+                            font: {
+                                weight: 'bold',
+                                size: 12
+                            }
+                        }
+                    },
+                    cutout: '60%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Gestion des filtres
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Ici vous pourriez ajouter la logique de filtrage
+                    const filterText = this.textContent;
+                    document.getElementById('filterDropdown').innerHTML =
+                        `<i class="bi bi-funnel me-1"></i>${filterText}`;
+                });
+            });
+        });
+    </script>
+}

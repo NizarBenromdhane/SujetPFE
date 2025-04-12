@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SujetPFE.Infrastructure;
 
@@ -11,9 +12,11 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    partial class PcbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409171324_AddObjectVisiteAndFixRelationships")]
+    partial class AddObjectVisiteAndFixRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -366,9 +369,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RDVId")
-                        .IsUnique();
-
                     b.ToTable("ComptesRendus");
                 });
 
@@ -635,8 +635,9 @@ namespace SujetPFE.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                    b.Property<string>("Client")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Commentaires")
                         .IsRequired()
@@ -672,14 +673,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SuiviIRCId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("SuiviIRCId");
 
                     b.ToTable("RDVs");
                 });
@@ -694,7 +688,8 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.Property<string>("ChargeAffaires")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
@@ -887,17 +882,6 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Groupe");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.CompteRendu", b =>
-                {
-                    b.HasOne("SujetPFE.Domain.Entities.RDV", "RDV")
-                        .WithOne("CompteRendu")
-                        .HasForeignKey("SujetPFE.Domain.Entities.CompteRendu", "RDVId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RDV");
-                });
-
             modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Direction", "Direction")
@@ -939,31 +923,12 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.RDV", b =>
-                {
-                    b.HasOne("SujetPFE.Domain.Entities.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SujetPFE.Domain.Entities.SuiviIRC", "SuiviIRC")
-                        .WithMany("RDVs")
-                        .HasForeignKey("SuiviIRCId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("SuiviIRC");
-                });
-
             modelBuilder.Entity("SujetPFE.Domain.Entities.SuiviIRC", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Client");
@@ -992,15 +957,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.RDV", b =>
                 {
-                    b.Navigation("CompteRendu")
-                        .IsRequired();
-
                     b.Navigation("ObjetsVisite");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.SuiviIRC", b =>
-                {
-                    b.Navigation("RDVs");
                 });
 
             modelBuilder.Entity("SujetPFE.Models.Pac", b =>
