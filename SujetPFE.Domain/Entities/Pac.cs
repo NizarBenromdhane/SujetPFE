@@ -8,17 +8,23 @@ namespace SujetPFE.Models
     public class Pac
     {
         public int Id { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Le titre est requis.")]
         public string Titre { get; set; }
+
         public string Description { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "La date de début est requise.")]
         [DataType(DataType.Date)]
         public DateTime DateDebut { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "La date de fin est requise.")]
         [DataType(DataType.Date)]
         public DateTime DateFin { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Le responsable est requis.")]
         public string Responsable { get; set; }
+
         public string Statut { get; set; }
         public string Groupe { get; set; }
         public string Affaire { get; set; }
@@ -26,6 +32,6 @@ namespace SujetPFE.Models
         public string Recommandations { get; set; }
         public string Limites { get; set; }
 
-        public List<KPIValue> KPIValues { get; set; } // Propriété de navigation pour les KPIs
+        public List<KPIValue> KPIValues { get; set; }
     }
 }

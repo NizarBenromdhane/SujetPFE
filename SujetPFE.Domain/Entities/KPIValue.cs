@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SujetPFE.Domain.Entities
+namespace SujetPFE.Models
 {
-    internal class KPIValue
+    public class KPIValue
     {
+        public int Id { get; set; }
+        public string Name { get; set; } // Example property for KPI name
+        public string Value { get; set; } // Example property for KPI value
+
+        [ForeignKey("Pac")]
+        public int PacId { get; set; }
+        public Pac Pac { get; set; }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Infrastructure;
 using SujetPFE.Models;
-using Newtonsoft.Json;
 
 namespace SujetPFE.Controllers
 {
@@ -23,30 +22,7 @@ namespace SujetPFE.Controllers
         // GET: Pacs
         public async Task<IActionResult> Index()
         {
-            var pacsWithKpis = await _context.Pacs
-                .Include(p => p.KPIValues)
-                .ToListAsync();
-            return View(pacsWithKpis);
-        }
-
-        // GET: Pacs/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pac = await _context.Pacs
-                .Include(p => p.KPIValues)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (pac == null)
-            {
-                return NotFound();
-            }
-
-            return View(pac);
+            return View(await _context.Pacs.ToListAsync());
         }
 
         // GET: Pacs/Create
@@ -55,19 +31,34 @@ namespace SujetPFE.Controllers
             return View();
         }
 
-        // POST: Pacs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Pac pac, string kpiData)
         {
             if (ModelState.IsValid)
             {
+                _context.Add(pac);
+
+                List<KPIValue> kpiValues = null;
+
                 if (!string.IsNullOrEmpty(kpiData))
                 {
                     try
                     {
-                        var kpiValues = JsonConvert.DeserializeObject<List<KPIValue>>(kpiData);
-                        pac.KPIValues = kpiValues;
+                        kpiValues = JsonSerializer.Deserialize<List<KPIValue>>(kpiData);
+                        if (kpiValues != null)
+                        {
+                            foreach (var kpiValue in kpiValues)
+                            {
+                                kpiValue.PacId = pac.Id;
+                                _context.KPIValues.Add(kpiValue);
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("kpiData", "Format de données KPI invalide (données JSON vides ou incorrectes).");
+                            return View(pac);
+                        }
                     }
                     catch (JsonException ex)
                     {
@@ -75,22 +66,33 @@ namespace SujetPFE.Controllers
                         return View(pac);
                     }
                 }
+                else
+                {
+                    pac.KPIValues = new List<KPIValue>(); // Initialize even if no kpiData
+                }
 
-                _context.Add(pac);
+                // Server-side validation for at least one KPI (required)
+                if (pac.KPIValues == null || pac.KPIValues.Count == 0)
+                {
+                    ModelState.AddModelError("KPIValues", "Au moins une valeur KPI est requise.");
+                    return View(pac);
+                }
+
                 try
                 {
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "PAC créé avec succès."; // Ajouter un message de succès
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException ex)
                 {
-                    ModelState.AddModelError("", "Erreur lors de l'enregistrement du PAC.");
+                    // Log l'erreur (important pour le débogage)
+                    ModelState.AddModelError("", "Erreur lors de l'enregistrement du PAC dans la base de données.");
                     return View(pac);
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(pac);
         }
-
         // GET: Pacs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -129,10 +131,22 @@ namespace SujetPFE.Controllers
                     {
                         try
                         {
-                            var kpiValues = JsonConvert.DeserializeObject<List<KPIValue>>(kpiData);
-                            var existingKpis = await _context.KPIValues.Where(k => k.PacId == pac.Id).ToListAsync();
-                            _context.KPIValues.RemoveRange(existingKpis);
-                            pac.KPIValues = kpiValues;
+                            var kpiValues = JsonSerializer.Deserialize<List<KPIValue>>(kpiData);
+                            if (kpiValues != null)
+                            {
+                                var existingKpis = await _context.KPIValues.Where(k => k.PacId == pac.Id).ToListAsync();
+                                _context.KPIValues.RemoveRange(existingKpis);
+                                foreach (var kpiValue in kpiValues)
+                                {
+                                    kpiValue.PacId = pac.Id;
+                                }
+                                pac.KPIValues = kpiValues;
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("kpiData", "Format de données KPI invalide (données JSON vides ou incorrectes).");
+                                return View(pac);
+                            }
                         }
                         catch (JsonException ex)
                         {
@@ -144,6 +158,7 @@ namespace SujetPFE.Controllers
                     {
                         var existingKpis = await _context.KPIValues.Where(k => k.PacId == pac.Id).ToListAsync();
                         _context.KPIValues.RemoveRange(existingKpis);
+                        pac.KPIValues = new List<KPIValue>(); // Ensure KPIValues is not null
                     }
 
                     _context.Update(pac);

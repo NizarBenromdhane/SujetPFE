@@ -1,26 +1,36 @@
 ﻿@model IEnumerable<SujetPFE.Models.Pac>
-@* Affiche la liste des Pacs *@
 
 @{
     ViewData["Title"] = "Liste des PACs";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
 <h1>@ViewData["Title"]</h1>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
 <p>
     <a asp-action="Create" class="btn btn-primary">Créer un nouveau PAC</a>
 </p>
-<table class="table">
+
+<table class="table table-striped">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.Titre)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
             <th>@Html.DisplayNameFor(model => model.DateDebut)</th>
             <th>@Html.DisplayNameFor(model => model.DateFin)</th>
             <th>@Html.DisplayNameFor(model => model.Responsable)</th>
             <th>@Html.DisplayNameFor(model => model.Statut)</th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.Groupe)</th>
+            <th>@Html.DisplayNameFor(model => model.Affaire)</th>
+            <th>@Html.DisplayNameFor(model => model.KPL)</th>
+            <th>@Html.DisplayNameFor(model => model.Recommandations)</th>
+            <th>@Html.DisplayNameFor(model => model.Limites)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -28,15 +38,22 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Titre)</td>
-                <td>@Html.DisplayFor(modelItem => item.DateDebut)</td>
-                <td>@Html.DisplayFor(modelItem => item.DateFin)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@item.DateDebut.ToString("dd/MM/yyyy")</td>
+                <td>@item.DateFin.ToString("dd/MM/yyyy")</td>
                 <td>@Html.DisplayFor(modelItem => item.Responsable)</td>
                 <td>@Html.DisplayFor(modelItem => item.Statut)</td>
+                <td>@Html.DisplayFor(modelItem => item.Groupe)</td>
+                <td>@Html.DisplayFor(modelItem => item.Affaire)</td>
+                <td>@Html.DisplayFor(modelItem => item.KPL)</td>
+                <td>@Html.DisplayFor(modelItem => item.Recommandations)</td>
+                <td>@Html.DisplayFor(modelItem => item.Limites)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Modifier</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Détails</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Modifier</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Détails</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Supprimer</a>
                 </td>
             </tr>
         }
     </tbody>
+</table>

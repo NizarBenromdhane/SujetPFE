@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SujetPFE.Infrastructure;
 
@@ -11,9 +12,11 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    partial class PcbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413125959_AjoutCleEtrangerePacIdDansKPIValue")]
+    partial class AjoutCleEtrangerePacIdDansKPIValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -722,31 +725,6 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.ToTable("SuivisIRC");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.TemplateClient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nom")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telephone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TemplateClients");
-                });
-
             modelBuilder.Entity("SujetPFE.Models.KPIValue", b =>
                 {
                     b.Property<int>("Id")
@@ -755,14 +733,14 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("KPI")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PacId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("Valeur")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

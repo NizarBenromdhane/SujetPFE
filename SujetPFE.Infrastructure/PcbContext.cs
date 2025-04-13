@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿// PcbContext.cs
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Domain.Entities;
 using SujetPFE.Models;
@@ -26,6 +27,8 @@ namespace SujetPFE.Infrastructure
         public DbSet<KPIValue> KPIValues { get; set; }
         public DbSet<ObjetVisite> ObjetsVisite { get; set; }
         public DbSet<CreditObjectif> CreditObjectifs { get; set; }
+
+        public DbSet<TemplateClient> TemplateClients { get; set; } // Ajoutez cette ligne
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -68,10 +71,16 @@ namespace SujetPFE.Infrastructure
             // Configuration pour CreditObjectif si nécessaire
             modelBuilder.Entity<CreditObjectif>(entity =>
             {
-                // Exemple de configuration - adapter selon vos besoins
                 entity.HasKey(e => e.Id);
                 // Autres configurations...
             });
+
+            // Configuration Pac-KPIValue (One-to-Many) - ENSURE THIS IS THE ONLY CONFIGURATION
+            modelBuilder.Entity<KPIValue>()
+                .HasOne(k => k.Pac)
+                .WithMany(p => p.KPIValues)
+                .HasForeignKey(k => k.PacId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

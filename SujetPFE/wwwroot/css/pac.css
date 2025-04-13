@@ -1,147 +1,170 @@
-﻿/* Variables CSS */
+﻿/* Variables CSS pour le thème BIAT */
 :root {
-    --primary-color: #007bff;
-    --primary-color-dark: #0056b3;
-    --success-color: #28a745;
-    --text-color: #333;
-    --text-color-light: #555;
-    --bg-color: #f4f7f9;
-    --bg-color-light: #f9f9f9;
-    --border-color: #ddd;
+    --biat-blue: #003A75; /* Bleu principal de la BIAT */
+    --biat-light-blue: #007ACC; /* Bleu clair de la BIAT */
+    --biat-yellow: #FFC857; /* Jaune de la BIAT (accent) */
+    --biat-grey: #6C757D; /* Gris neutre */
+    --biat-light-grey: #ECECEC; /* Gris clair pour les fonds */
+    --biat-text-dark: #212529; /* Couleur de texte sombre */
+    --biat-text-light: #495057; /* Couleur de texte plus claire */
+    --biat-border: #CED4DA; /* Couleur des bordures */
+    --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --font-size-base: 16px;
-    --font-size-large: 24px;
-    --font-size-xlarge: 28px;
+    --font-size-large: 20px;
+    --font-size-xlarge: 24px;
     --border-radius: 5px;
-    --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 /* Styles généraux */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-family-primary);
     margin: 0;
     padding: 0;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: var(--biat-light-grey);
+    color: var(--biat-text-dark);
     font-size: var(--font-size-base);
+    line-height: 1.6;
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
+    width: 95%;
+    max-width: 1000px;
+    margin: 30px auto;
     background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
     overflow: hidden;
 }
 
 .header {
-    background-color: var(--primary-color);
+    background-color: var(--biat-blue);
     color: white;
-    text-align: center; /* Centrer le texte dans l'en-tête */
-    padding: 20px 0;
+    text-align: center;
+    padding: 30px 0;
+    border-bottom: 3px solid var(--biat-yellow);
 }
 
 .title {
     margin: 0;
     font-size: var(--font-size-xlarge);
-    text-align: center; /* Centrer le texte du titre */
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .content {
-    padding: 20px;
+    padding: 30px;
 }
 
 /* Sections */
 .form-section,
 .kpi-section,
 .additional-sections {
-    margin-bottom: 20px;
-    padding: 20px;
+    margin-bottom: 25px;
+    padding: 25px;
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: var(--box-shadow);
+    border: 1px solid var(--biat-border);
 }
 
 .section-title {
-    color: var(--primary-color);
+    color: var(--biat-blue);
     font-size: var(--font-size-large);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    border-bottom: 2px solid var(--biat-light-grey);
+    padding-bottom: 10px;
 }
 
     .section-title i {
         margin-right: 10px;
+        color: var(--biat-blue);
     }
 
 /* Formulaire */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
     .form-group label {
-        color: var(--text-color-light);
-        margin-bottom: 5px;
+        color: var(--biat-text-light);
+        margin-bottom: 8px;
+        font-weight: bold;
     }
 
 .form-input,
 .form-textarea {
-    padding: 10px;
-    border: 1px solid var(--border-color);
+    padding: 12px;
+    border: 1px solid var(--biat-border);
     border-radius: var(--border-radius);
-    transition: border-color 0.3s;
+    transition: border-color 0.3s ease-in-out;
+    font-size: 1em;
 }
 
     .form-input:focus,
     .form-textarea:focus {
-        border-color: var(--primary-color);
+        border-color: var(--biat-light-blue);
         outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(var(--biat-light-blue-rgb), 0.25);
     }
 
 .form-textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 120px;
 }
 
 .form-button {
-    background-color: var(--primary-color);
+    background-color: var(--biat-blue);
     color: white;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease-in-out;
+    font-weight: bold;
+    font-size: 1em;
 }
 
     .form-button:hover {
-        background-color: var(--primary-color-dark);
+        background-color: var(--biat-light-blue);
     }
 
 /* Tableau KPI */
 .kpi-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 25px;
+    border: 1px solid var(--biat-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
 }
 
     .kpi-table th,
     .kpi-table td {
-        border: 1px solid var(--border-color);
-        padding: 8px;
-        text-align: center;
+        border: 1px solid var(--biat-border);
+        padding: 10px;
+        text-align: left;
     }
 
     .kpi-table th {
-        background-color: #f0f0f0;
+        background-color: var(--biat-light-grey);
+        font-weight: bold;
+        color: var(--biat-text-dark);
+    }
+
+    .kpi-table tbody tr:nth-child(even) {
+        background-color: var(--biat-light-grey);
     }
 
 /* KPI Header et Formulaire */
@@ -154,39 +177,52 @@ body {
 
 #add-kpi-form {
     margin-bottom: 20px;
-    padding: 15px;
-    background-color: var(--bg-color-light);
+    padding: 20px;
+    background-color: var(--biat-light-grey);
     border-radius: var(--border-radius);
+    border: 1px solid var(--biat-border);
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
     #add-kpi-form input {
         padding: 10px;
-        margin-right: 10px;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--biat-border);
         border-radius: var(--border-radius);
-        width: calc(50% - 10px);
+        flex-grow: 1;
     }
 
 #save-kpi-btn {
-    background-color: var(--success-color);
-    color: white;
+    background-color: var(--biat-yellow);
+    color: var(--biat-blue);
     padding: 10px 20px;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
 }
+
+    #save-kpi-btn:hover {
+        background-color: #E0AC42;
+    }
 
 /* Boutons d'action du tableau KPI */
 .kpi-table .action-btn {
     background-color: transparent;
     border: none;
-    padding: 5px 10px;
+    padding: 8px 12px;
     cursor: pointer;
-    color: var(--primary-color);
+    color: var(--biat-blue);
+    transition: color 0.3s ease-in-out;
+    border-radius: var(--border-radius);
+    margin: 2px;
 }
 
     .kpi-table .action-btn:hover {
-        color: var(--primary-color-dark);
+        color: var(--biat-light-blue);
+        background-color: var(--biat-light-grey);
     }
 
 /* Sections supplémentaires */
@@ -197,20 +233,23 @@ body {
 }
 
 .additional-section {
-    background-color: var(--bg-color-light);
-    padding: 15px;
+    background-color: #fff;
+    padding: 20px;
     border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--biat-border);
 }
 
     .additional-section h3 {
-        font-size: 18px;
-        margin-bottom: 10px;
+        font-size: var(--font-size-large);
+        margin-bottom: 15px;
+        color: var(--biat-blue);
     }
 
-/* Icônes */
+/* Icônes (vous devrez peut-être ajouter une librairie d'icônes comme Font Awesome) */
 .form-button i,
 .kpi-table .action-btn i {
-    margin-right: 5px;
+    margin-right: 8px;
 }
 
 /* Réactivité */
@@ -219,9 +258,109 @@ body {
         grid-template-columns: 1fr;
     }
 
-    #add-kpi-form input {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 10px;
+    #add-kpi-form {
+        flex-direction: column;
+        align-items: stretch;
     }
+
+        #add-kpi-form input {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
 }
+
+/* Styles spécifiques au formulaire de création de PAC */
+.create-pac-container {
+    padding: 30px;
+}
+
+.create-pac-form .form-group label {
+    font-weight: 600;
+}
+
+.create-pac-form .form-actions {
+    margin-top: 30px;
+    text-align: right;
+}
+
+    .create-pac-form .form-actions .btn {
+        margin-left: 10px;
+        padding: 12px 20px;
+        border-radius: var(--border-radius);
+        font-weight: bold;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .create-pac-form .form-actions .btn-primary {
+        background-color: var(--biat-blue);
+        color: white;
+        border: none;
+    }
+
+        .create-pac-form .form-actions .btn-primary:hover {
+            background-color: var(--biat-light-blue);
+            opacity: 0.9;
+        }
+
+    .create-pac-form .form-actions .btn-secondary {
+        background-color: var(--biat-grey);
+        color: white;
+        border: none;
+    }
+
+        .create-pac-form .form-actions .btn-secondary:hover {
+            background-color: #545b62;
+            opacity: 0.9;
+        }
+
+/* Style pour la section des KPIs dans le formulaire de création */
+.create-pac-form .form-group > #kpiValuesContainer {
+    margin-top: 10px;
+    padding: 15px;
+    border: 1px solid var(--biat-border);
+    border-radius: var(--border-radius);
+    background-color: var(--biat-light-grey);
+}
+
+.create-pac-form .form-group .row.mb-2.kpi-input-row {
+    margin-bottom: 10px !important;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+    .create-pac-form .form-group .row.mb-2.kpi-input-row > div {
+        flex-grow: 1;
+    }
+
+    .create-pac-form .form-group .row.mb-2.kpi-input-row .btn-danger {
+        flex-grow: 0;
+        padding: 8px 15px;
+        border: none;
+        border-radius: var(--border-radius);
+        color: white;
+        background-color: #dc3545;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .create-pac-form .form-group .row.mb-2.kpi-input-row .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+.create-pac-form .form-group > button.btn-outline-secondary.btn-sm {
+    margin-top: 10px;
+    padding: 8px 15px;
+    border: 1px solid var(--biat-grey);
+    color: var(--biat-grey);
+    border-radius: var(--border-radius);
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+    .create-pac-form .form-group > button.btn-outline-secondary.btn-sm:hover {
+        background-color: var(--biat-light-grey);
+        color: var(--biat-blue);
+        border-color: var(--biat-blue);
+    }
