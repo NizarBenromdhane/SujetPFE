@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SujetPFE.Infrastructure; // Replace with your actual namespace
-using SujetPFE.Services; // Ensure this namespace is correct
+using SujetPFE.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
-using SujetPFE.Domain.Entities; // Make sure your Groupe entity is here
-using System.Collections.Generic; // Ensure this using statement is present
+using SujetPFE.Domain.Entities;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using SujetPFE.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace SujetPFE.Controllers
 {
@@ -13,97 +16,79 @@ namespace SujetPFE.Controllers
     {
         private readonly PcbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly ExcelServicesemployee _excelServicesEmployee; // Inject ExcelServicesemployee
-        private readonly ExcelToGroupeMapper _excelToGroupeMapper; // Inject ExcelToGroupeMapper
 
-        public ObjectivationsController(PcbContext context, IConfiguration configuration, ExcelServicesemployee excelServicesEmployee, ExcelToGroupeMapper excelToGroupeMapper)
+        public ObjectivationsController(PcbContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-            _excelServicesEmployee = excelServicesEmployee;
-            _excelToGroupeMapper = excelToGroupeMapper;
-        }
-
-        [HttpGet]
-        public IActionResult SaisieDepot()
-        {
-            // Récupérer le chemin du fichier Excel des employés depuis la configuration
-            string employesExcelPath = _configuration["CheminFichierEmployesExcel"];
-
-            if (string.IsNullOrEmpty(employesExcelPath) || !System.IO.File.Exists(employesExcelPath))
-            {
-                ViewBag.ErrorMessage = "Le fichier des employés Excel n'est pas trouvé.";
-                return View();
-            }
-
-            // Utiliser ExcelServicesemployee pour lire les employés
-            List<SelectListItem> employesFromExcel = _excelServicesEmployee.GetEmployesFromExcel(employesExcelPath);
-            ViewBag.Employes = employesFromExcel;
-
-            // Récupérer le chemin du fichier Excel des groupes depuis la configuration
-            string groupesExcelPath = _configuration["CheminFichierGroupesExcel"];
-
-            if (!string.IsNullOrEmpty(groupesExcelPath) && System.IO.File.Exists(groupesExcelPath))
-            {
-                // Utiliser ExcelToGroupeMapper pour lire les groupes
-                var groupesFromExcel = _excelToGroupeMapper.MapGroupesFromExcel(groupesExcelPath);
-                ViewBag.Groupes = groupesFromExcel;
-            }
-            else
-            {
-                ViewBag.GroupesErrorMessage = "Le fichier des groupes Excel n'est pas trouvé.";
-                ViewBag.Groupes = new List<Groupe>(); // Initialize an empty list to avoid null errors in the view
-            }
-
-            return View();
         }
 
         [HttpGet]
         public IActionResult SaisieCredit()
         {
-            // Récupérer la liste des employés depuis la base de données (inchangé)
-            var employes = _context.Employees
-                                    .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
-                                    .ToList();
-            ViewBag.Employes = employes;
+            try
+            {
+                var employes = _context.Employees
+                    .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
+                    .ToList();
+                ViewBag.Employes = employes;
 
-            // Récupérer la liste des groupes depuis la base de données (inchangé)
-            var groupes = _context.Groupes
-                                   .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nom })
-                                   .ToList();
-            ViewBag.Groupes = groupes;
-
-            return View();
+                var groupes = _context.Groupes
+                    .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nom })
+                    .ToList();
+                ViewBag.Groupes = groupes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SaisieCredit GET: {ex.Message}");
+                ViewBag.Employes = new List<SelectListItem>();
+                ViewBag.Groupes = new List<SelectListItem>();
+            }
+            return View(); // This line should look for /Views/Objectivations/SaisieCredit.cshtml
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaisieCredit(CreditObjectif model)
+        public IActionResult SaisieCredit(List<CreditObjectif> model)
         {
             if (ModelState.IsValid)
             {
-                _context.CreditObjectifs.Add(model);
-                _context.SaveChanges();
+                try
+                {
+                    _context.CreditObjectifs.AddRange(model);
+                    _context.SaveChanges();
 
-                ViewBag.Message = "L'objectif de crédit a été enregistré avec succès.";
-                ViewBag.IsSuccess = true;
-                ModelState.Clear();
-                return View();
+                    ViewBag.Message = "Les objectifs de crédit ont été enregistrés avec succès.";
+                    ViewBag.IsSuccess = true;
+                    ModelState.Clear();
+                    return View(); // Stay on the same page after successful save
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving CreditObjectifs: {ex.Message}");
+                    ViewBag.Message = "Erreur lors de l'enregistrement des objectifs de crédit.";
+                    ViewBag.IsSuccess = false;
+                }
             }
 
-            // Repopuler les listes déroulantes en cas d'erreur (employés depuis la base de données)
-            var employes = _context.Employees
-                                    .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
-                                    .ToList();
-            ViewBag.Employes = employes;
+            // Repopulate ViewBag if ModelState is invalid or an error occurred
+            try
+            {
+                ViewBag.Employes = _context.Employees
+                    .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
+                    .ToList();
 
-            var groupes = _context.Groupes
-                                   .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nom })
-                                   .ToList();
-            ViewBag.Groupes = groupes;
+                ViewBag.Groupes = _context.Groupes
+                    .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nom })
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error repopulating ViewBag in SaisieCredit POST: {ex.Message}");
+                ViewBag.Employes = new List<SelectListItem>();
+                ViewBag.Groupes = new List<SelectListItem>();
+            }
 
-            ViewBag.Message = "Erreur lors de l'enregistrement de l'objectif de crédit.";
-            ViewBag.IsSuccess = false;
             return View(model);
         }
 
@@ -114,32 +99,247 @@ namespace SujetPFE.Controllers
         }
 
         [HttpGet]
+        public IActionResult SaisieDepot()
+        {
+            List<SelectListItem> employesFromDb = new List<SelectListItem>();
+            try
+            {
+                employesFromDb = _context.Employees
+                    .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
+                    .ToList();
+                ViewBag.ChargesAffaires = employesFromDb;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+                ViewBag.ChargesAffaires = new List<SelectListItem>();
+            }
+
+            // Initially load all groups without filtering
+            var groupesAvecEncours = GetAllGroupesAvecEncours();
+            return View(groupesAvecEncours);
+        }
+
+        private List<ObjectifDepotViewModel> GetAllGroupesAvecEncours(int? chargeAffairesId = null)
+        {
+            IQueryable<Groupe> groupesQuery = _context.Groupes;
+
+            if (chargeAffairesId.HasValue)
+            {
+                groupesQuery = groupesQuery.Where(g => _context.ObjectifsCreditDepots
+                    .Any(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025 && o.EmployeId == chargeAffairesId.Value));
+            }
+
+            return groupesQuery.Select(g => new ObjectifDepotViewModel
+            {
+                Groupe = g,
+                GroupeId = g.Id,
+                GroupeLibelle = g.Nom,
+                Encours2023_TndDat = (decimal?)_context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                                e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
+                    .Sum(e => e.Solde) ?? 0m,
+
+                Encours2023_TndDav = (decimal?)_context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                                e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
+                    .Sum(e => e.Solde) ?? 0m,
+
+                Encours2024_TndDat = (decimal?)_context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                                e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
+                    .Sum(e => e.Solde) ?? 0m,
+
+                Encours2024_TndDav = (decimal?)_context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                                e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
+                    .Sum(e => e.Solde) ?? 0m,
+
+                Objectif2025 = _context.ObjectifsCreditDepots
+                    .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
+                    .Select(o => new Objectif2025ViewModel
+                    {
+                        MontantDat = o.MontantDat,
+                        MontantDav = o.MontantDav
+                    })
+                    .FirstOrDefault() ?? new Objectif2025ViewModel(),
+                EmployeeId = _context.ObjectifsCreditDepots
+                    .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
+                    .Select(o => (int?)o.EmployeId)
+                    .FirstOrDefault()
+            }).ToList();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SaisieDepot(List<ObjectifDepotViewModel> model)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var item in model)
+                {
+                    try
+                    {
+                        var objectif = _context.ObjectifsCreditDepots.FirstOrDefault(o => o.GroupeId == item.GroupeId && o.TypeObjectif == "Dépôt" && o.Annee == 2025);
+
+                        decimal montantTotal = (item.Objectif2025?.MontantDat ?? 0m) + (item.Objectif2025?.MontantDav ?? 0m);
+
+                        if (objectif != null)
+                        {
+                            objectif.Montant = montantTotal;
+                            objectif.EmployeId = item.EmployeeId;
+                            objectif.MontantDat = item.Objectif2025?.MontantDat;
+                            objectif.MontantDav = item.Objectif2025?.MontantDav;
+                            _context.Entry(objectif).State = EntityState.Modified;
+                        }
+                        else if (montantTotal > 0)
+                        {
+                            objectif = new ObjectifCreditDepot
+                            {
+                                GroupeId = item.GroupeId,
+                                TypeObjectif = "Dépôt",
+                                Montant = montantTotal,
+                                MontantDat = item.Objectif2025?.MontantDat,
+                                MontantDav = item.Objectif2025?.MontantDav,
+                                DateDebut = new DateTime(2025, 1, 1),
+                                DateFin = new DateTime(2025, 12, 31),
+                                EmployeId = item.EmployeeId
+                            };
+                            _context.ObjectifsCreditDepots.Add(objectif);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing group {item.GroupeId}: {ex.Message}");
+                        TempData["Message"] = "Erreur lors de l'enregistrement de certains objectifs.";
+                        TempData["IsSuccess"] = false;
+                        return View(model);
+                    }
+                }
+
+                try
+                {
+                    _context.SaveChanges();
+                    TempData["Message"] = "Les objectifs de dépôt ont été enregistrés avec succès.";
+                    TempData["IsSuccess"] = true;
+                    return RedirectToAction("Dashboard", "Objectivations");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving changes: {ex.Message}");
+                    TempData["Message"] = "Erreur lors de l'enregistrement : " + ex.Message;
+                    TempData["IsSuccess"] = false;
+                }
+            }
+
+            try
+            {
+                ViewBag.ChargesAffaires = _context.Employees
+                    .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching employees for post-back: {ex.Message}");
+                ViewBag.ChargesAffaires = new List<SelectListItem>();
+            }
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult CreditDashboard()
         {
-            var creditData = _context.CreditObjectifs.ToList();
-
-            // Calculate basic statistics
-            ViewBag.TotalCreditObjectives = creditData.Count();
-            ViewBag.TotalCreditValue = creditData.Sum(o => o.MontantObjectif);
-            ViewBag.AverageCreditValue = creditData.Any() ? creditData.Average(o => o.MontantObjectif) : 0;
-
-            ViewBag.CreditData = creditData;
+            try
+            {
+                var creditData = _context.CreditObjectifs.ToList();
+                ViewBag.TotalCreditObjectives = creditData.Count();
+                ViewBag.TotalCreditValue = creditData.Sum(o => o.MontantObjectif);
+                ViewBag.AverageCreditValue = creditData.Any() ? creditData.Average(o => o.MontantObjectif) : 0;
+                ViewBag.CreditData = creditData;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CreditDashboard: {ex.Message}");
+                ViewBag.TotalCreditObjectives = 0;
+                ViewBag.TotalCreditValue = 0;
+                ViewBag.AverageCreditValue = 0;
+                ViewBag.CreditData = new List<CreditObjectif>();
+            }
             return View("CreditDashboard");
         }
 
         [HttpGet]
         public IActionResult DepotDashboard()
         {
-            // Récupérer les objectifs de dépôt et s'assurer que la liste n'est pas null
-            var depotData = _context.ObjectifsCreditDepot.Where(o => o.TypeObjectif == "Dépôt").ToList() as List<ObjectifCreditDepot> ?? new List<ObjectifCreditDepot>();
+            try
+            {
+                var depotData = _context.ObjectifsCreditDepots
+                    .Where(o => o.TypeObjectif == "Dépôt")
+                    .ToList();
 
-            // Calculate basic statistics for depots
-            ViewBag.TotalDepotObjectives = depotData.Count();
-            ViewBag.TotalDepotValue = depotData.Sum(o => o.Montant); // Use the 'Montant' property
-            ViewBag.AverageDepotValue = depotData.Any() ? depotData.Average(o => o.Montant) : 0; // Use the 'Montant' property
-
-            ViewBag.DepotData = depotData;
+                ViewBag.TotalDepotObjectifs = depotData.Count();
+                ViewBag.TotalDepotValue = depotData.Sum(o => o.Montant);
+                ViewBag.AverageDepotValue = depotData.Any() ? depotData.Average(o => o.Montant) : 0;
+                ViewBag.DepotData = depotData;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in DepotDashboard: {ex.Message}");
+                ViewBag.TotalDepotObjectifs = 0;
+                ViewBag.TotalDepotValue = 0;
+                ViewBag.DepotData = new List<ObjectifCreditDepot>();
+            }
             return View("DepotDashboard");
+        }
+
+        // Action to fetch groups data based on selected employee (for AJAX)
+        [HttpGet]
+        public async Task<IActionResult> GetGroupesData(int? employeId)
+        {
+            if (!employeId.HasValue)
+            {
+                return Json(new List<ObjectifDepotViewModel>());
+            }
+
+            var groupesAvecEncours = await _context.Groupes
+                .Where(g => _context.ObjectifsCreditDepots
+                    .Any(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025 && o.EmployeId == employeId.Value))
+                .Select(g => new ObjectifDepotViewModel
+                {
+                    Groupe = g,
+                    GroupeId = g.Id,
+                    GroupeLibelle = g.Nom,
+                    Encours2023_TndDat = (decimal?)_context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                                    e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
+                        .Sum(e => e.Solde) ?? 0m,
+
+                    Encours2023_TndDav = (decimal?)_context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                                    e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
+                        .Sum(e => e.Solde) ?? 0m,
+
+                    Encours2024_TndDat = (decimal?)_context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                                    e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
+                        .Sum(e => e.Solde) ?? 0m,
+
+                    Encours2024_TndDav = (decimal?)_context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                                    e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
+                        .Sum(e => e.Solde) ?? 0m,
+
+                    Objectif2025 = _context.ObjectifsCreditDepots
+                        .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
+                        .Select(o => new Objectif2025ViewModel
+                        {
+                            MontantDat = o.MontantDat,
+                            MontantDav = o.MontantDav
+                        })
+                        .FirstOrDefault() ?? new Objectif2025ViewModel()
+                }).ToListAsync();
+
+            return Json(groupesAvecEncours);
         }
     }
 }

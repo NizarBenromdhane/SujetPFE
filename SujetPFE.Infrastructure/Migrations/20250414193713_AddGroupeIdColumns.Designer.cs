@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SujetPFE.Infrastructure;
 
@@ -11,9 +12,11 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    partial class PcbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414193713_AddGroupeIdColumns")]
+    partial class AddGroupeIdColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,7 +390,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("MontantObjectif")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Periode")
                         .IsRequired()
@@ -412,8 +415,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.Property<string>("Libelle")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Pole")
                         .IsRequired()
@@ -438,10 +440,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.Property<int>("DirectionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Fonction")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Matricule1")
                         .IsRequired()
@@ -480,9 +478,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEncours"));
 
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DateDerniereTransaction")
                         .HasColumnType("datetime2");
 
@@ -491,10 +486,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.Property<int?>("GroupeId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Sens")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Solde")
                         .HasColumnType("decimal(18, 2)");
@@ -537,7 +528,8 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.Property<string>("PartieLiee")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PartieLiee");
 
                     b.HasKey("Id");
 
@@ -552,9 +544,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DateDebut")
                         .HasColumnType("datetime2");
 
@@ -564,17 +553,11 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Property<int?>("EmployeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupeId")
+                    b.Property<int?>("GroupeId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Montant")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<decimal?>("MontantDat")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<decimal?>("MontantDav")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TypeObjectif")
                         .IsRequired()
@@ -586,7 +569,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasIndex("GroupeId");
 
-                    b.ToTable("ObjectifsCreditDepots");
+                    b.ToTable("ObjectifsCreditDepot");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifSuivi", b =>
@@ -601,7 +584,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Ecart")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ObjectifId")
                         .HasColumnType("int");
@@ -610,7 +593,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Realisation")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -1016,7 +999,7 @@ namespace SujetPFE.Infrastructure.Migrations
             modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Direction", "Direction")
-                        .WithMany("Employes")
+                        .WithMany("Employees")
                         .HasForeignKey("DirectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1032,7 +1015,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SujetPFE.Domain.Entities.Groupe", "Groupe")
-                        .WithMany()
+                        .WithMany("Encours")
                         .HasForeignKey("GroupeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -1043,17 +1026,15 @@ namespace SujetPFE.Infrastructure.Migrations
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifCreditDepot", b =>
                 {
-                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employe")
+                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeId");
 
                     b.HasOne("SujetPFE.Domain.Entities.Groupe", "Groupe")
                         .WithMany()
-                        .HasForeignKey("GroupeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GroupeId");
 
-                    b.Navigation("Employe");
+                    b.Navigation("Employee");
 
                     b.Navigation("Groupe");
                 });
@@ -1136,10 +1117,15 @@ namespace SujetPFE.Infrastructure.Migrations
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Direction", b =>
                 {
-                    b.Navigation("Employes");
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>
+                {
+                    b.Navigation("Encours");
+                });
+
+            modelBuilder.Entity("SujetPFE.Domain.Entities.Groupe", b =>
                 {
                     b.Navigation("Encours");
                 });

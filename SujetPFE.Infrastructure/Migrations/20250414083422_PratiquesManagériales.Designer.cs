@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SujetPFE.Infrastructure;
 
@@ -11,9 +12,11 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    partial class PcbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414083422_PratiquesManagériales")]
+    partial class PratiquesManagériales
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,7 +390,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("MontantObjectif")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Periode")
                         .IsRequired()
@@ -439,19 +442,13 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Property<int>("DirectionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Fonction")
+                    b.Property<string>("Matricule1")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Matricule1")
+                    b.Property<string>("Matricule_t24_2")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Matricule1");
-
-                    b.Property<string>("MatriculeT24_2")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Matricule_t24_2");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -470,46 +467,6 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.HasIndex("DirectionId");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Encours", b =>
-                {
-                    b.Property<int>("IdEncours")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEncours"));
-
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DateDerniereTransaction")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("EmployeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GroupeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Sens")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Solde")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("TypeEncours")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdEncours");
-
-                    b.HasIndex("EmployeId");
-
-                    b.HasIndex("GroupeId");
-
-                    b.ToTable("Encours");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Groupe", b =>
@@ -552,29 +509,14 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DateDebut")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateFin")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EmployeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupeId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Montant")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<decimal?>("MontantDat")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<decimal?>("MontantDav")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TypeObjectif")
                         .IsRequired()
@@ -582,11 +524,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeId");
-
-                    b.HasIndex("GroupeId");
-
-                    b.ToTable("ObjectifsCreditDepots");
+                    b.ToTable("ObjectifsCreditDepot");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifSuivi", b =>
@@ -601,7 +539,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Ecart")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ObjectifId")
                         .HasColumnType("int");
@@ -610,7 +548,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Realisation")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -1024,40 +962,6 @@ namespace SujetPFE.Infrastructure.Migrations
                     b.Navigation("Direction");
                 });
 
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Encours", b =>
-                {
-                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employee")
-                        .WithMany("Encours")
-                        .HasForeignKey("EmployeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("SujetPFE.Domain.Entities.Groupe", "Groupe")
-                        .WithMany()
-                        .HasForeignKey("GroupeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Groupe");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifCreditDepot", b =>
-                {
-                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employe")
-                        .WithMany()
-                        .HasForeignKey("EmployeId");
-
-                    b.HasOne("SujetPFE.Domain.Entities.Groupe", "Groupe")
-                        .WithMany()
-                        .HasForeignKey("GroupeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employe");
-
-                    b.Navigation("Groupe");
-                });
-
             modelBuilder.Entity("SujetPFE.Domain.Entities.ObjectifSuivi", b =>
                 {
                     b.HasOne("SujetPFE.Domain.Entities.Objective", "Objective")
@@ -1137,11 +1041,6 @@ namespace SujetPFE.Infrastructure.Migrations
             modelBuilder.Entity("SujetPFE.Domain.Entities.Direction", b =>
                 {
                     b.Navigation("Employes");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>
-                {
-                    b.Navigation("Encours");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.RDV", b =>

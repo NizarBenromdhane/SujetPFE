@@ -1,0 +1,125 @@
+﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #fff;
+}
+
+.logo {
+    max-width: 150px;
+    height: auto;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: #e9f5ff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+    .card:hover {
+        transform: translateY(-8px);
+    }
+
+    .card i {
+        font-size: 3em;
+        margin-bottom: 15px;
+        color: #007bff;
+    }
+
+.resources {
+    margin-bottom: 30px;
+}
+
+.resource-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.resource {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .resource img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .resource h3 {
+        margin-bottom: 10px;
+    }
+
+    .resource button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .resource button:hover {
+            background-color: #0056b3;
+        }
+
+.forum {
+    text-align: center;
+}
+
+    .forum button {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .forum button:hover {
+            background-color: #218838;
+        }
+
+        .forum button i {
+            margin-right: 5px;
+        }

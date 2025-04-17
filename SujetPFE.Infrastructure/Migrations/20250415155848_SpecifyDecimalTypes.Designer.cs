@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SujetPFE.Infrastructure;
 
@@ -11,9 +12,11 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    partial class PcbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415155848_SpecifyDecimalTypes")]
+    partial class SpecifyDecimalTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -480,9 +483,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEncours"));
 
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DateDerniereTransaction")
                         .HasColumnType("datetime2");
 
@@ -551,9 +551,6 @@ namespace SujetPFE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateDebut")
                         .HasColumnType("datetime2");

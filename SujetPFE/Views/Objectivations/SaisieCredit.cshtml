@@ -236,6 +236,7 @@
         {
             @:typeCreditSelect.append($('<option>', { value: '@type.Value', text: '@type.Text' }));
         }
+                var montantInput = $('<input>', { type: 'number', class: 'form-control', name: '[].MontantObjectif', required: true });
                 var employeSelect = $('<select>', { class: 'form-control', name: '[].EmployeId' });
                 employeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
         @if (employesSelectList != null)
@@ -254,7 +255,6 @@
                 @:groupeSelect.append($('<option>', { value: '@groupe.Value', text: '@groupe.Text' }));
             }
         }
-                var montantInput = $('<input>', { type: 'number', class: 'form-control', name: '[].MontantObjectif', required: true });
                 var actions = $('<td class="actions-column">').append($('<button>', { type: 'button', class: 'btn btn-danger btn-sm', text: 'Supprimer' }).on('click', function () {
                     $(this).closest('tr').remove();
                 }));

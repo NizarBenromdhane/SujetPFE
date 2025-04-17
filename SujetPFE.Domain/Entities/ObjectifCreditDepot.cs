@@ -1,25 +1,41 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SujetPFE.Domain.Entities
 {
     public class ObjectifCreditDepot
     {
+        [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Le type d'objectif est obligatoire.")]
-        public string TypeObjectif { get; set; } // "Crédit" ou "Dépôt"
+        public int GroupeId { get; set; }
 
-        [Required(ErrorMessage = "Le montant est obligatoire.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Le montant doit être supérieur à zéro.")]
-        public decimal Montant { get; set; }
+        [ForeignKey("GroupeId")]
+        public Groupe Groupe { get; set; }
 
-        [Required(ErrorMessage = "La date de début est obligatoire.")]
+        [Required]
+        public decimal Montant { get; set; } // Vous pourriez choisir de le rendre nullable si MontantDat/Dav sont obligatoires
+
+        public decimal? MontantDat { get; set; } // Ajout de MontantDat
+        public decimal? MontantDav { get; set; } // Ajout de MontantDav
+
+        [Required]
+        public string TypeObjectif { get; set; }
+
+        [Required]
         public DateTime DateDebut { get; set; }
 
-        [Required(ErrorMessage = "La date de fin est obligatoire.")]
+        [Required]
         public DateTime DateFin { get; set; }
 
-        // Ajoutez d'autres propriétés si nécessaire
+        public int? EmployeId { get; set; }
+
+        [ForeignKey("EmployeId")]
+        public Employee Employe { get; set; }
+
+        // Ajout de la propriété Annee
+        [Required]
+        public int Annee { get; set; }
     }
 }

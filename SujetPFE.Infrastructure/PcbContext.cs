@@ -1,5 +1,4 @@
-﻿// PcbContext.cs
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Domain.Entities;
 using SujetPFE.Models;
@@ -18,7 +17,10 @@ namespace SujetPFE.Infrastructure
         public DbSet<Objective> Objectives { get; set; }
         public DbSet<HistoriqueObjectif> HistoriqueObjectifs { get; set; }
         public DbSet<Pac> Pacs { get; set; }
-        public DbSet<ObjectifCreditDepot> ObjectifsCreditDepot { get; set; }
+
+        // ✅ Utilise ce nom dans ton contrôleur : _context.ObjectifsCreditDepots
+        public DbSet<ObjectifCreditDepot> ObjectifsCreditDepots { get; set; }
+
         public DbSet<ObjectifSuivi> ObjectifsSuivis { get; set; }
         public DbSet<Groupe> Groupes { get; set; }
         public DbSet<SuiviIRC> SuivisIRC { get; set; }
@@ -27,60 +29,81 @@ namespace SujetPFE.Infrastructure
         public DbSet<KPIValue> KPIValues { get; set; }
         public DbSet<ObjetVisite> ObjetsVisite { get; set; }
         public DbSet<CreditObjectif> CreditObjectifs { get; set; }
-
-        public DbSet<TemplateClient> TemplateClients { get; set; } // Ajoutez cette ligne
+        public DbSet<TemplateClient> TemplateClients { get; set; }
+        public DbSet<PratiquesManagériales> PratiquesManagériales { get; set; }
+        public DbSet<Encours> Encours { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuration Client-Groupe
             modelBuilder.Entity<Client>()
                 .HasOne(c => c.Groupe)
                 .WithMany()
                 .HasForeignKey(c => c.GroupeId);
 
-            // Configuration RDV-SuiviIRC
             modelBuilder.Entity<RDV>()
                 .HasOne(r => r.SuiviIRC)
                 .WithMany(s => s.RDVs)
                 .HasForeignKey(r => r.SuiviIRCId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuration RDV-CompteRendu (1-1)
             modelBuilder.Entity<RDV>()
                 .HasOne(r => r.CompteRendu)
                 .WithOne(c => c.RDV)
                 .HasForeignKey<CompteRendu>(c => c.RDVId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuration ObjetVisite-RDV
             modelBuilder.Entity<ObjetVisite>()
                 .HasOne(ov => ov.RDV)
                 .WithMany(r => r.ObjetsVisite)
                 .HasForeignKey(ov => ov.RDVId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuration SuiviIRC-Client
             modelBuilder.Entity<SuiviIRC>()
                 .HasOne(s => s.Client)
                 .WithMany()
                 .HasForeignKey(s => s.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuration pour CreditObjectif si nécessaire
             modelBuilder.Entity<CreditObjectif>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                // Autres configurations...
+                entity.Property(e => e.MontantObjectif).HasColumnType("decimal(18, 2)");
             });
 
-            // Configuration Pac-KPIValue (One-to-Many) - ENSURE THIS IS THE ONLY CONFIGURATION
             modelBuilder.Entity<KPIValue>()
                 .HasOne(k => k.Pac)
                 .WithMany(p => p.KPIValues)
                 .HasForeignKey(k => k.PacId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Encours>()
+                .HasOne(e => e.Employee)
+                .WithMany(emp => emp.Encours)
+                .HasForeignKey(e => e.EmployeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Encours>()
+                .HasOne(e => e.Groupe)
+                .WithMany()
+                .HasForeignKey(e => e.GroupeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ObjectifCreditDepot>()
+                .Property(o => o.Montant).HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<ObjectifCreditDepot>()
+                .Property(o => o.MontantDat).HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<ObjectifCreditDepot>()
+                .Property(o => o.MontantDav).HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<ObjectifSuivi>()
+                .Property(o => o.Ecart).HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<ObjectifSuivi>()
+                .Property(o => o.Realisation).HasColumnType("decimal(18, 2)");
         }
     }
 }

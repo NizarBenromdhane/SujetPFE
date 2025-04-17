@@ -1,0 +1,64 @@
+﻿@model IEnumerable<SujetPFE.Domain.Entities.PratiquesManagériales>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratiques Managériales</title>
+    <link rel="stylesheet" href="~/css/styleses.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="Logo BIAT" class="logo">
+    </div>
+
+    <div class="container">
+        <h1>Pratiques Managériales</h1>
+
+        <div class="dashboard">
+            <div class="card">
+                <i class="fas fa-users"></i>
+                <h2>Gestion d'équipe</h2>
+                <p>KPI : Taux de satisfaction de l'équipe</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-chart-line"></i>
+                <h2>Gestion de projet</h2>
+                <p>KPI : Respect des délais et du budget</p>
+            </div>
+        </div>
+
+        <div class="resources">
+            <h2>Bibliothèque de ressources</h2>
+            <div class="resource-list">
+                <div class="resource">
+                    <img src="article.jpg" alt="Article">
+                    <h3>Les 10 compétences du manager moderne</h3>
+                    <p>Un article sur les compétences clés pour réussir en tant que manager.</p>
+                    <button>Lire la suite</button>
+                </div>
+                <div class="resource">
+                    <img src="guide.jpg" alt="Guide">
+                    <h3>Guide : Gestion de projet agile</h3>
+                    <p>Un guide pratique pour la gestion de projet agile.</p>
+                    <button>Télécharger</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="forum">
+            <h2>Forum de discussion</h2>
+            <p>Posez vos questions et partagez vos idées avec la communauté.</p>
+            <button><i class="fas fa-comments"></i> Accéder au forum</button>
+        </div>
+    </div>
+
+    <script src="~/js/Scriptes.js"></script>
+</body>
+</html>
