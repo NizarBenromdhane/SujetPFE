@@ -115,19 +115,21 @@ namespace SujetPFE.Controllers
                 ViewBag.ChargesAffaires = new List<SelectListItem>();
             }
 
-            // Initially load all groups without filtering
-            var groupesAvecEncours = GetAllGroupesAvecEncours();
+            // Initially load groups based on the logged-in employee or a default if not logged in
+            // Assuming you have a way to identify the current employee (e.g., via User.Identity)
+            int? currentEmployeeId = _context.Employees.FirstOrDefault(e => e.Nom == "HB")?.Id; // Replace with your logic
+            var groupesAvecEncours = GetGroupesAvecEncours(currentEmployeeId);
             return View(groupesAvecEncours);
         }
 
-        private List<ObjectifDepotViewModel> GetAllGroupesAvecEncours(int? chargeAffairesId = null)
+        private List<ObjectifDepotViewModel> GetGroupesAvecEncours(int? chargeAffairesId = null)
         {
             IQueryable<Groupe> groupesQuery = _context.Groupes;
 
             if (chargeAffairesId.HasValue)
             {
-                groupesQuery = groupesQuery.Where(g => _context.ObjectifsCreditDepots
-                    .Any(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025 && o.EmployeId == chargeAffairesId.Value));
+                // Filter groups where the current employee is the EmployeResponsable
+                groupesQuery = groupesQuery.Where(g => g.EmployeResponsableId == chargeAffairesId.Value);
             }
 
             return groupesQuery.Select(g => new ObjectifDepotViewModel
@@ -136,22 +138,22 @@ namespace SujetPFE.Controllers
                 GroupeId = g.Id,
                 GroupeLibelle = g.Nom,
                 Encours2023_TndDat = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
                     .Sum(e => e.Solde) ?? 0m,
 
                 Encours2023_TndDav = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
                     .Sum(e => e.Solde) ?? 0m,
 
                 Encours2024_TndDat = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
                     .Sum(e => e.Solde) ?? 0m,
 
                 Encours2024_TndDav = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
                     .Sum(e => e.Solde) ?? 0m,
 
@@ -301,45 +303,56 @@ namespace SujetPFE.Controllers
                 return Json(new List<ObjectifDepotViewModel>());
             }
 
-            var groupesAvecEncours = await _context.Groupes
-                .Where(g => _context.ObjectifsCreditDepots
-                    .Any(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025 && o.EmployeId == employeId.Value))
-                .Select(g => new ObjectifDepotViewModel
+            var groupes = await _context.Groupes
+                .Where(g => g.EmployeResponsableId == employeId.Value)
+                .ToListAsync();
+
+            var result = new List<ObjectifDepotViewModel>();
+
+            foreach (var g in groupes)
+            {
+                var objectif = await _context.ObjectifsCreditDepots
+                    .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025 && o.EmployeId == employeId.Value)
+                    .Select(o => new Objectif2025ViewModel
+                    {
+                        MontantDat = o.MontantDat,
+                        MontantDav = o.MontantDav
+                    })
+                    .FirstOrDefaultAsync() ?? new Objectif2025ViewModel();
+
+                var viewModel = new ObjectifDepotViewModel
                 {
                     Groupe = g,
                     GroupeId = g.Id,
                     GroupeLibelle = g.Nom,
-                    Encours2023_TndDat = (decimal?)_context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                    Encours2023_TndDat = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
-                        .Sum(e => e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
 
-                    Encours2023_TndDav = (decimal?)_context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                    Encours2023_TndDav = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
-                        .Sum(e => e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
 
-                    Encours2024_TndDat = (decimal?)_context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAT" &&
+                    Encours2024_TndDat = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
-                        .Sum(e => e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
 
-                    Encours2024_TndDav = (decimal?)_context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "Dépôt DAV" &&
+                    Encours2024_TndDav = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
-                        .Sum(e => e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
 
-                    Objectif2025 = _context.ObjectifsCreditDepots
-                        .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
-                        .Select(o => new Objectif2025ViewModel
-                        {
-                            MontantDat = o.MontantDat,
-                            MontantDav = o.MontantDav
-                        })
-                        .FirstOrDefault() ?? new Objectif2025ViewModel()
-                }).ToListAsync();
+                    Objectif2025 = objectif
+                };
 
-            return Json(groupesAvecEncours);
+                result.Add(viewModel);
+            }
+
+            return Json(result);
         }
+
     }
 }

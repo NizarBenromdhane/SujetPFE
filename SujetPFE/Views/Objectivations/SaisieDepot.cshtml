@@ -1,451 +1,452 @@
-﻿@model List<SujetPFE.Models.ObjectifDepotViewModel>
+﻿                    @model IEnumerable<SujetPFE.Models.ObjectifDepotViewModel>
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using Newtonsoft.Json
 
 @{
-    ViewData["Title"] = "Saisie Objectifs Solde Dépôts";
-    var chargesAffairesSelectList = ViewBag.ChargesAffaires as List<SelectListItem>;
+    ViewData["Title"] = "Saisie des Objectifs Dépôts";
+    var chargesAffaires = ViewBag.ChargesAffaires as List<SelectListItem>;
+    var firstEmployeeId = Model?.FirstOrDefault()?.EmployeeId?.ToString();
 }
 
-<div class="saisie-depot-container biat-theme">
-    <h2 class="page-title">Saisie Objectifs Solde Dépôts</h2>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
 
-    <section class="filters-section">
-        <h3 class="section-heading">Périodes</h3>
-        <div class="filters-top">
-            <button class="filter-button active">31-03-2025</button>
-            <button class="filter-button">30-06-2025</button>
-            <button class="filter-button">30-09-2025</button>
-            <button class="filter-button">31-12-2025</button>
-            <button class="filter-button">31-12-2022</button>
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            max-width: 98%; /* Modification: plus large */
+            margin: 1rem auto; /* Modification: marge réduite */
+            padding: 0 10px; /* Modification: padding réduit */
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem; /* Modification: marge réduite */
+        }
+
+        .selection-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem; /* Modification: marge réduite */
+        }
+
+        .data-table {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            font-size: 1.1rem;
+            width: 100%; /* Modification: largeur à 100% */
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0; /* Modification: padding supprimé */
+            margin: 0; /* Modification: marge supprimée */
+        }
+
+        .table {
+            width: 100%; /* Modification: largeur à 100% */
+            margin: 0; /* Modification: marge supprimée */
+            table-layout: auto;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+            padding: 1rem; /* Modification: padding ajusté */
+            min-width: 200px; /* Modification: largeur minimale augmentée */
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 0.8rem; /* Modification: padding ajusté */
+            min-width: 180px; /* Modification: largeur minimale augmentée */
+        }
+
+        .group-name {
+            min-width: 300px; /* Modification: largeur augmentée */
+            font-weight: bold;
+        }
+
+        /* Le reste du CSS reste inchangé */
+        .form-select-lg {
+            font-size: 1.2rem;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            transition: var(--transition);
+        }
+
+            .form-select-lg:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            }
+
+        .form-select-sm, .form-control-sm {
+            font-size: 1.1rem;
+            padding: 0.7rem;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            transition: var(--transition);
+        }
+
+        .form-control-sm {
+            width: 180px;
+            text-align: right;
+        }
+
+        .btn-success {
+            font-size: 1.2rem;
+            padding: 0.8rem 2.5rem;
+        }
+
+        .numeric-input {
+            margin: 0 auto;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--accent-color);
+        }
+
+        @@media (max-width: 1400px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-0">
+                        <i class="bi bi-graph-up me-2"></i>Saisie des Objectifs Dépôts
+                    </h1>
+                    <p class="mb-0 opacity-75">Gestion des objectifs financiers par groupe et par chargé d'affaires</p>
+                </div>
+                <a asp-action="Dashboard" class="btn btn-light btn-lg">
+                    <i class="bi bi-arrow-left me-2"></i>Tableau de Bord
+                </a>
+            </div>
         </div>
-    </section>
 
-    <section class="commercial-selector-section">
-        <h3 class="section-heading">Filtrer par Chargé d'Affaires</h3>
-        <div class="form-group">
-            <label for="chargeAffaires" class="form-label">Chargé d'Affaires :</label>
-            <select id="chargeAffaires" class="form-control form-select" name="EmployeeId">
-                <option value="">-- Sélectionner un Chargé d'Affaires --</option>
-                @if (chargesAffairesSelectList != null && chargesAffairesSelectList.Any())
-                {
-                    foreach (var chargeAffaires in chargesAffairesSelectList)
-                    {
-                        <option value="@chargeAffaires.Value">@chargeAffaires.Text</option>
-                    }
-                }
-            </select>
+        <!-- Selection Card -->
+        <div class="selection-card">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <label for="ChargeAffairesId" class="form-label fw-semibold">
+                        <i class="bi bi-person-badge me-2"></i>
+                        <span>Chargé d'Affaires</span>
+                    </label>
+                </div>
+                <div class="col-md-9">
+                    <select id="ChargeAffairesId" name="ChargeAffairesId" class="form-select form-select-lg">
+                        <option value="">-- Sélectionnez un Chargé d'Affaires --</option>
+                        @foreach (var item in chargesAffaires)
+                        {
+                            <option value="@item.Value" selected="@(item.Value == firstEmployeeId)">@item.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
         </div>
-    </section>
 
-    <form method="post" id="objectifsForm">
-        <section class="objectifs-table-section">
-            <h3 class="section-heading">Détails des Objectifs de Dépôts</h3>
-            <div class="table-responsive">
-                <div style="overflow-x: auto;">
-                    <table class="objectifs-table table table-bordered table-striped">
-                        <thead class="thead-light">
-                            <tr class="header-row">
-                                <th rowspan="2" class="align-middle">Groupe / GE</th>
-                                <th colspan="2" class="encours-header text-center">Encours 2023</th>
-                                <th colspan="2" class="encours-header text-center">Encours 2024</th>
-                                <th colspan="3" class="objectifs-header text-center">Objectifs 2025</th>
-                                <th rowspan="2" class="align-middle text-center">Actions</th>
-                            </tr>
-                            <tr class="subheader-row">
-                                <th>Total Tnd</th>
-                                <th>Total Dépôt</th>
-                                <th>Total Tnd</th>
-                                <th>Total Dépôt</th>
-                                <th>Devise</th>
-                                <th>Tnd DAT</th>
-                                <th>Tnd DAV</th>
+        <!-- Data Table -->
+        <form asp-action="SaisieDepot" method="post" id="objectifs-form">
+            @Html.AntiForgeryToken()
+            <div class="data-table">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="group-name">Groupe</th>
+                                <th>Encours 2023 DAT</th>
+                                <th>Encours 2023 DAV</th>
+                                <th>Encours 2024 DAT</th>
+                                <th>Encours 2024 DAV</th>
+                                <th>Objectif 2025 DAT</th>
+                                <th>Objectif 2025 DAV</th>
+                                <th>Responsable</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr><td colspan="9" class="text-center">Sélectionnez un Chargé d'Affaires.</td></tr>
+                        <tbody id="groupes-data">
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="group-name">@item.GroupeLibelle</td>
+                                        <td class="text-end">@Html.DisplayFor(m => item.Encours2023_TndDat)</td>
+                                        <td class="text-end">@Html.DisplayFor(m => item.Encours2023_TndDav)</td>
+                                        <td class="text-end">@Html.DisplayFor(m => item.Encours2024_TndDat)</td>
+                                        <td class="text-end">@Html.DisplayFor(m => item.Encours2024_TndDav)</td>
+                                        <td>
+                                            @Html.HiddenFor(m => item.GroupeId)
+                                            <div class="numeric-input">
+                                                @Html.TextBoxFor(m => item.Objectif2025.MontantDat,
+                                                         new { @class = "form-control form-control-sm", type = "number", step = "0.01", min = "0" })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="numeric-input">
+                                                @Html.TextBoxFor(m => item.Objectif2025.MontantDav,
+                                                         new { @class = "form-control form-control-sm", type = "number", step = "0.01", min = "0" })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @Html.DropDownListFor(m => item.EmployeeId, chargesAffaires,
+                                                     "-- Sélectionnez --", new { @class = "form-select form-select-sm" })
+                                            @Html.ValidationMessageFor(m => item.EmployeeId, "", new { @class = "text-danger small d-block" })
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="empty-state">
+                                        <i class="bi bi-info-circle-fill fs-1 text-primary mb-3"></i>
+                                        <p class="fs-5">Veuillez sélectionner un chargé d'affaires pour afficher les données</p>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
-        </section>
 
-        <div class="form-group text-center mt-4">
-            <button type="submit" class="btn btn-lg btn-success">Enregistrer les Objectifs</button>
-        </div>
-    </form>
-</div>
+            <!-- Submit Button -->
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>Enregistrer les Objectifs
+                </button>
+            </div>
+        </form>
+    </div>
 
-@section Scripts {
+    <!-- Employees Data Storage -->
+    <script id="employees-data" type="application/json">
+        @Html.Raw(JsonConvert.SerializeObject(chargesAffaires))
+    </script>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Function to load groupes data based on selected employee
-            function loadGroupesData(employeId) {
-                console.log("loadGroupesData called with employeId:", employeId);
-                $('.objectifs-table tbody').empty(); // Clear existing table rows
+            // Configuration
+            const $chargeAffairesSelect = $('#ChargeAffairesId');
+            const $groupesData = $('#groupes-data');
+            const employees = JSON.parse(document.getElementById("employees-data").textContent);
 
-                if (employeId === "") {
-                    $('.objectifs-table tbody').append('<tr><td colspan="9" class="text-center">Sélectionnez un Chargé d\'Affaires.</td></tr>');
+            // Format number with 2 decimals
+            const formatNumber = (num) => num != null ? parseFloat(num).toFixed(2) : '';
+
+            // Load groupes data
+            function loadGroupesData(employeId) {
+                if (!employeId) {
+                    showEmptyState("Veuillez sélectionner un chargé d'affaires");
                     return;
                 }
 
+                showLoadingState();
+
                 $.ajax({
-                    url: '/Objectivations/GetGroupesData',
+                    url: '@Url.Action("GetGroupesData", "Objectivations")',
                     type: 'GET',
                     data: { employeId: employeId },
                     success: function (data) {
-                        console.log("AJAX success:", data);
                         if (data && data.length > 0) {
-                            for (var i = 0; i < data.length; i++) {
-                                var totalEncours2023 = data[i].encours2023_TndDat + data[i].encours2023_TndDav;
-                                var totalEncours2024 = data[i].encours2024_TndDat + data[i].encours2024_TndDav;
-                                var evolution = totalEncours2024 - totalEncours2023;
-                                var pourcentageEvolution = totalEncours2023 != 0 ? (evolution / totalEncours2023) * 100 : 0;
-
-                                var row = $('<tr>');
-                                row.append(`<td><span class="group-name">${data[i].groupe.nom}</span><input type="hidden" name="Groupes[${i}].GroupeId" value="${data[i].groupe.id}" /></td>`);
-                                row.append(`<td class="text-end"><span class="readonly-value total-2023">${totalEncours2023.toFixed(2)}</span><input type="hidden" name="Groupes[${i}].Encours2023_TndDat" value="${data[i].encours2023_TndDat}" /><input type="hidden" name="Groupes[${i}].Encours2023_TndDav" value="${data[i].encours2023_TndDav}" /></td>`);
-                                row.append(`<td class="text-end"><span class="readonly-value total-dep-2023">${totalEncours2023.toFixed(2)}</span></td>`);
-                                row.append(`<td class="text-end"><span class="readonly-value total-2024">${totalEncours2024.toFixed(2)}</span><input type="hidden" name="Groupes[${i}].Encours2024_TndDat" value="${data[i].encours2024_TndDat}" /><input type="hidden" name="Groupes[${i}].Encours2024_TndDav" value="${data[i].encours2024_TndDav}" /></td>`);
-                                row.append(`<td class="text-end"><span class="readonly-value total-dep-2024">${totalEncours2024.toFixed(2)}</span></td>`);
-                                row.append('<td class="text-center">TND</td>');
-                                row.append(`<td><input type="text" class="form-control text-end objectif-input" name="Groupes[${i}].Objectif2025.MontantDat" value="${data[i].objectif2025 ? (data[i].objectif2025.montantDat ? data[i].objectif2025.montantDat.toFixed(2) : '') : ''}" /></td>`);
-                                row.append(`<td><input type="text" class="form-control text-end objectif-input" name="Groupes[${i}].Objectif2025.MontantDav" value="${data[i].objectif2025 ? (data[i].objectif2025.montantDav ? data[i].objectif2025.montantDav.toFixed(2) : '') : ''}" /></td>`);
-                                row.append('<td class="text-center actions-column"><button type="button" class="btn btn-sm btn-primary save-button">Enregistrer</button></td>');
-                                row.append(`<tr class="evolution-row text-center"><td colspan="9">Evolution 2023-2024 : <span class="${evolution >= 0 ? "positive-evolution" : "negative-evolution"}">${evolution.toFixed(2)} (${pourcentageEvolution.toFixed(2)}%)</span></td></tr>`);
-
-                                $('.objectifs-table tbody').append(row);
-                            }
+                            renderGroupesTable(data);
                         } else {
-                            $('.objectifs-table tbody').append('<tr><td colspan="9" class="text-center">Aucun groupe trouvé pour ce chargé d\'affaires.</td></tr>');
+                            showEmptyState("Aucun groupe trouvé pour ce chargé d'affaires");
                         }
                     },
-                    error: function (error) {
-                        console.error("AJAX error:", error);
-                        $('.objectifs-table tbody').append('<tr><td colspan="9" class="text-center text-danger">Erreur lors de la récupération des données.</td></tr>');
+                    error: function (xhr) {
+                        console.error('Erreur:', xhr);
+                        showErrorState("Erreur lors du chargement des données");
                     }
                 });
             }
 
-            // Load data on initial page load (if a value is pre-selected)
-            var initialEmployeeId = $('#chargeAffaires').val();
-            console.log("Initial employee ID:", initialEmployeeId);
-            if (initialEmployeeId) {
-                loadGroupesData(initialEmployeeId);
-            } else {
-                $('.objectifs-table tbody').append('<tr><td colspan="9" class="text-center">Sélectionnez un Chargé d\'Affaires.</td></tr>');
+            // Render groupes table
+            function renderGroupesTable(data) {
+                let html = '';
+
+                data.forEach((item, i) => {
+                    html += `<tr>
+                        <td class="group-name">${item.groupeLibelle}</td>
+                        <td class="text-end">${formatNumber(item.encours2023_TndDat)}</td>
+                        <td class="text-end">${formatNumber(item.encours2023_TndDav)}</td>
+                        <td class="text-end">${formatNumber(item.encours2024_TndDat)}</td>
+                        <td class="text-end">${formatNumber(item.encours2024_TndDav)}</td>
+                        <td>
+                            <div class="numeric-input">
+                                <input type="hidden" name="[${i}].GroupeId" value="${item.groupeId}" />
+                                <input type="number" step="0.01" min="0" class="form-control form-control-sm"
+                                       name="[${i}].Objectif2025.MontantDat"
+                                       value="${formatNumber(item.objectif2025?.montantDat)}" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="numeric-input">
+                                <input type="number" step="0.01" min="0" class="form-control form-control-sm"
+                                       name="[${i}].Objectif2025.MontantDav"
+                                       value="${formatNumber(item.objectif2025?.montantDav)}" />
+                            </div>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" name="[${i}].EmployeeId">
+                                <option value="">-- Sélectionnez --</option>
+                                ${employees.map(emp =>
+                                    `<option value="${emp.Value}" ${item.employeeId == emp.Value ? 'selected' : ''}>
+                                        ${emp.Text}
+                                    </option>`
+                                ).join('')}
+                            </select>
+                        </td>
+                    </tr>`;
+                });
+
+                $groupesData.html(html);
+                initNumericInputs();
             }
 
-            // Load data when the dropdown changes
-            $('#chargeAffaires').change(function () {
-                var employeId = $(this).val();
-                console.log("Dropdown changed, selected ID:", employeId);
-                loadGroupesData(employeId);
-            });
+            // Show loading state
+            function showLoadingState() {
+                $groupesData.html(`
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+            }
 
-            // Intercept individual "Enregistrer" button clicks
-            $(document).on('click', '.objectifs-table .save-button', function () {
-                var row = $(this).closest('tr');
+            // Show empty state
+            function showEmptyState(message) {
+                $groupesData.html(`
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <i class="bi bi-database-fill-slash fs-1 text-primary mb-3"></i>
+                            <p class="fs-5">${message}</p>
+                        </td>
+                    </tr>
+                `);
+            }
 
-                var dataToSend = {
-                    GroupeId: row.find('input[name^="Groupes"][name$="GroupeId"]').val(),
-                    Objectif2025: {
-                        MontantDat: row.find('input[name^="Groupes"][name$="MontantDat"]').val(),
-                        MontantDav: row.find('input[name^="Groupes"][name$="MontantDav"]').val()
-                    },
-                    EmployeeId: $('#chargeAffaires').val()
-                };
+            // Show error state
+            function showErrorState(message) {
+                $groupesData.html(`
+                    <tr>
+                        <td colspan="8" class="error-state">
+                            <i class="bi bi-exclamation-triangle-fill fs-1 mb-3"></i>
+                            <p class="fs-5">${message}</p>
+                            <button class="btn btn-outline-primary btn-sm mt-2" onclick="window.location.reload()">
+                                <i class="bi bi-arrow-clockwise"></i> Réessayer
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            }
 
-                $.ajax({
-                    url: '/Objectivations/SaisieDepot',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(dataToSend),
-                    success: function (response) {
-                        if (response && response.isSuccess) {
-                            alert('Objectif enregistré avec succès pour ce groupe.');
-                            // Optionally provide visual feedback (e.g., change button text)
-                        } else {
-                            alert('Erreur lors de l\'enregistrement de l\'objectif pour ce groupe.');
-                            console.error('Erreur:', response ? response.message : 'Unknown error');
-                        }
-                    },
-                    error: function (error) {
-                        console.error('Erreur AJAX:', error);
-                        alert('Erreur lors de l\'enregistrement de l\'objectif.');
+            // Initialize numeric inputs
+            function initNumericInputs() {
+                $('input[type="number"]').on('keydown', function(e) {
+                    // Allow: backspace, delete, tab, escape, enter, decimal point
+                    if ([46, 8, 9, 27, 13, 110, 190].includes(e.keyCode) ||
+                        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                        (e.keyCode === 65 && e.ctrlKey === true) ||
+                        (e.keyCode === 67 && e.ctrlKey === true) ||
+                        (e.keyCode === 86 && e.ctrlKey === true) ||
+                        (e.keyCode === 88 && e.ctrlKey === true) ||
+                        // Allow: home, end, left, right
+                        (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        return;
+                    }
+                    // Prevent: not a number or not a number keypad
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
                     }
                 });
+            }
+
+            // Event handlers
+            $chargeAffairesSelect.on('change', function() {
+                loadGroupesData($(this).val());
             });
 
-            // Prevent the main form submission when individual save buttons are clicked
-            $('.objectifs-table .save-button').on('click', function(e) {
-                e.preventDefault();
+            // Form submission
+            $('#objectifs-form').on('submit', function(e) {
+                $('button[type="submit"]').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...');
             });
+
+            // Initial load if employee is selected
+            if ($chargeAffairesSelect.val()) {
+                loadGroupesData($chargeAffairesSelect.val());
+            }
         });
     </script>
-}
-
-<style>
-    /* Root variables for consistent theming */
-    :root {
-        --primary-color: #007bff; /* Bootstrap primary */
-        --secondary-color: #6c757d; /* Bootstrap secondary */
-        --success-color: #28a745; /* Bootstrap success */
-        --danger-color: #dc3545; /* Bootstrap danger */
-        --info-color: #17a2b8; /* Bootstrap info */
-        --light-bg: #f8f9fa; /* Bootstrap light background */
-        --dark-text: #343a40; /* Bootstrap dark text */
-        --border-color: #dee2e6; /* Bootstrap border color */
-        --header-bg: #e9ecef;
-        --header-text-color: var(--dark-text);
-        --section-heading-color: var(--primary-color);
-    }
-
-    /* General styles */
-    .saisie-depot-container {
-        padding: 25px;
-        background-color: var(--light-bg);
-        border-radius: 12px;
-        margin: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: var(--dark-text);
-    }
-
-    .page-title {
-        margin-bottom: 30px;
-        text-align: center;
-        color: var(--primary-color);
-        font-size: 2.5em;
-        font-weight: bold;
-    }
-
-    .section-heading {
-        color: var(--section-heading-color);
-        font-size: 1.8em;
-        margin-top: 25px;
-        margin-bottom: 15px;
-        border-bottom: 2px solid var(--primary-color);
-        padding-bottom: 5px;
-    }
-
-    /* Filters section */
-    .filters-section .filters-top {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-    }
-
-    .filters-section .filter-button {
-        padding: 12px 20px;
-        border: 1px solid var(--primary-color);
-        border-radius: 8px;
-        cursor: pointer;
-        background-color: transparent;
-        color: var(--primary-color);
-        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        font-size: 1rem;
-        font-weight: 500;
-    }
-
-        .filters-section .filter-button:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .filters-section .filter-button.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-    /* Commercial selector section */
-    .commercial-selector-section .form-group {
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .commercial-selector-section .form-label {
-        margin-right: 15px;
-        font-weight: bold;
-        color: var(--dark-text);
-        font-size: 1.1rem;
-    }
-
-    .commercial-selector-section .form-control {
-        width: auto;
-        display: inline-block;
-        max-width: 300px;
-        border-radius: 8px;
-        padding: 0.7rem;
-        border: 1px solid var(--border-color);
-    }
-
-    /* Objectifs table section */
-    .objectifs-table-section .table-responsive {
-        margin-bottom: 25px;
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .objectifs-table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: white;
-        font-size: 0.95rem;
-    }
-
-        .objectifs-table th,
-        .objectifs-table td {
-            border: 1px solid var(--border-color);
-            padding: 12px 8px;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .objectifs-table thead th {
-            background-color: var(--header-bg);
-            font-weight: bold;
-            color: var(--header-text-color);
-        }
-
-        .objectifs-table .header-row th {
-            vertical-align: bottom;
-        }
-
-        .objectifs-table .subheader-row th {
-            font-size: 0.85em;
-            padding: 8px 5px;
-        }
-
-        .objectifs-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .objectifs-table tbody td .readonly-value {
-            display: block;
-            text-align: end;
-            font-weight: normal;
-            color: var(--secondary-color);
-        }
-
-        .objectifs-table tbody td input[type="text"] {
-            width: 120px;
-            padding: 0.6rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            text-align: end;
-        }
-
-            .objectifs-table tbody td input[type="text"]:focus {
-                outline: none;
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
-            }
-
-        .objectifs-table .actions-column {
-            text-align: center;
-        }
-
-        .objectifs-table .save-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-            .objectifs-table .save-button:hover {
-                background-color: #0056b3;
-            }
-
-        .objectifs-table .evolution-row {
-            text-align: center;
-            font-weight: bold;
-            padding-top: 15px;
-            font-size: 0.9em;
-            color: var(--dark-text);
-        }
-
-        .objectifs-table .positive-evolution {
-            color: var(--success-color);
-        }
-
-        .objectifs-table .negative-evolution {
-            color: var(--danger-color);
-        }
-
-        .objectifs-table .encours-header {
-            background-color: #e0e0e0;
-            color: var(--dark-text);
-        }
-
-        .objectifs-table .objectifs-header {
-            background-color: #d0d0d0;
-            color: var(--dark-text);
-        }
-
-    /* Form submit button */
-    #objectifsForm .form-group.text-center button[type="submit"] {
-        background-color: var(--success-color);
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        transition: background-color 0.3s ease;
-    }
-
-        #objectifsForm .form-group.text-center button[type="submit"]:hover {
-            background-color: #1e7e34;
-        }
-
-    /* Responsive adjustments */
-    @@media (max-width: 768px) {
-        .objectifs-table {
-            font-size: 0.8em;
-        }
-
-            .objectifs-table th,
-            .objectifs-table td {
-                padding: 8px 5px;
-            }
-
-        .commercial-selector-section .form-control {
-            max-width: 100%;
-        }
-
-        .filters-section .filters-top {
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .filters-section .filter-button {
-            padding: 8px 14px;
-            font-size: 0.9em;
-        }
-    }
-
-    @@media (max-width: 576px) {
-        .objectifs-table th:nth-child(2), /* Encours 2023 Total Tnd */
-        .objectifs-table td:nth-child(2),
-        .objectifs-table th:nth-child(3), /* Encours 2023 Total Dépôt */
-        .objectifs-table td:nth-child(3),
-        .objectifs-table th:nth-child(4), /* Encours 2024 Total Tnd */
-        .objectifs-table td:nth-child(4),
-        .objectifs-table th:nth-child(5), /* Encours 2024 Total Dépôt */
-        .objectifs-table td:nth-child(5) {
-            display: none;
-        }
-
-        .objectifs-table .evolution-row td {
-            display: none;
-        }
-    }
-</style>
+</body>
+</html>

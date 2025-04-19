@@ -104,6 +104,13 @@ namespace SujetPFE.Infrastructure
 
             modelBuilder.Entity<ObjectifSuivi>()
                 .Property(o => o.Realisation).HasColumnType("decimal(18, 2)");
+
+            // Configuration de la relation entre Groupe et Employé Responsable
+            modelBuilder.Entity<Groupe>()
+                .HasOne(g => g.EmployeResponsable)
+                .WithMany(e => e.GroupesResponsables) // Assurez-vous d'avoir cette collection dans Employee
+                .HasForeignKey(g => g.EmployeResponsableId)
+                .OnDelete(DeleteBehavior.Restrict); // Ou autre comportement souhaité
         }
     }
 }
