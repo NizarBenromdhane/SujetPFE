@@ -19,9 +19,9 @@
     var groupesSelectList = ViewBag.Groupes as List<SelectListItem>;
 }
 
-<div class="saisie-credit-container biat-theme">
-    <h1>Saisie Multiple Objectifs Solde Crédits</h1>
-    <h2>Saisie des Objectifs de Crédit</h2>
+<div class="saisie-credit-container biat-theme full-width-container">
+    <h1 class="form-title">Saisie Multiple Objectifs Solde Crédits</h1>
+    <h2 class="form-subtitle">Saisie des Objectifs de Crédit</h2>
 
     @if (ViewBag.Message != null)
     {
@@ -31,194 +31,209 @@
     }
 
     <form method="post">
-        <table class="objectifs-table">
-            <thead>
-                <tr class="header-row">
-                    <th style="width: 15%;">Période</th>
-                    <th style="width: 20%;">Type de Crédit</th>
-                    <th style="width: 15%;">Montant Objectif (TND)</th>
-                    <th style="width: 25%;">Employé (Optionnel)</th>
-                    <th style="width: 15%;">Groupe (Optionnel)</th>
-                    <th style="width: 10%;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="objectifs-body">
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="objectifs-table">
+                <thead>
+                    <tr class="header-row">
+                        <th>Période</th>
+                        <th>Type de Crédit</th>
+                        <th>Montant Objectif (TND)</th>
+                        <th>Employé (Optionnel)</th>
+                        <th>Groupe (Optionnel)</th>
+                        <th class="actions-header">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="objectifs-body">
+                </tbody>
+            </table>
+        </div>
 
-        <button type="button" id="ajouter-objectif" class="btn btn-secondary mt-2">Ajouter un Objectif</button>
+        <button type="button" id="ajouter-objectif" class="btn btn-add mt-3"><i class="fas fa-plus-circle"></i> Ajouter un Objectif</button>
 
-        <div class="form-group text-center mt-3">
-            <button type="submit" class="btn btn-primary btn-lg">Enregistrer les Objectifs</button>
+        <div class="form-group text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Enregistrer les Objectifs</button>
         </div>
     </form>
 </div>
 
 <style>
-    /* Styles CSS ajustés pour une meilleure visibilité */
+    /* Styles CSS améliorés et professionnels - BIAT Theme */
     .biat-theme {
-        --primary-color: #0047AB;
-        --secondary-color: #F0F0F0;
-        --accent-color: #FFA500;
+        --biat-blue-dark: #003377; /* Deeper BIAT Blue */
+        --biat-green-dark: #00803E; /* Deeper BIAT Green */
+        --biat-secondary-bg: #ECECEC; /* Light gray background */
+        --biat-text-color: #333;
+        --biat-header-bg: #f0f0f0; /* Light gray for header */
+        --biat-border-color: #ccc;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #333;
+        color: var(--biat-text-color);
     }
 
-    .saisie-credit-container {
-        padding: 20px;
-        background-color: var(--secondary-color);
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .full-width-container {
+        width: 98%;
+        margin: 20px auto;
+        padding: 30px;
+        background-color: var(--biat-secondary-bg); /* Use light gray */
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
-        .saisie-credit-container h1 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-size: 2em;
-            text-align: center;
-        }
+    .form-title {
+        color: var(--biat-blue-dark); /* Deeper BIAT Blue for title */
+        margin-bottom: 30px;
+        font-size: 2.8em;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+    }
 
-        .saisie-credit-container h2 {
-            color: #555;
-            margin-bottom: 10px;
-            font-size: 1.5em;
-            text-align: center;
-            font-weight: normal;
-        }
+    .form-subtitle {
+        color: #555;
+        margin-bottom: 25px;
+        font-size: 1.8em;
+        text-align: center;
+        font-weight: normal;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
 
     .objectifs-table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        border-radius: 8px;
+        margin-top: 25px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
         overflow: hidden;
-        border: 1px solid #e0e0e0;
-        table-layout: fixed; /* Ajouté pour un contrôle précis des largeurs */
+        border: 1px solid var(--biat-border-color);
+        background-color: white;
     }
 
+        .objectifs-table thead tr {
+            position: sticky;
+            top: 0;
+            background-color: var(--biat-header-bg); /* Light gray for header background */
+            color: var(--biat-text-color); /* Dark text on header */
+            z-index: 2;
+            border-bottom: 2px solid var(--biat-blue-dark); /* Deeper blue for header bottom border */
+        }
+
         .objectifs-table .header-row th {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px;
+            padding: 15px 20px;
             text-align: center;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .objectifs-table td {
-            border-bottom: 1px solid #e0e0e0;
-            padding: 8px;
+            border-bottom: 1px solid var(--biat-border-color);
+            padding: 12px 20px;
             text-align: center;
-            font-size: 0.9em;
-            vertical-align: middle; /* Alignement vertical au centre */
+            font-size: 1em;
+            vertical-align: middle;
+            transition: background-color 0.2s ease-in-out;
         }
 
         .objectifs-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f9f9f9; /* Very light gray for even rows */
         }
+
+        .objectifs-table tbody tr:hover {
+            background-color: #e6f7ff; /* Very light blue on hover */
+        }
+
+    .actions-header {
+        text-align: center;
+    }
 
     /* Styles spécifiques pour les champs de formulaire */
     .form-control {
-        padding: 6px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 0.9em;
-        width: 100%; /* Prend toute la largeur disponible */
+        padding: 10px 12px;
+        border: 1px solid var(--biat-border-color);
+        border-radius: 8px;
+        font-size: 1em;
+        width: calc(100% - 24px);
         box-sizing: border-box;
-        height: 34px; /* Hauteur fixe pour uniformité */
+        height: 42px;
+        transition: border-color 0.2s ease-in-out;
+        background-color: white; /* Ensure white input backgrounds */
     }
 
+        .form-control:focus {
+            border-color: var(--biat-green-dark); /* Deeper BIAT Green on focus */
+            outline: none;
+            box-shadow: 0 0 6px rgba(0, 128, 62, 0.4); /* Green focus glow */
+        }
+
     select.form-control {
-        height: 34px; /* Hauteur spécifique pour les select */
-        padding: 5px;
+        height: 42px;
+        padding: 10px;
     }
 
     input[type="number"].form-control {
-        padding: 6px 10px;
+        padding: 10px 14px;
     }
 
     /* Boutons */
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         border: none;
-        padding: 8px 12px;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 0.9em;
-        transition: background-color 0.3s ease;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        padding: 12px 20px;
+    }
+
+    .btn-primary {
+        background-color: var(--biat-blue-dark); /* Deeper BIAT Blue for primary action */
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #002966;
+            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d; /* A more standard gray */
+        color: white;
     }
 
         .btn-secondary:hover {
             background-color: #5a6268;
+            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.15);
         }
 
-    .btn-primary {
-        background-color: var(--primary-color);
+    .btn-add {
+        background-color: var(--biat-green-dark); /* Deeper BIAT Green for add */
         color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
+        width: 100%;
     }
 
-        .btn-primary:hover {
-            background-color: #003d82;
+        .btn-add:hover {
+            background-color: #006633;
+            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.15);
         }
-
-    .actions-column {
-        text-align: center;
-    }
 
     .btn-danger {
-        background-color: #dc3545;
+        background-color: #dc3545; /* Standard red for delete */
         color: white;
-        border: none;
-        padding: 6px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8em;
-        transition: background-color 0.3s ease;
+        font-size: 1em;
+        padding: 8px 15px;
     }
 
         .btn-danger:hover {
             background-color: #c82333;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
         }
-
-    /* Ajustements spécifiques pour les colonnes */
-    .objectifs-table th:nth-child(1),
-    .objectifs-table td:nth-child(1) {
-        width: 15%; /* Période */
-    }
-
-    .objectifs-table th:nth-child(2),
-    .objectifs-table td:nth-child(2) {
-        width: 20%; /* Type de Crédit */
-    }
-
-    .objectifs-table th:nth-child(3),
-    .objectifs-table td:nth-child(3) {
-        width: 15%; /* Montant Objectif */
-    }
-
-    .objectifs-table th:nth-child(4),
-    .objectifs-table td:nth-child(4) {
-        width: 25%; /* Employé */
-    }
-
-    .objectifs-table th:nth-child(5),
-    .objectifs-table td:nth-child(5) {
-        width: 15%; /* Groupe */
-    }
-
-    .objectifs-table th:nth-child(6),
-    .objectifs-table td:nth-child(6) {
-        width: 10%; /* Actions */
-    }
 </style>
 
 @section Scripts {
@@ -226,17 +241,28 @@
         $(document).ready(function () {
             function addCreditObjectifRow() {
                 var newRow = $('<tr>');
+
+                // Période Select
                 var periodSelect = $('<select>', { class: 'form-control', name: '[].Periode' });
         @foreach (var periode in periodes)
         {
             @:periodSelect.append($('<option>', { value: '@periode.Value', text: '@periode.Text' }));
         }
+                var periodCell = $('<td>').append(periodSelect);
+
+                // Type de Crédit Select
                 var typeCreditSelect = $('<select>', { class: 'form-control', name: '[].TypeCredit' });
         @foreach (var type in typesCredit)
         {
             @:typeCreditSelect.append($('<option>', { value: '@type.Value', text: '@type.Text' }));
         }
+                var typeCreditCell = $('<td>').append(typeCreditSelect);
+
+                // Montant Objectif Input
                 var montantInput = $('<input>', { type: 'number', class: 'form-control', name: '[].MontantObjectif', required: true });
+                var montantCell = $('<td>').append(montantInput);
+
+                // Employé Select
                 var employeSelect = $('<select>', { class: 'form-control', name: '[].EmployeId' });
                 employeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
         @if (employesSelectList != null)
@@ -246,6 +272,9 @@
                 @:employeSelect.append($('<option>', { value: '@employe.Value', text: '@employe.Text' }));
             }
         }
+                var employeCell = $('<td>').append(employeSelect);
+
+                // Groupe Select
                 var groupeSelect = $('<select>', { class: 'form-control', name: '[].GroupeId' });
                 groupeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
         @if (groupesSelectList != null)
@@ -255,17 +284,17 @@
                 @:groupeSelect.append($('<option>', { value: '@groupe.Value', text: '@groupe.Text' }));
             }
         }
-                var actions = $('<td class="actions-column">').append($('<button>', { type: 'button', class: 'btn btn-danger btn-sm', text: 'Supprimer' }).on('click', function () {
-                    $(this).closest('tr').remove();
-                }));
+                var groupeCell = $('<td>').append(groupeSelect);
 
-                newRow.append($('<td>').append(periodSelect));
-                newRow.append($('<td>').append(typeCreditSelect));
-                newRow.append($('<td>').append(montantInput));
-                newRow.append($('<td>').append(employeSelect));
-                newRow.append($('<td>').append(groupeSelect));
-                newRow.append(actions);
+                // Actions Cell
+                var actions = $('<td class="actions-column">').append(
+                    $('<button>', { type: 'button', class: 'btn btn-danger btn-sm', html: '<i class="fas fa-trash"></i> Supprimer' })
+                        .on('click', function () {
+                            $(this).closest('tr').remove();
+                        })
+                );
 
+                newRow.append(periodCell, typeCreditCell, montantCell, employeCell, groupeCell, actions);
                 $('#objectifs-body').append(newRow);
             }
 

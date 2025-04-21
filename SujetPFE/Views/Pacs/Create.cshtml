@@ -8,7 +8,7 @@
 <head>
     <style>
         /* ======================================== */
-        /* Variables CSS pour le thème BIAT        */
+        /* Variables CSS pour le thème BIAT         */
         /* ======================================== */
         :root {
             --biat-blue: #003A75;
@@ -59,7 +59,7 @@
         }
 
         /* ======================================== */
-        /* Styles du formulaire                    */
+        /* Styles du formulaire                     */
         /* ======================================== */
         .form-group {
             margin-bottom: 25px;
@@ -101,7 +101,7 @@
         }
 
         /* ======================================== */
-        /* Styles pour la section des KPIs        */
+        /* Styles pour la section des KPIs         */
         /* ======================================== */
         .form-group > label {
             /* Style spécifique pour le label des KPIs si nécessaire */
@@ -161,7 +161,7 @@
             }
 
         /* ======================================== */
-        /* Styles pour les boutons d'action        */
+        /* Styles pour les boutons d'action         */
         /* ======================================== */
         .form-group:last-child {
             margin-bottom: 0;
@@ -240,6 +240,23 @@
         <div class="form-group">
             <label class="control-label">KPI Values</label>
             <div id="kpiValuesContainer">
+                @if (Model?.KPIValues != null)
+                {
+                    for (int i = 0; i < Model.KPIValues.Count; i++)
+                    {
+                        <div class="row mb-2 kpi-input-row">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="kpiName[]" placeholder="Nom du KPI" value="@Model.KPIValues[i].Name">
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="kpiValue[]" placeholder="Valeur du KPI" value="@Model.KPIValues[i].Value">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" onclick="removeKPIValue(this)" class="btn btn-danger btn-sm">Supprimer</button>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
             <span asp-validation-for="KPIValues" class="text-danger"></span>
             <button type="button" onclick="addKPIValue()" class="btn btn-outline-secondary btn-sm">Ajouter un KPI</button>
@@ -256,8 +273,6 @@
             <textarea asp-for="Limites" class="form-control"></textarea>
             <span asp-validation-for="Limites" class="text-danger"></span>
         </div>
-
-        <input type="hidden" id="kpiData" name="kpiData" value="" />
 
         <div class="form-group">
             <input type="submit" value="Enregistrer" class="btn btn-primary" />
@@ -290,24 +305,8 @@
             button.closest('.kpi-input-row').remove();
         }
 
-        document.querySelector('form').addEventListener('submit', function(event) {
-            const kpiValues = [];
-            const nameInputs = document.querySelectorAll('#kpiValuesContainer input[name="kpiName[]"]');
-            const valueInputs = document.querySelectorAll('#kpiValuesContainer input[name="kpiValue[]"]');
-
-            for (let i = 0; i < nameInputs.length; i++) {
-                if (nameInputs[i].value && valueInputs[i].value) {
-                    kpiValues.push({ Name: nameInputs[i].value, Value: valueInputs[i].value });
-                }
-            }
-
-            document.getElementById('kpiData').value = JSON.stringify(kpiValues);
-
-            if (kpiValues.length === 0) {
-                alert("Au moins une valeur KPI est requise.");
-                event.preventDefault();
-                return;
-            }
-        });
+        // The hidden input is no longer needed.
+        // The form will now automatically collect the KPI data
+        // based on the 'name' attributes of the input fields.
     </script>
 }
