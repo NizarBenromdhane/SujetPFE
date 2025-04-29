@@ -28,15 +28,13 @@ namespace SujetPFE.Controllers
         {
             try
             {
-                var employes = _context.Employees
+                ViewBag.Employes = _context.Employees
                     .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
                     .ToList();
-                ViewBag.Employes = employes;
 
-                var groupes = _context.Groupes
+                ViewBag.Groupes = _context.Groupes
                     .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nom })
                     .ToList();
-                ViewBag.Groupes = groupes;
             }
             catch (Exception ex)
             {
@@ -44,7 +42,7 @@ namespace SujetPFE.Controllers
                 ViewBag.Employes = new List<SelectListItem>();
                 ViewBag.Groupes = new List<SelectListItem>();
             }
-            return View(); // This line should look for /Views/Objectivations/SaisieCredit.cshtml
+            return View();
         }
 
         [HttpPost]
@@ -61,7 +59,7 @@ namespace SujetPFE.Controllers
                     ViewBag.Message = "Les objectifs de crédit ont été enregistrés avec succès.";
                     ViewBag.IsSuccess = true;
                     ModelState.Clear();
-                    return View(); // Stay on the same page after successful save
+                    return View();
                 }
                 catch (Exception ex)
                 {
@@ -101,25 +99,22 @@ namespace SujetPFE.Controllers
         [HttpGet]
         public IActionResult SaisieDepot()
         {
-            List<SelectListItem> employesFromDb = new List<SelectListItem>();
             try
             {
-                employesFromDb = _context.Employees
+                ViewBag.ChargesAffaires = _context.Employees
                     .Select(e => new SelectListItem { Value = e.Id.ToString(), Text = e.Nom })
                     .ToList();
-                ViewBag.ChargesAffaires = employesFromDb;
+
+                int? currentEmployeeId = _context.Employees.FirstOrDefault(e => e.Nom == "HB")?.Id;
+                var groupesAvecEncours = GetGroupesAvecEncours(currentEmployeeId);
+                return View(groupesAvecEncours);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching employees: {ex.Message}");
+                Console.WriteLine($"Error in SaisieDepot GET: {ex.Message}");
                 ViewBag.ChargesAffaires = new List<SelectListItem>();
+                return View(new List<ObjectifDepotViewModel>());
             }
-
-            // Initially load groups based on the logged-in employee or a default if not logged in
-            // Assuming you have a way to identify the current employee (e.g., via User.Identity)
-            int? currentEmployeeId = _context.Employees.FirstOrDefault(e => e.Nom == "HB")?.Id; // Replace with your logic
-            var groupesAvecEncours = GetGroupesAvecEncours(currentEmployeeId);
-            return View(groupesAvecEncours);
         }
 
         private List<ObjectifDepotViewModel> GetGroupesAvecEncours(int? chargeAffairesId = null)
@@ -128,34 +123,36 @@ namespace SujetPFE.Controllers
 
             if (chargeAffairesId.HasValue)
             {
-                // Filter groups where the current employee is the EmployeResponsable
                 groupesQuery = groupesQuery.Where(g => g.EmployeResponsableId == chargeAffairesId.Value);
             }
 
-            return groupesQuery.Select(g => new ObjectifDepotViewModel
+            var result = groupesQuery.Select(g => new ObjectifDepotViewModel
             {
                 Groupe = g,
                 GroupeId = g.Id,
-                GroupeLibelle = g.Nom,
-                Encours2023_TndDat = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                GroupeNom = g.Nom,
+                // Remove Devise or get it from Groupe if available
+                Devise = "EUR", // Default value or g.Devise if Groupe has a Devise property
+
+                Encours2023Dat = _context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAT" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
-                    .Sum(e => e.Solde) ?? 0m,
+                    .Sum(e => (decimal?)e.Solde),
 
-                Encours2023_TndDav = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                Encours2023Dav = _context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAV" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
-                    .Sum(e => e.Solde) ?? 0m,
+                    .Sum(e => (decimal?)e.Solde),
 
-                Encours2024_TndDat = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                Encours2024Dat = _context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAT" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
-                    .Sum(e => e.Solde) ?? 0m,
+                    .Sum(e => (decimal?)e.Solde),
 
-                Encours2024_TndDav = (decimal?)_context.Encours
-                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                Encours2024Dav = _context.Encours
+                    .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAV" &&
                                 e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
-                    .Sum(e => e.Solde) ?? 0m,
+                    .Sum(e => (decimal?)e.Solde),
 
                 Objectif2025 = _context.ObjectifsCreditDepots
                     .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
@@ -165,11 +162,23 @@ namespace SujetPFE.Controllers
                         MontantDav = o.MontantDav
                     })
                     .FirstOrDefault() ?? new Objectif2025ViewModel(),
-                EmployeeId = _context.ObjectifsCreditDepots
-                    .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
-                    .Select(o => (int?)o.EmployeId)
-                    .FirstOrDefault()
+
+                EmployeResponsableId = g.EmployeResponsableId
             }).ToList();
+
+            // Calculate derived properties
+            foreach (var item in result)
+            {
+                item.Encours2023Total = (item.Encours2023Dat ?? 0) + (item.Encours2023Dav ?? 0);
+                item.Encours2024Total = (item.Encours2024Dat ?? 0) + (item.Encours2024Dav ?? 0);
+                item.Evolution2024 = item.Encours2023Total != 0 ?
+                    (item.Encours2024Total - item.Encours2023Total) / item.Encours2023Total * 100 : 0;
+                item.Objectif2025Total = item.Objectif2025.TotalDep;
+                item.Evolution2025 = item.Encours2024Total != 0 ?
+                    (item.Objectif2025Total - item.Encours2024Total) / item.Encours2024Total * 100 : 0;
+            }
+
+            return result;
         }
 
         [HttpPost]
@@ -182,16 +191,19 @@ namespace SujetPFE.Controllers
                 {
                     try
                     {
-                        var objectif = _context.ObjectifsCreditDepots.FirstOrDefault(o => o.GroupeId == item.GroupeId && o.TypeObjectif == "Dépôt" && o.Annee == 2025);
+                        var objectif = _context.ObjectifsCreditDepots
+                            .FirstOrDefault(o => o.GroupeId == item.GroupeId &&
+                                               o.TypeObjectif == "Dépôt" &&
+                                               o.Annee == 2025);
 
-                        decimal montantTotal = (item.Objectif2025?.MontantDat ?? 0m) + (item.Objectif2025?.MontantDav ?? 0m);
+                        decimal montantTotal = item.Objectif2025.TotalDep;
 
                         if (objectif != null)
                         {
                             objectif.Montant = montantTotal;
-                            objectif.EmployeId = item.EmployeeId;
-                            objectif.MontantDat = item.Objectif2025?.MontantDat;
-                            objectif.MontantDav = item.Objectif2025?.MontantDav;
+                            objectif.EmployeId = item.EmployeResponsableId;
+                            objectif.MontantDat = item.Objectif2025.MontantDat;
+                            objectif.MontantDav = item.Objectif2025.MontantDav;
                             _context.Entry(objectif).State = EntityState.Modified;
                         }
                         else if (montantTotal > 0)
@@ -201,11 +213,11 @@ namespace SujetPFE.Controllers
                                 GroupeId = item.GroupeId,
                                 TypeObjectif = "Dépôt",
                                 Montant = montantTotal,
-                                MontantDat = item.Objectif2025?.MontantDat,
-                                MontantDav = item.Objectif2025?.MontantDav,
+                                MontantDat = item.Objectif2025.MontantDat,
+                                MontantDav = item.Objectif2025.MontantDav,
                                 DateDebut = new DateTime(2025, 1, 1),
                                 DateFin = new DateTime(2025, 12, 31),
-                                EmployeId = item.EmployeeId
+                                EmployeId = item.EmployeResponsableId
                             };
                             _context.ObjectifsCreditDepots.Add(objectif);
                         }
@@ -224,7 +236,7 @@ namespace SujetPFE.Controllers
                     _context.SaveChanges();
                     TempData["Message"] = "Les objectifs de dépôt ont été enregistrés avec succès.";
                     TempData["IsSuccess"] = true;
-                    return RedirectToAction("Dashboard", "Objectivations");
+                    return RedirectToAction("Dashboard");
                 }
                 catch (Exception ex)
                 {
@@ -234,6 +246,7 @@ namespace SujetPFE.Controllers
                 }
             }
 
+            // Repopulate ViewBag if ModelState is invalid or an error occurred
             try
             {
                 ViewBag.ChargesAffaires = _context.Employees
@@ -245,29 +258,37 @@ namespace SujetPFE.Controllers
                 Console.WriteLine($"Error fetching employees for post-back: {ex.Message}");
                 ViewBag.ChargesAffaires = new List<SelectListItem>();
             }
+
             return View(model);
         }
 
         [HttpGet]
         public IActionResult CreditDashboard()
         {
-            try
-            {
-                var creditData = _context.CreditObjectifs.ToList();
-                ViewBag.TotalCreditObjectives = creditData.Count();
-                ViewBag.TotalCreditValue = creditData.Sum(o => o.MontantObjectif);
-                ViewBag.AverageCreditValue = creditData.Any() ? creditData.Average(o => o.MontantObjectif) : 0;
-                ViewBag.CreditData = creditData;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in CreditDashboard: {ex.Message}");
-                ViewBag.TotalCreditObjectives = 0;
-                ViewBag.TotalCreditValue = 0;
-                ViewBag.AverageCreditValue = 0;
-                ViewBag.CreditData = new List<CreditObjectif>();
-            }
-            return View("CreditDashboard");
+            // *** DONNÉES DE TEST POUR L'ENCOURS PAR GROUPE ***
+            var encoursTest = new List<dynamic>
+    {
+        new { Nom = "Groupe A", Encours2023 = 150000.00m, Encours2024 = 165000.00m },
+        new { Nom = "Groupe B", Encours2023 = 220000.00m, Encours2024 = 200000.00m },
+        new { Nom = "Groupe C", Encours2023 = 90000.00m, Encours2024 = 100000.00m }
+    };
+            ViewBag.CreditGroupData = encoursTest;
+
+            // *** DONNÉES DE TEST POUR LES OBJECTIFS DE CRÉDIT ***
+            var objectifsTest = new List<CreditObjectif>
+    {
+        new CreditObjectif { Periode = "Mars 2025", TypeCredit = "Personnel", MontantObjectif = 50000.00m, EmployeId = 1, GroupeId = 1 },
+        new CreditObjectif { Periode = "Avril 2025", TypeCredit = "Immobilier", MontantObjectif = 120000.00m, EmployeId = 2, GroupeId = 2 },
+        new CreditObjectif { Periode = "Avril 2025", TypeCredit = "Auto", MontantObjectif = 35000.00m, EmployeId = 1, GroupeId = 1 }
+    };
+            ViewBag.CreditData = objectifsTest;
+
+            // *** CALCULS BASÉS SUR LES DONNÉES DE TEST (OU VOS DONNÉES RÉELLES) ***
+            ViewBag.TotalCreditObjectives = objectifsTest.Count();
+            ViewBag.TotalCreditValue = objectifsTest.Sum(o => o.MontantObjectif);
+            ViewBag.AverageCreditValue = objectifsTest.Any() ? objectifsTest.Average(o => o.MontantObjectif) : 0;
+
+            return View();
         }
 
         [HttpGet]
@@ -291,10 +312,9 @@ namespace SujetPFE.Controllers
                 ViewBag.TotalDepotValue = 0;
                 ViewBag.DepotData = new List<ObjectifCreditDepot>();
             }
-            return View("DepotDashboard");
+            return View();
         }
 
-        // Action to fetch groups data based on selected employee (for AJAX)
         [HttpGet]
         public async Task<IActionResult> GetGroupesData(int? employeId)
         {
@@ -312,7 +332,7 @@ namespace SujetPFE.Controllers
             foreach (var g in groupes)
             {
                 var objectif = await _context.ObjectifsCreditDepots
-                    .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025 && o.EmployeId == employeId.Value)
+                    .Where(o => o.GroupeId == g.Id && o.TypeObjectif == "Dépôt" && o.Annee == 2025)
                     .Select(o => new Objectif2025ViewModel
                     {
                         MontantDat = o.MontantDat,
@@ -324,35 +344,46 @@ namespace SujetPFE.Controllers
                 {
                     Groupe = g,
                     GroupeId = g.Id,
-                    GroupeLibelle = g.Nom,
-                    Encours2023_TndDat = await _context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                    GroupeNom = g.Nom,
+                    Devise = "EUR", // Default value or get from Groupe if available
+
+                    Encours2023Dat = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAT" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
-                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0,
 
-                    Encours2023_TndDav = await _context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                    Encours2023Dav = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAV" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2023)
-                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0,
 
-                    Encours2024_TndDat = await _context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                    Encours2024Dat = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAT" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
-                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0,
 
-                    Encours2024_TndDav = await _context.Encours
-                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" &&
+                    Encours2024Dav = await _context.Encours
+                        .Where(e => e.GroupeId == g.Id && e.TypeEncours == "dépôt" && e.Sens == "DAV" &&
                                     e.DateDerniereTransaction.HasValue && e.DateDerniereTransaction.Value.Year == 2024)
-                        .SumAsync(e => (decimal?)e.Solde) ?? 0m,
+                        .SumAsync(e => (decimal?)e.Solde) ?? 0,
 
-                    Objectif2025 = objectif
+                    Objectif2025 = objectif,
+                    EmployeResponsableId = g.EmployeResponsableId
                 };
+
+                // Calculate derived properties
+                viewModel.Encours2023Total = (viewModel.Encours2023Dat ?? 0) + (viewModel.Encours2023Dav ?? 0);
+                viewModel.Encours2024Total = (viewModel.Encours2024Dat ?? 0) + (viewModel.Encours2024Dav ?? 0);
+                viewModel.Evolution2024 = viewModel.Encours2023Total != 0 ?
+                    (viewModel.Encours2024Total - viewModel.Encours2023Total) / viewModel.Encours2023Total * 100 : 0;
+                viewModel.Objectif2025Total = viewModel.Objectif2025.TotalDep;
+                viewModel.Evolution2025 = viewModel.Encours2024Total != 0 ?
+                    (viewModel.Objectif2025Total - viewModel.Encours2024Total) / viewModel.Encours2024Total * 100 : 0;
 
                 result.Add(viewModel);
             }
 
             return Json(result);
         }
-
     }
 }

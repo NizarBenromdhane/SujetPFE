@@ -4,7 +4,6 @@
 }
 
 <div class="dashboard-container biat-theme">
-
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Objectivations")">Accueil</a></li>
@@ -23,7 +22,61 @@
         </div>
     </div>
 
-    <!-- Cartes de synthèse -->
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h2 class="card-title mb-0">
+                <i class="bi bi-bar-chart me-2"></i> Encours de Crédit par Groupe (2023 vs 2024)
+            </h2>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.CreditGroupData != null && (ViewBag.CreditGroupData is List<dynamic>) && (ViewBag.CreditGroupData as List<dynamic>).Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped credit-data-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Groupe</th>
+                                <th class="text-end">Encours Crédit 2023 (TND)</th>
+                                <th class="text-end">Encours Crédit 2024 (TND)</th>
+                                <th class="text-center">Évolution (2024 vs 2023)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var groupe in ViewBag.CreditGroupData as List<dynamic>)
+                            {
+                                <tr>
+                                    <td>@groupe.Nom</td>
+                                    <td class="text-end">@String.Format("{0:N2}", groupe.Encours2023)</td>
+                                    <td class="text-end">@String.Format("{0:N2}", groupe.Encours2024)</td>
+                                    <td class="text-center">
+                                        @{
+                                            decimal evolution = groupe.Encours2024 - groupe.Encours2023;
+                                            string evolutionFormatted = String.Format("{0:N2}", evolution);
+                                            string pourcentageEvolution = "N/A";
+                                            if (groupe.Encours2023 != 0)
+                                            {
+                                                pourcentageEvolution = String.Format("{0:P2}", (evolution / groupe.Encours2023));
+                                            }
+                                        }
+                                        <span class="@(evolution >= 0 ? "positive" : "negative")">
+                                            @evolutionFormatted (@pourcentageEvolution)
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>Aucune donnée d'encours de crédit par groupe disponible.
+                </div>
+            }
+        </div>
+    </div>
+
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
             <div class="card summary-card h-100">
@@ -72,7 +125,6 @@
         </div>
     </div>
 
-    <!-- Section graphique -->
     <div class="card mb-4">
         <div class="card-header bg-white">
             <h2 class="card-title mb-0">
@@ -86,14 +138,14 @@
         </div>
     </div>
 
-    <!-- Tableau des objectifs -->
     <div class="card">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <h2 class="card-title mb-0">
                 <i class="bi bi-table me-2"></i> Objectifs de Crédit
             </h2>
             <div class="dropdown">
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-funnel me-1"></i>Filtrer
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="filterDropdown">
@@ -145,7 +197,6 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center mt-3">
                         <li class="page-item disabled">
@@ -174,13 +225,13 @@
         </div>
     </div>
 
-    <!-- Bouton de retour -->
     <div class="text-center mt-4">
         <a href="@Url.Action("Dashboard", "Objectivations")" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left-circle me-2"></i> Retour au menu principal
         </a>
     </div>
 </div>
+
 
 <style>
     .dashboard-container {
@@ -189,7 +240,7 @@
     }
 
     .dashboard-title {
-        color: var(--primary-color);
+        color: #0047AB; /* BIAT primary color (blue) from previous analysis */
         font-weight: 600;
     }
 
@@ -200,9 +251,9 @@
         transition: transform 0.2s;
     }
 
-        .summary-card:hover {
-            transform: translateY(-5px);
-        }
+    .summary-card:hover {
+        transform: translateY(-5px);
+    }
 
     .summary-icon {
         width: 50px;
@@ -219,7 +270,7 @@
     }
 
     .summary-value {
-        color: var(--primary-color);
+        color: #0047AB; /* BIAT primary color (blue) */
         font-weight: 700;
     }
 
@@ -243,6 +294,44 @@
         font-weight: 500;
         padding: 0.35em 0.65em;
     }
+
+    /* Styles for the Encours table */
+    .credit-data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px; /* Add some space above the table */
+    }
+
+    .credit-data-table th,
+    .credit-data-table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .credit-data-table th {
+        background-color: #f8f9fa; /* Light grey background for header */
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .credit-data-table td {
+        text-align: center;
+    }
+
+    .credit-data-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9; /* Even rows slightly darker */
+    }
+
+    .positive {
+        color: green;
+        font-weight: bold;
+    }
+
+    .negative {
+        color: red;
+        font-weight: bold;
+    }
 </style>
 
 @section Scripts {
@@ -251,12 +340,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Données pour le graphique
             const creditData = @Html.Raw(Json.Serialize(ViewBag.CreditData));
             const creditTypes = {};
 
-            // Agrégation des données par type de crédit
             creditData.forEach(item => {
                 if (!creditTypes[item.typeCredit]) {
                     creditTypes[item.typeCredit] = 0;
@@ -268,13 +356,11 @@
             const data = Object.values(creditTypes);
             const total = data.reduce((a, b) => a + b, 0);
 
-            // Couleurs personnalisées
             const backgroundColors = [
                 '#0047AB', '#2E8B57', '#FF6347', '#9370DB', '#FFD700',
                 '#20B2AA', '#FF69B4', '#1E90FF', '#FF8C00', '#32CD32'
             ];
 
-            // Création du graphique
             const ctx = document.getElementById('creditPieChart').getContext('2d');
             const chart = new Chart(ctx, {
                 type: 'pie',
@@ -301,7 +387,7 @@
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     const value = context.raw;
                                     const percentage = Math.round((value / total) * 100);
                                     return `${context.label}: ${value.toLocaleString()} TND (${percentage}%)`;
@@ -329,11 +415,9 @@
                 plugins: [ChartDataLabels]
             });
 
-            // Gestion des filtres
             document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('click', function(e) {
+                item.addEventListener('click', function (e) {
                     e.preventDefault();
-                    // Ici vous pourriez ajouter la logique de filtrage
                     const filterText = this.textContent;
                     document.getElementById('filterDropdown').innerHTML =
                         `<i class="bi bi-funnel me-1"></i>${filterText}`;

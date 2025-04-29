@@ -1,17 +1,307 @@
 ﻿@model IEnumerable<SujetPFE.Domain.Entities.PratiquesManagériales>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pratiques Managériales";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pratiques Managériales</title>
     <link rel="stylesheet" href="~/css/styleses.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styles CSS améliorés pour la page "Pratiques Managériales" */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #003A75; /* Couleur BIAT bleue */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            max-height: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #003A75;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 0.8px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+            .card i {
+                font-size: 3em;
+                color: #007ACC; /* Couleur BIAT bleu clair */
+                margin-bottom: 15px;
+            }
+
+            .card h2 {
+                color: #003A75;
+                margin-bottom: 10px;
+                font-size: 1.5em;
+                font-weight: 600;
+            }
+
+            .card p {
+                color: #666;
+                font-size: 1em;
+            }
+
+            .card .kpi-value {
+                font-size: 1.8em;
+                color: #28a745; /* Couleur verte pour les valeurs positives */
+                margin-top: 10px;
+                font-weight: bold;
+            }
+
+        .resource-section {
+            margin-bottom: 50px;
+        }
+
+            .resource-section h2 {
+                color: #003A75;
+                border-bottom: 3px solid #eee;
+                padding-bottom: 15px;
+                margin-bottom: 25px;
+                font-size: 2em;
+                font-weight: bold;
+            }
+
+        .resource-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .resource {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .resource:hover {
+                transform: translateY(-3px);
+            }
+
+            .resource img {
+                width: 100%;
+                height: auto;
+                display: block;
+                border-bottom: 1px solid #eee;
+                /* Modification ici pour utiliser l'URL externe */
+            }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .resource h3 {
+            color: #003A75;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .resource p {
+            color: #666;
+            margin-top: 0;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .resource .actions {
+            padding: 15px 20px;
+            text-align: right;
+            border-top: 1px solid #eee;
+            background-color: #f9f9f9;
+            border-radius: 0 0 10px 10px;
+        }
+
+            .resource .actions a {
+                display: inline-block;
+                padding: 10px 15px;
+                margin-left: 10px;
+                text-decoration: none;
+                color: #007ACC;
+                border: 1px solid #007ACC;
+                border-radius: 5px;
+                font-size: 0.9em;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+                .resource .actions a:hover {
+                    background-color: #007ACC;
+                    color: white;
+                }
+
+        .forum-section {
+            text-align: center;
+            padding: 40px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            margin-bottom: 50px;
+        }
+
+            .forum-section h2 {
+                color: #003A75;
+                margin-bottom: 20px;
+                font-size: 2em;
+                font-weight: bold;
+            }
+
+            .forum-section p {
+                color: #666;
+                margin-bottom: 25px;
+                font-size: 1.1em;
+            }
+
+        .forum-button {
+            background-color: #FFC857; /* Couleur BIAT jaune */
+            color: #003A75;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+            text-decoration: none; /* Supprimer le soulignement du lien */
+            display: inline-block; /* Pour que le padding et les dimensions fonctionnent */
+        }
+
+            .forum-button i {
+                margin-right: 10px;
+            }
+
+            .forum-button:hover {
+                background-color: #e0a800;
+            }
+
+        .pratiques-list-section {
+            margin-top: 40px;
+        }
+
+            .pratiques-list-section h2 {
+                color: #003A75;
+                border-bottom: 3px solid #eee;
+                padding-bottom: 15px;
+                margin-bottom: 25px;
+                font-size: 2em;
+                font-weight: bold;
+            }
+
+        .pratiques-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+            .pratiques-table th, .pratiques-table td {
+                padding: 12px 18px;
+                text-align: left;
+                border-bottom: 1px solid #eee;
+            }
+
+            .pratiques-table th {
+                background-color: #f8f9fa;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .pratiques-table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+            .pratiques-table .actions a {
+                display: inline-block;
+                padding: 8px 12px;
+                margin-right: 5px;
+                text-decoration: none;
+                color: #007ACC;
+                border: 1px solid #007ACC;
+                border-radius: 5px;
+                font-size: 0.9em;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+                .pratiques-table .actions a:hover {
+                    background-color: #007ACC;
+                    color: white;
+                }
+
+        .create-new-button {
+            text-align: right;
+            margin-bottom: 30px;
+        }
+
+            .create-new-button a {
+                display: inline-block;
+                padding: 12px 20px;
+                text-decoration: none;
+                color: white;
+                background-color: #007ACC;
+                border-radius: 8px;
+                font-size: 1em;
+                transition: background-color 0.3s ease;
+                font-weight: 600;
+            }
+
+                .create-new-button a:hover {
+                    background-color: #0056b3;
+                }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -21,44 +311,143 @@
     <div class="container">
         <h1>Pratiques Managériales</h1>
 
+        <div class="create-new-button">
+            <a asp-action="Create"><i class="fas fa-plus"></i> Créer Nouveau</a>
+        </div>
+
         <div class="dashboard">
             <div class="card">
                 <i class="fas fa-users"></i>
-                <h2>Gestion d'équipe</h2>
-                <p>KPI : Taux de satisfaction de l'équipe</p>
+                <h2>Satisfaction Équipe</h2>
+                <p>Taux de satisfaction moyen</p>
+                <div class="kpi-value">85%</div>
             </div>
             <div class="card">
                 <i class="fas fa-chart-line"></i>
-                <h2>Gestion de projet</h2>
-                <p>KPI : Respect des délais et du budget</p>
+                <h2>Respect des Délais</h2>
+                <p>Pourcentage de projets à temps</p>
+                <div class="kpi-value">92%</div>
+            </div>
+            <div class="card">
+                <i class="fas fa-hand-holding-usd"></i>
+                <h2>Respect du Budget</h2>
+                <p>Pourcentage de projets dans le budget</p>
+                <div class="kpi-value">78%</div>
             </div>
         </div>
 
-        <div class="resources">
-            <h2>Bibliothèque de ressources</h2>
+        <div class="pratiques-list-section">
+            <h2>Liste des Pratiques Managériales</h2>
+            <table class="pratiques-table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Nom)</th>
+                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.Telephone)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Nom)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Telephone)</td>
+                            <td class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Modifier</a>
+                                <a asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Détails</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="resource-section">
+            <h2>Bibliothèque de Ressources Utiles</h2>
             <div class="resource-list">
                 <div class="resource">
-                    <img src="article.jpg" alt="Article">
-                    <h3>Les 10 compétences du manager moderne</h3>
-                    <p>Un article sur les compétences clés pour réussir en tant que manager.</p>
-                    <button>Lire la suite</button>
+                    <img src="~/images/article.jpg" alt="Article sur les compétences managériales" style="width: 100%; height: auto; min-height: 80px; max-height: 150px; object-fit: contain; float: right; margin-left: 10px;">
+                    <div class="resource-content">
+                        <h3>Les 10 Compétences Essentielles du Manager Moderne</h3>
+                        <p>Découvrez les compétences clés pour exceller en tant que leader dans le monde du travail actuel.</p>
+                        <div class="resource-details" id="article-details" style="display: none;">
+                            <p>Ceci est le contenu détaillé de l'article sur les 10 compétences essentielles du manager moderne. Vous pouvez inclure ici plus de texte, des liens, etc.</p>
+                            <button class="read-less-button" data-target="article-details">Lire moins</button>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="read-more-button" data-target="article-details">Lire l'article <i class="fas fa-arrow-right"></i></button>
+                    </div>
                 </div>
                 <div class="resource">
-                    <img src="guide.jpg" alt="Guide">
-                    <h3>Guide : Gestion de projet agile</h3>
-                    <p>Un guide pratique pour la gestion de projet agile.</p>
-                    <button>Télécharger</button>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcF2fYDvuMipZpJ_nc9K6rFTIjCDywzTuJgQ&s" alt="Guide de gestion de projet agile" style="width: 100%; height: auto; max-height: 150px; object-fit: cover;">
+                    <div class="resource-content">
+                        <h3>Guide Pratique : Gestion de Projet Agile</h3>
+                        <p>Un guide étape par étape pour appliquer les principes agiles dans vos projets.</p>
+                        <div class="resource-details" id="guide-details" style="display: none;">
+                            <p>Voici plus d'informations sur le guide pratique de gestion de projet agile. Détails supplémentaires, exemples, etc.</p>
+                            <button class="read-less-button" data-target="guide-details">Lire moins</button>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="read-more-button" data-target="guide-details">Lire la suite <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                <div class="resource">
+                    <img src="https://www.biat.com.tn/sites/default/files/2025-04/biat2.jpg" alt="Webinaire sur la communication d'équipe" style="width: 100%; height: auto; max-height: 150px; object-fit: cover;">
+                    <div class="resource-content">
+                        <h3>Webinaire : Améliorer la Communication au Sein de Votre Équipe</h3>
+                        <p>Inscrivez-vous à notre prochain webinaire pour des stratégies de communication efficaces.</p>
+                        <div class="resource-details" id="webinaire-details" style="display: none;">
+                            <p>Informations supplémentaires sur le webinaire, les dates, les intervenants, et le lien d'inscription pourraient être ici.</p>
+                            <button class="read-less-button" data-target="webinaire-details">Lire moins</button>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="read-more-button" data-target="webinaire-details">Lire la suite <i class="fas fa-arrow-right"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="forum">
-            <h2>Forum de discussion</h2>
-            <p>Posez vos questions et partagez vos idées avec la communauté.</p>
-            <button><i class="fas fa-comments"></i> Accéder au forum</button>
+        <div class="forum-section">
+            <h2><i class="fas fa-comments"></i> Forum de Discussion</h2>
+            <p>Partagez vos expériences, posez vos questions et connectez-vous avec d'autres professionnels des pratiques managériales.</p>
+            <a href="@Url.Action("Index", "Forums")" class="forum-button">
+                <i class="fas fa-link"></i> Accéder au Forum
+            </a>
         </div>
     </div>
 
-    <script src="~/js/Scriptes.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const readMoreButtons = document.querySelectorAll('.resource .actions a'); // Sélectionne les liens "Lire..." initiaux
+            const resourceList = document.querySelector('.resource-list');
+
+            resourceList.addEventListener('click', function(event) {
+                if (event.target.classList.contains('read-more-button')) {
+                    const targetId = event.target.dataset.target;
+                    const detailsDiv = document.getElementById(targetId);
+                    if (detailsDiv) {
+                        detailsDiv.style.display = 'block';
+                        event.target.style.display = 'none'; // Cacher le bouton "Lire la suite"
+                    }
+                } else if (event.target.classList.contains('read-less-button')) {
+                    const targetId = event.target.dataset.target;
+                    const detailsDiv = document.getElementById(targetId);
+                    const readMoreButton = event.target.parentNode.parentNode.querySelector('.actions .read-more-button');
+                    if (detailsDiv) {
+                        detailsDiv.style.display = 'none';
+                        if (readMoreButton) {
+                            readMoreButton.style.display = 'inline-block'; // Afficher le bouton "Lire la suite"
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

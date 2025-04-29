@@ -26,12 +26,15 @@ namespace SujetPFE.Infrastructure
         public DbSet<SuiviIRC> SuivisIRC { get; set; }
         public DbSet<CompteRendu> ComptesRendus { get; set; }
         public DbSet<RDV> RDVs { get; set; }
-        public DbSet<KPIValue> KPIValues { get; set; }
         public DbSet<ObjetVisite> ObjetsVisite { get; set; }
         public DbSet<CreditObjectif> CreditObjectifs { get; set; }
         public DbSet<TemplateClient> TemplateClients { get; set; }
         public DbSet<PratiquesManagériales> PratiquesManagériales { get; set; }
         public DbSet<Encours> Encours { get; set; }
+
+        // Ajoute ces lignes pour ton modèle Forum et Message
+        public DbSet<Forum> Forums { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,12 +75,6 @@ namespace SujetPFE.Infrastructure
                 entity.Property(e => e.MontantObjectif).HasColumnType("decimal(18, 2)");
             });
 
-            modelBuilder.Entity<KPIValue>()
-                .HasOne(k => k.Pac)
-                .WithMany(p => p.KPIValues)
-                .HasForeignKey(k => k.PacId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<Encours>()
                 .HasOne(e => e.Employee)
                 .WithMany(emp => emp.Encours)
@@ -111,6 +108,13 @@ namespace SujetPFE.Infrastructure
                 .WithMany(e => e.GroupesResponsables) // Assurez-vous d'avoir cette collection dans Employee
                 .HasForeignKey(g => g.EmployeResponsableId)
                 .OnDelete(DeleteBehavior.Restrict); // Ou autre comportement souhaité
+
+            // Configuration de la relation Forum <-> Message
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Forum) // Un message a un forum
+                .WithMany(f => f.Messages) // Un forum a plusieurs messages
+                .HasForeignKey(m => m.ForumId)
+                .OnDelete(DeleteBehavior.Cascade); // Si un forum est supprimé, ses messages le sont aussi
         }
     }
 }

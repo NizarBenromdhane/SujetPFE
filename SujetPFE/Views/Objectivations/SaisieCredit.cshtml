@@ -31,21 +31,7 @@
     }
 
     <form method="post">
-        <div class="table-responsive">
-            <table class="objectifs-table">
-                <thead>
-                    <tr class="header-row">
-                        <th>Période</th>
-                        <th>Type de Crédit</th>
-                        <th>Montant Objectif (TND)</th>
-                        <th>Employé (Optionnel)</th>
-                        <th>Groupe (Optionnel)</th>
-                        <th class="actions-header">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="objectifs-body">
-                </tbody>
-            </table>
+        <div id="objectifs-container">
         </div>
 
         <button type="button" id="ajouter-objectif" class="btn btn-add mt-3"><i class="fas fa-plus-circle"></i> Ajouter un Objectif</button>
@@ -57,213 +43,245 @@
 </div>
 
 <style>
-    /* Styles CSS améliorés et professionnels - BIAT Theme */
+    /* Styles CSS pour l'agencement en blocs */
+    .objectif-bloc {
+        background-color: white;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eee;
+    }
+
+        .objectif-bloc h3 {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--biat-blue-dark);
+        }
+
+    .form-group-inline {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        align-items: center; /* Aligner verticalement les éléments */
+    }
+
+        .form-group-inline > div {
+            flex-grow: 1; /* Distribuer l'espace entre les éléments */
+        }
+
+    .remove-objectif-btn {
+        margin-top: 10px;
+    }
+
+    /* Styles CSS améliorés et professionnels - BIAT Theme (Adapté pour les blocs) */
     .biat-theme {
-        --biat-blue-dark: #003377; /* Deeper BIAT Blue */
-        --biat-green-dark: #00803E; /* Deeper BIAT Green */
-        --biat-secondary-bg: #ECECEC; /* Light gray background */
+        --biat-blue-dark: #003377; /* Bleu foncé BIAT */
+        --biat-green-dark: #00803E; /* Vert foncé BIAT */
+        --biat-secondary-bg: #F8F9FA; /* Gris très clair pour l'arrière-plan */
         --biat-text-color: #333;
-        --biat-header-bg: #f0f0f0; /* Light gray for header */
-        --biat-border-color: #ccc;
+        --biat-border-color: #D3D3D3; /* Gris clair pour les bordures */
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: var(--biat-text-color);
     }
 
     .full-width-container {
-        width: 98%;
+        width: 95%; /* Légèrement réduit pour un peu de marge latérale */
         margin: 20px auto;
         padding: 30px;
-        background-color: var(--biat-secondary-bg); /* Use light gray */
-        border-radius: 12px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        background-color: var(--biat-secondary-bg); /* Utilisation du gris clair */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }
 
     .form-title {
-        color: var(--biat-blue-dark); /* Deeper BIAT Blue for title */
-        margin-bottom: 30px;
-        font-size: 2.8em;
+        color: var(--biat-blue-dark); /* Bleu foncé pour le titre */
+        margin-bottom: 25px;
+        font-size: 2.2em; /* Taille de titre un peu plus modérée */
         text-align: center;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        font-weight: bold;
     }
 
     .form-subtitle {
-        color: #555;
-        margin-bottom: 25px;
-        font-size: 1.8em;
+        color: #6c757d; /* Gris un peu plus foncé pour le sous-titre */
+        margin-bottom: 20px;
+        font-size: 1.1em;
         text-align: center;
         font-weight: normal;
     }
 
-    .table-responsive {
-        overflow-x: auto;
+    #objectifs-container {
+        margin-bottom: 20px;
     }
 
-    .objectifs-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 25px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid var(--biat-border-color);
+    .objectif-bloc {
         background-color: white;
-    }
-
-        .objectifs-table thead tr {
-            position: sticky;
-            top: 0;
-            background-color: var(--biat-header-bg); /* Light gray for header background */
-            color: var(--biat-text-color); /* Dark text on header */
-            z-index: 2;
-            border-bottom: 2px solid var(--biat-blue-dark); /* Deeper blue for header bottom border */
-        }
-
-        .objectifs-table .header-row th {
-            padding: 15px 20px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1em;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .objectifs-table td {
-            border-bottom: 1px solid var(--biat-border-color);
-            padding: 12px 20px;
-            text-align: center;
-            font-size: 1em;
-            vertical-align: middle;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        .objectifs-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9; /* Very light gray for even rows */
-        }
-
-        .objectifs-table tbody tr:hover {
-            background-color: #e6f7ff; /* Very light blue on hover */
-        }
-
-    .actions-header {
-        text-align: center;
-    }
-
-    /* Styles spécifiques pour les champs de formulaire */
-    .form-control {
-        padding: 10px 12px;
-        border: 1px solid var(--biat-border-color);
+        padding: 25px;
+        margin-bottom: 20px;
         border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--biat-border-color); /* Utilisation de la couleur de bordure BIAT */
+    }
+
+        .objectif-bloc h3 {
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--biat-green-dark); /* Vert foncé pour le titre du bloc */
+            border-bottom: 2px solid var(--biat-green-dark); /* Ligne de séparation verte */
+            padding-bottom: 10px;
+        }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95em;
+            color: #495057; /* Couleur de texte standard pour les labels */
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+    .form-control {
+        display: block;
+        width: calc(100% - 22px);
+        padding: 10px;
         font-size: 1em;
-        width: calc(100% - 24px);
-        box-sizing: border-box;
-        height: 42px;
-        transition: border-color 0.2s ease-in-out;
-        background-color: white; /* Ensure white input backgrounds */
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
 
         .form-control:focus {
-            border-color: var(--biat-green-dark); /* Deeper BIAT Green on focus */
-            outline: none;
-            box-shadow: 0 0 6px rgba(0, 128, 62, 0.4); /* Green focus glow */
+            color: #495057;
+            background-color: #fff;
+            border-color: var(--biat-blue-dark); /* Bleu foncé au focus */
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 119, 0.25); /* Ombre de focus bleue */
         }
 
     select.form-control {
-        height: 42px;
-        padding: 10px;
+        height: auto; /* Ajuster la hauteur automatiquement */
     }
 
-    input[type="number"].form-control {
-        padding: 10px 14px;
-    }
-
-    /* Boutons */
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+    .remove-objectif-btn {
+        background-color: #dc3545; /* Rouge standard pour la suppression */
+        color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
+        padding: 8px 15px;
+        font-size: 0.9em;
         cursor: pointer;
-        font-size: 1.1em;
-        font-weight: bold;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        padding: 12px 20px;
+        transition: background-color 0.15s ease-in-out;
+        margin-top: 15px;
     }
 
-    .btn-primary {
-        background-color: var(--biat-blue-dark); /* Deeper BIAT Blue for primary action */
-        color: white;
-    }
-
-        .btn-primary:hover {
-            background-color: #002966;
-            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.2);
-        }
-
-    .btn-secondary {
-        background-color: #6c757d; /* A more standard gray */
-        color: white;
-    }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.15);
+        .remove-objectif-btn:hover {
+            background-color: #c82333;
         }
 
     .btn-add {
-        background-color: var(--biat-green-dark); /* Deeper BIAT Green for add */
+        background-color: var(--biat-green-dark); /* Vert foncé pour le bouton Ajouter */
         color: white;
-        width: 100%;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
+        width: auto; /* Ajuster la largeur au contenu */
+        display: block;
+        margin: 20px auto; /* Centrer le bouton Ajouter */
     }
 
         .btn-add:hover {
             background-color: #006633;
-            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.15);
         }
 
-    .btn-danger {
-        background-color: #dc3545; /* Standard red for delete */
+    .btn-primary {
+        background-color: var(--biat-blue-dark); /* Bleu foncé pour le bouton Enregistrer */
         color: white;
-        font-size: 1em;
-        padding: 8px 15px;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 25px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
     }
 
-        .btn-danger:hover {
-            background-color: #c82333;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+        .btn-primary:hover {
+            background-color: #002966;
         }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 </style>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
+            var objectifsContainer = $('#objectifs-container');
+
             function addCreditObjectifRow() {
-                var newRow = $('<tr>');
+                var index = objectifsContainer.children('.objectif-bloc').length;
+                var newBloc = $('<div>', { class: 'objectif-bloc' });
+                newBloc.append($('<h3>', { text: 'Objectif de Crédit #' + (index + 1) }));
 
                 // Période Select
-                var periodSelect = $('<select>', { class: 'form-control', name: '[].Periode' });
+                var periodeDiv = $('<div>', { class: 'form-group' });
+                var periodeLabel = $('<label>', { for: 'Periode_' + index, text: 'Période' });
+                var periodSelect = $('<select>', { class: 'form-control', id: 'Periode_' + index, name: '[' + index + '].Periode' });
         @foreach (var periode in periodes)
         {
             @:periodSelect.append($('<option>', { value: '@periode.Value', text: '@periode.Text' }));
         }
-                var periodCell = $('<td>').append(periodSelect);
+                periodeDiv.append(periodeLabel, periodSelect);
+                newBloc.append(periodeDiv);
 
                 // Type de Crédit Select
-                var typeCreditSelect = $('<select>', { class: 'form-control', name: '[].TypeCredit' });
+                var typeCreditDiv = $('<div>', { class: 'form-group' });
+                var typeCreditLabel = $('<label>', { for: 'TypeCredit_' + index, text: 'Type de Crédit' });
+                var typeCreditSelect = $('<select>', { class: 'form-control', id: 'TypeCredit_' + index, name: '[' + index + '].TypeCredit' });
         @foreach (var type in typesCredit)
         {
             @:typeCreditSelect.append($('<option>', { value: '@type.Value', text: '@type.Text' }));
         }
-                var typeCreditCell = $('<td>').append(typeCreditSelect);
+                typeCreditDiv.append(typeCreditLabel, typeCreditSelect);
+                newBloc.append(typeCreditDiv);
 
                 // Montant Objectif Input
-                var montantInput = $('<input>', { type: 'number', class: 'form-control', name: '[].MontantObjectif', required: true });
-                var montantCell = $('<td>').append(montantInput);
+                var montantDiv = $('<div>', { class: 'form-group' });
+                var montantLabel = $('<label>', { for: 'MontantObjectif_' + index, text: 'Montant Objectif (TND)' });
+                var montantInput = $('<input>', { type: 'number', class: 'form-control', id: 'MontantObjectif_' + index, name: '[' + index + '].MontantObjectif', required: true });
+                montantDiv.append(montantLabel, montantInput);
+                newBloc.append(montantDiv);
 
-                // Employé Select
-                var employeSelect = $('<select>', { class: 'form-control', name: '[].EmployeId' });
+                // Employé Select (Optionnel)
+                var employeDiv = $('<div>', { class: 'form-group' });
+                var employeLabel = $('<label>', { for: 'EmployeId_' + index, text: 'Employé (Optionnel)' });
+                var employeSelect = $('<select>', { class: 'form-control', id: 'EmployeId_' + index, name: '[' + index + '].EmployeId' });
                 employeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
         @if (employesSelectList != null)
         {
@@ -272,10 +290,13 @@
                 @:employeSelect.append($('<option>', { value: '@employe.Value', text: '@employe.Text' }));
             }
         }
-                var employeCell = $('<td>').append(employeSelect);
+                employeDiv.append(employeLabel, employeSelect);
+                newBloc.append(employeDiv);
 
-                // Groupe Select
-                var groupeSelect = $('<select>', { class: 'form-control', name: '[].GroupeId' });
+                // Groupe Select (Optionnel)
+                var groupeDiv = $('<div>', { class: 'form-group' });
+                var groupeLabel = $('<label>', { for: 'GroupeId_' + index, text: 'Groupe (Optionnel)' });
+                var groupeSelect = $('<select>', { class: 'form-control', id: 'GroupeId_' + index, name: '[' + index + '].GroupeId' });
                 groupeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
         @if (groupesSelectList != null)
         {
@@ -284,23 +305,31 @@
                 @:groupeSelect.append($('<option>', { value: '@groupe.Value', text: '@groupe.Text' }));
             }
         }
-                var groupeCell = $('<td>').append(groupeSelect);
+                groupeDiv.append(groupeLabel, groupeSelect);
+                newBloc.append(groupeDiv);
 
-                // Actions Cell
-                var actions = $('<td class="actions-column">').append(
-                    $('<button>', { type: 'button', class: 'btn btn-danger btn-sm', html: '<i class="fas fa-trash"></i> Supprimer' })
-                        .on('click', function () {
-                            $(this).closest('tr').remove();
-                        })
-                );
+                // Bouton Supprimer
+                var removeButton = $('<button>', { type: 'button', class: 'btn btn-danger btn-sm remove-objectif-btn', text: 'Supprimer' });
+                removeButton.on('click', function () {
+                    $(this).closest('.objectif-bloc').remove();
+                    // Renuméroter les titres si nécessaire pour une meilleure UX
+                    $('#objectifs-container').children('.objectif-bloc').each(function(i) {
+                        $(this).find('h3').text('Objectif de Crédit #' + (i + 1));
+                        $(this).find('[id^="Periode_"]').attr('id', 'Periode_' + i).attr('name', '[' + i + '].Periode');
+                        $(this).find('[id^="TypeCredit_"]').attr('id', 'TypeCredit_' + i).attr('name', '[' + i + '].TypeCredit');
+                        $(this).find('[id^="MontantObjectif_"]').attr('id', 'MontantObjectif_' + i).attr('name', '[' + i + '].MontantObjectif');
+                        $(this).find('[id^="EmployeId_"]').attr('id', 'EmployeId_' + i).attr('name', '[' + i + '].EmployeId');
+                        $(this).find('[id^="GroupeId_"]').attr('id', 'GroupeId_' + i).attr('name', '[' + i + '].GroupeId');
+                    });
+                });
+                newBloc.append(removeButton);
 
-                newRow.append(periodCell, typeCreditCell, montantCell, employeCell, groupeCell, actions);
-                $('#objectifs-body').append(newRow);
+                objectifsContainer.append(newBloc);
             }
 
             $('#ajouter-objectif').on('click', addCreditObjectifRow);
 
-            // Ajouter une première ligne au chargement de la page
+            // Ajouter un premier bloc d'objectif au chargement de la page
             addCreditObjectifRow();
         });
     </script>

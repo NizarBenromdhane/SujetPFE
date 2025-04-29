@@ -8,7 +8,7 @@
 <head>
     <style>
         /* ======================================== */
-        /* Variables CSS pour le thème BIAT         */
+        /* Variables CSS pour le thème BIAT (conservées) */
         /* ======================================== */
         :root {
             --biat-blue: #003A75;
@@ -23,17 +23,19 @@
             --font-size-base: 16px;
             --font-size-large: 20px;
             --font-size-xlarge: 24px;
-            --border-radius: 5px;
-            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            --border-radius: 8px; /* Bords plus arrondis pour les cartes */
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* Ombre légère pour les cartes */
+            --form-label-weight: 500; /* Poids de police légèrement plus léger pour les labels */
+            --input-border-radius: 6px; /* Bords arrondis pour les inputs */
         }
 
         /* ======================================== */
-        /* Styles généraux                         */
+        /* Styles généraux */
         /* ======================================== */
         body {
             font-family: var(--font-family-primary);
             margin: 0;
-            padding: 0;
+            padding: 20px; /* Ajouter un peu de padding autour du body */
             background-color: var(--biat-light-grey);
             color: var(--biat-text-dark);
             font-size: var(--font-size-base);
@@ -41,45 +43,68 @@
         }
 
         .create-pac-container {
-            max-width: 900px;
-            margin: 30px auto;
+            max-width: 960px; /* Augmenter un peu la largeur max */
+            margin: 40px auto; /* Augmenter les marges autour du conteneur */
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             padding: 40px;
         }
 
         h1 {
             color: var(--biat-blue);
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px; /* Réduire un peu la marge du titre */
             font-size: var(--font-size-xlarge);
             font-weight: bold;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.6px; /* Ajuster l'espacement des lettres */
         }
 
         /* ======================================== */
-        /* Styles du formulaire                     */
+        /* Styles du formulaire (Cards Layout) */
         /* ======================================== */
+        .card {
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            color: var(--biat-blue);
+            font-size: var(--font-size-large);
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--biat-light-grey);
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Colonnes plus flexibles */
+            gap: 15px;
+        }
+
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px; /* Réduire la marge entre les groupes */
         }
 
             .form-group label {
                 display: block;
-                font-weight: 600;
-                margin-bottom: 10px;
+                font-weight: var(--form-label-weight);
+                margin-bottom: 6px;
                 color: var(--biat-text-light);
-                font-size: 1.1em;
+                font-size: 0.95em;
             }
 
         .form-control {
             width: 100%;
-            padding: 14px;
+            padding: 10px; /* Réduire le padding */
             border: 1px solid var(--biat-border);
-            border-radius: var(--border-radius);
+            border-radius: var(--input-border-radius);
             box-sizing: border-box;
-            font-size: 1em;
+            font-size: 0.9em;
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
 
@@ -90,90 +115,49 @@
             }
 
         textarea.form-control {
-            min-height: 150px;
+            min-height: 80px; /* Réduire la hauteur du textarea */
         }
 
         .text-danger {
             color: #dc3545;
-            font-size: 0.9em;
-            margin-top: 8px;
+            font-size: 0.8em;
+            margin-top: 3px;
             display: block;
         }
 
-        /* ======================================== */
-        /* Styles pour la section des KPIs         */
-        /* ======================================== */
-        .form-group > label {
-            /* Style spécifique pour le label des KPIs si nécessaire */
-        }
-
-        #kpiValuesContainer {
-            margin-top: 15px;
-            padding: 20px;
-            border: 1px solid var(--biat-border);
-            border-radius: var(--border-radius);
-            background-color: var(--biat-light-grey);
-        }
-
-        .kpi-input-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-
-            .kpi-input-row > div {
-                flex-grow: 1;
-            }
-
-            .kpi-input-row .btn-danger {
-                flex-grow: 0;
-                padding: 10px 18px;
-                border: none;
-                border-radius: var(--border-radius);
-                color: white;
-                background-color: #dc3545;
-                cursor: pointer;
-                transition: background-color 0.2s ease-in-out;
-                font-weight: bold;
-            }
-
-                .kpi-input-row .btn-danger:hover {
-                    background-color: #c82333;
-                }
-
-        .btn-outline-secondary.btn-sm {
-            margin-top: 15px;
-            padding: 10px 18px;
-            border: 1px solid var(--biat-grey);
-            color: var(--biat-grey);
-            border-radius: var(--border-radius);
-            background-color: transparent;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-            font-weight: bold;
-        }
-
-            .btn-outline-secondary.btn-sm:hover {
-                background-color: var(--biat-light-grey);
-                color: var(--biat-blue);
-                border-color: var(--biat-blue);
-            }
-
-        /* ======================================== */
-        /* Styles pour les boutons d'action         */
-        /* ======================================== */
-        .form-group:last-child {
-            margin-bottom: 0;
+        .form-actions {
             text-align: right;
+            margin-top: 30px;
         }
 
-        .btn-primary,
-        .btn-secondary {
-            padding: 14px 28px;
-            font-size: 1.1em;
-            letter-spacing: 0.5px;
+            .form-actions .btn {
+                padding: 10px 18px;
+                font-size: 0.9em;
+                margin-left: 8px;
+                border-radius: var(--border-radius);
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+        .btn-primary {
+            background-color: var(--biat-blue);
+            color: white;
+            border: none;
         }
+
+            .btn-primary:hover {
+                background-color: darken(var(--biat-blue), 10%);
+            }
+
+        .btn-secondary {
+            background-color: var(--biat-grey);
+            color: white;
+            border: none;
+        }
+
+            .btn-secondary:hover {
+                background-color: darken(var(--biat-grey), 10%);
+            }
     </style>
 </head>
 
@@ -183,130 +167,93 @@
     <form asp-action="Create" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="form-group">
-            <label asp-for="Titre" class="control-label">Titre</label>
-            <input asp-for="Titre" class="form-control" />
-            <span asp-validation-for="Titre" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Description" class="control-label">Description</label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="DateDebut" class="control-label">Date de début</label>
-            <input asp-for="DateDebut" type="date" class="form-control" />
-            <span asp-validation-for="DateDebut" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="DateFin" class="control-label">Date de fin</label>
-            <input asp-for="DateFin" type="date" class="form-control" />
-            <span asp-validation-for="DateFin" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Responsable" class="control-label">Responsable</label>
-            <input asp-for="Responsable" class="form-control" />
-            <span asp-validation-for="Responsable" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Statut" class="control-label">Statut</label>
-            <input asp-for="Statut" class="form-control" />
-            <span asp-validation-for="Statut" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Groupe" class="control-label">Groupe</label>
-            <input asp-for="Groupe" class="form-control" />
-            <span asp-validation-for="Groupe" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Affaire" class="control-label">Affaire</label>
-            <input asp-for="Affaire" class="form-control" />
-            <span asp-validation-for="Affaire" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="KPL" class="control-label">KPL</label>
-            <input asp-for="KPL" class="form-control" />
-            <span asp-validation-for="KPL" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">KPI Values</label>
-            <div id="kpiValuesContainer">
-                @if (Model?.KPIValues != null)
-                {
-                    for (int i = 0; i < Model.KPIValues.Count; i++)
-                    {
-                        <div class="row mb-2 kpi-input-row">
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="kpiName[]" placeholder="Nom du KPI" value="@Model.KPIValues[i].Name">
-                            </div>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="kpiValue[]" placeholder="Valeur du KPI" value="@Model.KPIValues[i].Value">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" onclick="removeKPIValue(this)" class="btn btn-danger btn-sm">Supprimer</button>
-                            </div>
-                        </div>
-                    }
-                }
+        <div class="card">
+            <h2 class="card-title">Informations Générales</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="Titre" class="control-label">Titre</label>
+                    <input asp-for="Titre" class="form-control" />
+                    <span asp-validation-for="Titre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Responsable" class="control-label">Responsable</label>
+                    <input asp-for="Responsable" class="form-control" />
+                    <span asp-validation-for="Responsable" class="text-danger"></span>
+                </div>
             </div>
-            <span asp-validation-for="KPIValues" class="text-danger"></span>
-            <button type="button" onclick="addKPIValue()" class="btn btn-outline-secondary btn-sm">Ajouter un KPI</button>
         </div>
 
-        <div class="form-group">
-            <label asp-for="Recommandations" class="control-label">Recommandations</label>
-            <textarea asp-for="Recommandations" class="form-control"></textarea>
-            <span asp-validation-for="Recommandations" class="text-danger"></span>
+        <div class="card">
+            <h2 class="card-title">Dates</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="DateDebut" class="control-label">Date de début</label>
+                    <input asp-for="DateDebut" type="date" class="form-control" />
+                    <span asp-validation-for="DateDebut" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateFin" class="control-label">Date de fin</label>
+                    <input asp-for="DateFin" type="date" class="form-control" />
+                    <span asp-validation-for="DateFin" class="text-danger"></span>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label asp-for="Limites" class="control-label">Limites</label>
-            <textarea asp-for="Limites" class="form-control"></textarea>
-            <span asp-validation-for="Limites" class="text-danger"></span>
+        <div class="card">
+            <h2 class="card-title">Détails du PAC</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="Statut" class="control-label">Statut</label>
+                    <input asp-for="Statut" class="form-control" />
+                    <span asp-validation-for="Statut" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Groupe" class="control-label">Groupe</label>
+                    <input asp-for="Groupe" class="form-control" />
+                    <span asp-validation-for="Groupe" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Affaire" class="control-label">Affaire</label>
+                    <input asp-for="Affaire" class="form-control" />
+                    <span asp-validation-for="Affaire" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="KPL" class="control-label">KPL</label>
+                    <input asp-for="KPL" class="form-control" />
+                    <span asp-validation-for="KPL" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Priority" class="control-label">Priorité</label>
+                    <input asp-for="Priority" class="form-control" />
+                    <span asp-validation-for="Priority" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Description</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Recommandations" class="control-label">Recommandations</label>
+                <textarea asp-for="Recommandations" class="form-control"></textarea>
+                <span asp-validation-for="Recommandations" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Limites" class="control-label">Limites</label>
+                <textarea asp-for="Limites" class="form-control"></textarea>
+                <span asp-validation-for="Limites" class="text-danger"></span>
+            </div>
         </div>
 
-        <div class="form-group">
-            <input type="submit" value="Enregistrer" class="btn btn-primary" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
             <a asp-action="Index" class="btn btn-secondary">Annuler</a>
         </div>
     </form>
 </div>
 
 @section Scripts {
-    <script>
-        function addKPIValue() {
-            const container = document.getElementById('kpiValuesContainer');
-            const newDiv = document.createElement('div');
-            newDiv.classList.add('row', 'mb-2', 'kpi-input-row');
-            newDiv.innerHTML = `
-                <div class="col-md-5">
-                    <input type="text" class="form-control" name="kpiName[]" placeholder="Nom du KPI">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" class="form-control" name="kpiValue[]" placeholder="Valeur du KPI">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" onclick="removeKPIValue(this)" class="btn btn-danger btn-sm">Supprimer</button>
-                </div>
-            `;
-            container.appendChild(newDiv);
-        }
-
-        function removeKPIValue(button) {
-            button.closest('.kpi-input-row').remove();
-        }
-
-        // The hidden input is no longer needed.
-        // The form will now automatically collect the KPI data
-        // based on the 'name' attributes of the input fields.
-    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
