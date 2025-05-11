@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SujetPFE.Infrastructure;
 
@@ -11,9 +12,11 @@ using SujetPFE.Infrastructure;
 namespace SujetPFE.Infrastructure.Migrations
 {
     [DbContext(typeof(PcbContext))]
-    partial class PcbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501192221_AjoutDonneesTestRDVs")]
+    partial class AjoutDonneesTestRDVs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,7 +361,7 @@ namespace SujetPFE.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateCreation")
+                    b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("RDVId")
@@ -380,9 +383,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Annee")
-                        .HasColumnType("int");
-
                     b.Property<int?>("EmployeId")
                         .HasColumnType("int");
 
@@ -402,36 +402,7 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeId");
-
-                    b.HasIndex("GroupeId");
-
                     b.ToTable("CreditObjectifs");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.Devise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<string>("Libelle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TauxChange")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Devises");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Direction", b =>
@@ -517,10 +488,6 @@ namespace SujetPFE.Infrastructure.Migrations
 
                     b.Property<DateTime?>("DateDerniereTransaction")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Devise")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EmployeId")
                         .HasColumnType("int");
@@ -1089,21 +1056,6 @@ namespace SujetPFE.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("RDV");
-                });
-
-            modelBuilder.Entity("SujetPFE.Domain.Entities.CreditObjectif", b =>
-                {
-                    b.HasOne("SujetPFE.Domain.Entities.Employee", "Employe")
-                        .WithMany()
-                        .HasForeignKey("EmployeId");
-
-                    b.HasOne("SujetPFE.Domain.Entities.Groupe", "Groupe")
-                        .WithMany()
-                        .HasForeignKey("GroupeId");
-
-                    b.Navigation("Employe");
-
-                    b.Navigation("Groupe");
                 });
 
             modelBuilder.Entity("SujetPFE.Domain.Entities.Employee", b =>

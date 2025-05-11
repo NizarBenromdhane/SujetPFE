@@ -1,337 +1,546 @@
-﻿@model List<SujetPFE.Domain.Entities.CreditObjectif>
+﻿@model List<SujetPFE.Models.CreditObjectifViewModel>
+@using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
-    ViewData["Title"] = "Saisie Crédit Multiple";
-    var periodes = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "2025-03", Text = "Mars 2025" },
-        new SelectListItem { Value = "2025-06", Text = "Juin 2025" },
-        new SelectListItem { Value = "2025-09", Text = "Septembre 2025" },
-        new SelectListItem { Value = "2025-12", Text = "Décembre 2025" }
-    };
-    var typesCredit = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "Immobilier", Text = "Crédit Immobilier" },
-        new SelectListItem { Value = "Consommation", Text = "Crédit à la Consommation" },
-        new SelectListItem { Value = "Entreprise", Text = "Crédit aux Entreprises" }
-    };
-    var employesSelectList = ViewBag.Employes as List<SelectListItem>;
-    var groupesSelectList = ViewBag.Groupes as List<SelectListItem>;
+    ViewBag.Title = "Saisie objectifs Solde crédit";
+    var chargesAffaires = ViewBag.ChargesAffaires as List<SelectListItem>;
+    var firstEmployeeId = ViewBag.SelectedChargeAffaireId?.ToString();
 }
 
-<div class="saisie-credit-container biat-theme full-width-container">
-    <h1 class="form-title">Saisie Multiple Objectifs Solde Crédits</h1>
-    <h2 class="form-subtitle">Saisie des Objectifs de Crédit</h2>
-
-    @if (ViewBag.Message != null)
-    {
-        <div class="alert @(ViewBag.IsSuccess ? "alert-success" : "alert-danger")">
-            @ViewBag.Message
+<div class="container-fluid px-0 mx-0">
+    <div class="row mb-4 mx-0">
+        <div class="col px-0">
+            <h1 class="text-primary mb-0">Objectivation</h1>
+            <h2 class="text-secondary">Saisie objectifs Solde crédit</h2>
         </div>
-    }
+    </div>
 
-    <form method="post">
-        <div id="objectifs-container">
+    <div class="row mb-4 mx-0">
+        <div class="col-md-12 px-0">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="date-selector-wrapper mr-3">
+                    <label for="datepicker-03-2025" class="date-label btn btn-outline-info">
+                        <i class="bi bi-calendar-event mr-1"></i>
+                        <span class="date-value">31-03-2025</span>
+                    </label>
+                    <input type="text" class="form-control form-control-sm datepicker-input" id="datepicker-03-2025">
+                </div>
+                <div class="date-selector-wrapper mr-3">
+                    <label for="datepicker-06-2025" class="date-label btn btn-outline-info">
+                        <i class="bi bi-calendar-event mr-1"></i>
+                        <span class="date-value">30-06-2025</span>
+                    </label>
+                    <input type="text" class="form-control form-control-sm datepicker-input" id="datepicker-06-2025">
+                </div>
+                <div class="date-selector-wrapper mr-3">
+                    <label for="datepicker-09-2025" class="date-label btn btn-outline-info">
+                        <i class="bi bi-calendar-event mr-1"></i>
+                        <span class="date-value">30-09-2025</span>
+                    </label>
+                    <input type="text" class="form-control form-control-sm datepicker-input" id="datepicker-09-2025">
+                </div>
+                <div class="date-selector-wrapper">
+                    <label for="datepicker-12-2025" class="date-label btn btn-outline-info">
+                        <i class="bi bi-calendar-event mr-1"></i>
+                        <span class="date-value">31-12-2025</span>
+                    </label>
+                    <input type="text" class="form-control form-control-sm datepicker-input" id="datepicker-12-2025">
+                </div>
+            </div>
         </div>
+    </div>
 
-        <button type="button" id="ajouter-objectif" class="btn btn-add mt-3"><i class="fas fa-plus-circle"></i> Ajouter un Objectif</button>
-
-        <div class="form-group text-center mt-4">
-            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Enregistrer les Objectifs</button>
+    <div class="row mb-4 mx-0">
+        <div class="col-md-4 px-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-info"><i class="bi bi-person-badge mr-2"></i> Chargé d'Affaires</h5>
+                    <select class="form-select" id="ChargeAffairesId" name="ChargeAffairesId">
+                        <option value="">-- Sélectionnez --</option>
+                        @if (chargesAffaires != null)
+                        {
+                            foreach (var employee in chargesAffaires)
+                            {
+                                <option value="@employee.Value" selected="@(employee.Value == firstEmployeeId)">@employee.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
+
+    <div class="table-responsive" style="width: 100%; overflow-x: auto; margin-left: 0; padding-left: 0;">
+        <form method="post">
+            <table class="table table-bordered table-hover bg-white shadow" style="margin-left: 0; width: auto; min-width: 100%;">
+                <thead class="thead-light text-center">
+                    <tr>
+                        <th rowspan="2" class="align-middle" style="min-width: 120px;">Groupe / OE</th>
+                        <th colspan="5">Encours 2023</th>
+                        <th colspan="6">Encours 2024</th>
+                        <th colspan="5">Objectifs 2025</th>
+                        <th rowspan="2" class="align-middle" style="min-width: 100px;">Actions</th>
+                    </tr>
+                    <tr>
+                        <th style="min-width: 60px;">Devise</th>
+                        <th style="min-width: 90px;">Tnd DAT</th>
+                        <th style="min-width: 90px;">Tnd DAV</th>
+                        <th style="min-width: 90px;">Total Tnd</th>
+                        <th style="min-width: 90px;">Total Dep</th>
+                        <th style="min-width: 60px;">Devise</th>
+                        <th style="min-width: 90px;">Tnd DAT</th>
+                        <th style="min-width: 90px;">Tnd DAV</th>
+                        <th style="min-width: 90px;">Total Tnd</th>
+                        <th style="min-width: 90px;">Total Dep</th>
+                        <th style="min-width: 90px;">Évolution</th>
+                        <th style="min-width: 60px;">Devise</th>
+                        <th style="min-width: 90px;">Tnd DAT</th>
+                        <th style="min-width: 90px;">Tnd DAV</th>
+                        <th style="min-width: 90px;">Total Tnd</th>
+                        <th style="min-width: 90px;">Total Dep</th>
+                        <th style="min-width: 90px;">Évolution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @for (var i = 0; i < Model.Count(); i++)
+                        {
+                            <tr>
+                                <td>@Model[i].GroupeNom</td>
+                                <td class="text-center">@Model[i].Devise</td>
+                                <td class="text-right">@Model[i].Encours2023Dat?.ToString("N2")</td>
+                                <td class="text-right">@Model[i].Encours2023Dav?.ToString("N2")</td>
+                                <td class="text-right">@((Model[i].Encours2023Dat ?? 0) + (Model[i].Encours2023Dav ?? 0))</td>
+                                <td class="text-right">@((Model[i].Encours2023Dat ?? 0) + (Model[i].Encours2023Dav ?? 0))</td>
+                                <td class="text-center">@Model[i].Devise</td>
+                                <td class="text-right">@Model[i].Encours2024Dat?.ToString("N2")</td>
+                                <td class="text-right">@Model[i].Encours2024Dav?.ToString("N2")</td>
+                                <td class="text-right">@((Model[i].Encours2024Dat ?? 0) + (Model[i].Encours2024Dav ?? 0))</td>
+                                <td class="text-right">@((Model[i].Encours2024Dat ?? 0) + (Model[i].Encours2024Dav ?? 0))</td>
+                                @{
+                                    decimal encours2023Total = (Model[i].Encours2023Dat ?? 0) + (Model[i].Encours2023Dav ?? 0);
+                                    decimal encours2024Total = (Model[i].Encours2024Dat ?? 0) + (Model[i].Encours2024Dav ?? 0);
+                                    decimal evolution2024 = encours2023Total != 0 ? (encours2024Total - encours2023Total) / encours2023Total : 0;
+                                }
+                                <td class="text-right">@evolution2024.ToString("P2")</td>
+                                <td class="text-center">@Model[i].Devise</td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-right objectif-dat" data-index="@i" asp-for="@Model[i].Objectif2025Dat" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-right objectif-dav" data-index="@i" asp-for="@Model[i].Objectif2025Dav" />
+                                </td>
+                                <td class="text-right objectif-total" data-index="@i">@((Model[i].Objectif2025Dat ?? 0) + (Model[i].Objectif2025Dav ?? 0))?.ToString("N2")</td>
+                                <td class="text-right objectif-total" data-index="@i">@((Model[i].Objectif2025Dat ?? 0) + (Model[i].Objectif2025Dav ?? 0))?.ToString("N2")</td>
+                                @{
+                                    decimal objectif2025Total = (Model[i].Objectif2025Dat ?? 0) + (Model[i].Objectif2025Dav ?? 0);
+                                    decimal evolution2025 = encours2024Total != 0 ? (objectif2025Total - encours2024Total) / encours2024Total : 0;
+                                }
+                                <td class="text-right">@evolution2025.ToString("P2")</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="17" class="text-center">Aucune donnée de solde crédit disponible.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary shadow" id="enregistrerObjectifsBtn" disabled><i class="bi bi-save mr-2"></i> Enregistrer les objectifs</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<style>
-    /* Styles CSS pour l'agencement en blocs */
-    .objectif-bloc {
-        background-color: white;
-        padding: 20px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        border: 1px solid #eee;
-    }
-
-        .objectif-bloc h3 {
-            font-size: 1.2em;
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: var(--biat-blue-dark);
-        }
-
-    .form-group-inline {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 15px;
-        align-items: center; /* Aligner verticalement les éléments */
-    }
-
-        .form-group-inline > div {
-            flex-grow: 1; /* Distribuer l'espace entre les éléments */
-        }
-
-    .remove-objectif-btn {
-        margin-top: 10px;
-    }
-
-    /* Styles CSS améliorés et professionnels - BIAT Theme (Adapté pour les blocs) */
-    .biat-theme {
-        --biat-blue-dark: #003377; /* Bleu foncé BIAT */
-        --biat-green-dark: #00803E; /* Vert foncé BIAT */
-        --biat-secondary-bg: #F8F9FA; /* Gris très clair pour l'arrière-plan */
-        --biat-text-color: #333;
-        --biat-border-color: #D3D3D3; /* Gris clair pour les bordures */
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: var(--biat-text-color);
-    }
-
-    .full-width-container {
-        width: 95%; /* Légèrement réduit pour un peu de marge latérale */
-        margin: 20px auto;
-        padding: 30px;
-        background-color: var(--biat-secondary-bg); /* Utilisation du gris clair */
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .form-title {
-        color: var(--biat-blue-dark); /* Bleu foncé pour le titre */
-        margin-bottom: 25px;
-        font-size: 2.2em; /* Taille de titre un peu plus modérée */
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .form-subtitle {
-        color: #6c757d; /* Gris un peu plus foncé pour le sous-titre */
-        margin-bottom: 20px;
-        font-size: 1.1em;
-        text-align: center;
-        font-weight: normal;
-    }
-
-    #objectifs-container {
-        margin-bottom: 20px;
-    }
-
-    .objectif-bloc {
-        background-color: white;
-        padding: 25px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-        border: 1px solid var(--biat-border-color); /* Utilisation de la couleur de bordure BIAT */
-    }
-
-        .objectif-bloc h3 {
-            font-size: 1.3em;
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: var(--biat-green-dark); /* Vert foncé pour le titre du bloc */
-            border-bottom: 2px solid var(--biat-green-dark); /* Ligne de séparation verte */
-            padding-bottom: 10px;
-        }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-        .form-group label {
-            display: block;
-            font-size: 0.95em;
-            color: #495057; /* Couleur de texte standard pour les labels */
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-    .form-control {
-        display: block;
-        width: calc(100% - 22px);
-        padding: 10px;
-        font-size: 1em;
-        line-height: 1.5;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-
-        .form-control:focus {
-            color: #495057;
-            background-color: #fff;
-            border-color: var(--biat-blue-dark); /* Bleu foncé au focus */
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0, 51, 119, 0.25); /* Ombre de focus bleue */
-        }
-
-    select.form-control {
-        height: auto; /* Ajuster la hauteur automatiquement */
-    }
-
-    .remove-objectif-btn {
-        background-color: #dc3545; /* Rouge standard pour la suppression */
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 15px;
-        font-size: 0.9em;
-        cursor: pointer;
-        transition: background-color 0.15s ease-in-out;
-        margin-top: 15px;
-    }
-
-        .remove-objectif-btn:hover {
-            background-color: #c82333;
-        }
-
-    .btn-add {
-        background-color: var(--biat-green-dark); /* Vert foncé pour le bouton Ajouter */
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 12px 20px;
-        font-size: 1em;
-        cursor: pointer;
-        transition: background-color 0.15s ease-in-out;
-        width: auto; /* Ajuster la largeur au contenu */
-        display: block;
-        margin: 20px auto; /* Centrer le bouton Ajouter */
-    }
-
-        .btn-add:hover {
-            background-color: #006633;
-        }
-
-    .btn-primary {
-        background-color: var(--biat-blue-dark); /* Bleu foncé pour le bouton Enregistrer */
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 12px 25px;
-        font-size: 1.1em;
-        cursor: pointer;
-        transition: background-color 0.15s ease-in-out;
-    }
-
-        .btn-primary:hover {
-            background-color: #002966;
-        }
-
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 6px;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-</style>
-
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script>
-        $(document).ready(function () {
-            var objectifsContainer = $('#objectifs-container');
+        $(document).ready(function() {
+            // Initialisation du Datepicker
+            $(".datepicker-input").datepicker({
+                dateFormat: 'dd-mm-yyyy',
+                onSelect: function(dateText) {
+                    $(this).siblings('.date-label').find('.date-value').text(dateText);
+                },
+                autoHide: true
+            });
 
-            function addCreditObjectifRow() {
-                var index = objectifsContainer.children('.objectif-bloc').length;
-                var newBloc = $('<div>', { class: 'objectif-bloc' });
-                newBloc.append($('<h3>', { text: 'Objectif de Crédit #' + (index + 1) }));
+            // Affichage du Datepicker au clic sur le label
+            $(".date-label").on("click", function() {
+                $(this).siblings(".datepicker-input").datepicker("show");
+            });
 
-                // Période Select
-                var periodeDiv = $('<div>', { class: 'form-group' });
-                var periodeLabel = $('<label>', { for: 'Periode_' + index, text: 'Période' });
-                var periodSelect = $('<select>', { class: 'form-control', id: 'Periode_' + index, name: '[' + index + '].Periode' });
-        @foreach (var periode in periodes)
-        {
-            @:periodSelect.append($('<option>', { value: '@periode.Value', text: '@periode.Text' }));
-        }
-                periodeDiv.append(periodeLabel, periodSelect);
-                newBloc.append(periodeDiv);
+            const enregistrerButton = $("#enregistrerObjectifsBtn");
 
-                // Type de Crédit Select
-                var typeCreditDiv = $('<div>', { class: 'form-group' });
-                var typeCreditLabel = $('<label>', { for: 'TypeCredit_' + index, text: 'Type de Crédit' });
-                var typeCreditSelect = $('<select>', { class: 'form-control', id: 'TypeCredit_' + index, name: '[' + index + '].TypeCredit' });
-        @foreach (var type in typesCredit)
-        {
-            @:typeCreditSelect.append($('<option>', { value: '@type.Value', text: '@type.Text' }));
-        }
-                typeCreditDiv.append(typeCreditLabel, typeCreditSelect);
-                newBloc.append(typeCreditDiv);
-
-                // Montant Objectif Input
-                var montantDiv = $('<div>', { class: 'form-group' });
-                var montantLabel = $('<label>', { for: 'MontantObjectif_' + index, text: 'Montant Objectif (TND)' });
-                var montantInput = $('<input>', { type: 'number', class: 'form-control', id: 'MontantObjectif_' + index, name: '[' + index + '].MontantObjectif', required: true });
-                montantDiv.append(montantLabel, montantInput);
-                newBloc.append(montantDiv);
-
-                // Employé Select (Optionnel)
-                var employeDiv = $('<div>', { class: 'form-group' });
-                var employeLabel = $('<label>', { for: 'EmployeId_' + index, text: 'Employé (Optionnel)' });
-                var employeSelect = $('<select>', { class: 'form-control', id: 'EmployeId_' + index, name: '[' + index + '].EmployeId' });
-                employeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
-        @if (employesSelectList != null)
-        {
-            foreach (var employe in employesSelectList)
-            {
-                @:employeSelect.append($('<option>', { value: '@employe.Value', text: '@employe.Text' }));
+            // Fonction pour vérifier si les objectifs ont été modifiés
+            function checkIfObjectivesChanged() {
+                let hasChanges = false;
+                $("tbody tr").each(function() {
+                    const objectifDatInput = $(this).find('.objectif-dat');
+                    const objectifDavInput = $(this).find('.objectif-dav');
+                    if (objectifDatInput.val() !== objectifDatInput.attr('value') || objectifDavInput.val() !== objectifDavInput.attr('value')) {
+                        hasChanges = true;
+                        return false; // Sortir de la boucle dès qu'un changement est détecté
+                    }
+                });
+                return hasChanges;
             }
-        }
-                employeDiv.append(employeLabel, employeSelect);
-                newBloc.append(employeDiv);
 
-                // Groupe Select (Optionnel)
-                var groupeDiv = $('<div>', { class: 'form-group' });
-                var groupeLabel = $('<label>', { for: 'GroupeId_' + index, text: 'Groupe (Optionnel)' });
-                var groupeSelect = $('<select>', { class: 'form-control', id: 'GroupeId_' + index, name: '[' + index + '].GroupeId' });
-                groupeSelect.append($('<option>', { value: '', text: '-- Sélectionner --' }));
-        @if (groupesSelectList != null)
-        {
-            foreach (var groupe in groupesSelectList)
-            {
-                @:groupeSelect.append($('<option>', { value: '@groupe.Value', text: '@groupe.Text' }));
+            // Gestionnaire d'événement input délégué pour les champs d'objectif
+            $("tbody").on("input", ".objectif-dat, .objectif-dav", function() {
+                var row = $(this).closest('tr');
+                var dat = parseFloat(row.find('.objectif-dat').val()) || 0;
+                var dav = parseFloat(row.find('.objectif-dav').val()) || 0;
+                var total = dat + dav;
+                var totalFormatted = total.toFixed(2);
+
+                row.find('.objectif-total').eq(0).text(totalFormatted);
+                row.find('td').eq(15).text(totalFormatted);
+                row.find('td').eq(16).text(totalFormatted);
+
+                var encours2024Total = parseFloat(row.find('td').eq(9).text().replace(/[^\d.-]/g, '')) || 0;
+                var evolution2025 = encours2024Total != 0 ? (total - encours2024Total) / encours2024Total : 0;
+                row.find('td').eq(17).text((evolution2025 * 100).toFixed(2) + '%');
+
+                // Activer le bouton dès qu'une modification est faite
+                enregistrerButton.prop('disabled', false);
+            });
+
+            // **DONNÉES DE TEST SIMULANT LA BASE DE DONNÉES**
+            var testData = {
+                "19": [
+                    { GroupeId: 1, GroupeNom: "Groupe HB 1", Devise: "1", Encours2023Dat: 60000, Encours2023Dav: 30000, Encours2024Dat: 65000, Encours2024Dav: 35000, Objectif2025Dat: 70000, Objectif2025Dav: 40000 },
+                    { GroupeId: 2, GroupeNom: "Groupe HB 2", Devise: "3", Encours2023Dat: 90000, Encours2023Dav: 45000, Encours2024Dat: 95000, Encours2024Dav: 50000, Objectif2025Dat: 100000, Objectif2025Dav: 55000 }
+                ],
+                "20": [
+                    { GroupeId: 3, GroupeNom: "Groupe Employe2 - 1", Devise: "2", Encours2023Dat: 40000, Encours2023Dav: 20000, Encours2024Dat: 45000, Encours2024Dav: 25000, Objectif2025Dat: 50000, Objectif2025Dav: 30000 },
+                    { GroupeId: 4, GroupeNom: "Groupe Employe2 - 2", Devise: "1", Encours2023Dat: 55000, Encours2023Dav: 30000, Encours2024Dat: 60000, Encours2024Dav: 35000, Objectif2025Dat: 65000, Objectif2025Dav: 40000 }
+                ],
+                "21": [
+                    { GroupeId: 5, GroupeNom: "Groupe Employe3 - 1", Devise: "3", Encours2023Dat: 80000, Encours2023Dav: 40000, Encours2024Dat: 85000, Encours2024Dav: 45000, Objectif2025Dat: 90000, Objectif2025Dav: 50000 },
+                    { GroupeId: 6, GroupeNom: "Groupe Employe3 - 2", Devise: "2", Encours2023Dat: 70000, Encours2023Dav: 35000, Encours2024Dat: 75000, Encours2024Dav: 40000, Objectif2025Dat: 80000, Objectif2025Dav: 45000 }
+                ],
+                "1": [
+                    { GroupeId: 7, GroupeNom: "Groupe Alpha", Devise: "1", Encours2023Dat: 100000, Encours2023Dav: 50000, Encours2024Dat: 110000, Encours2024Dav: 60000, Objectif2025Dat: 120000, Objectif2025Dav: 70000 },
+                    { GroupeId: 8, GroupeNom: "Groupe Beta", Devise: "2", Encours2023Dat: 200000, Encours2023Dav: 100000, Encours2024Dat: 220000, Encours2024Dav: 110000, Objectif2025Dat: 240000, Objectif2025Dav: 120000 }
+                ],
+                "": []
+            };
+
+            function evolution(valeurAncienneDat, valeurAncienneDav, valeurNouvelleDat, valeurNouvelleDav) {
+                var ancienneTotal = (valeurAncienneDat || 0) + (valeurAncienneDav || 0);
+                var nouvelleTotal = (valeurNouvelleDat || 0) + (valeurNouvelleDav || 0);
+                if (ancienneTotal != 0) {
+                    return ((nouvelleTotal - ancienneTotal) / ancienneTotal * 100).toFixed(2) + '%';
+                }
+                return '0.00%';
             }
-        }
-                groupeDiv.append(groupeLabel, groupeSelect);
-                newBloc.append(groupeDiv);
 
-                // Bouton Supprimer
-                var removeButton = $('<button>', { type: 'button', class: 'btn btn-danger btn-sm remove-objectif-btn', text: 'Supprimer' });
-                removeButton.on('click', function () {
-                    $(this).closest('.objectif-bloc').remove();
-                    // Renuméroter les titres si nécessaire pour une meilleure UX
-                    $('#objectifs-container').children('.objectif-bloc').each(function(i) {
-                        $(this).find('h3').text('Objectif de Crédit #' + (i + 1));
-                        $(this).find('[id^="Periode_"]').attr('id', 'Periode_' + i).attr('name', '[' + i + '].Periode');
-                        $(this).find('[id^="TypeCredit_"]').attr('id', 'TypeCredit_' + i).attr('name', '[' + i + '].TypeCredit');
-                        $(this).find('[id^="MontantObjectif_"]').attr('id', 'MontantObjectif_' + i).attr('name', '[' + i + '].MontantObjectif');
-                        $(this).find('[id^="EmployeId_"]').attr('id', 'EmployeId_' + i).attr('name', '[' + i + '].EmployeId');
-                        $(this).find('[id^="GroupeId_"]').attr('id', 'GroupeId_' + i).attr('name', '[' + i + '].GroupeId');
+            $("#ChargeAffairesId").val("19").trigger("change"); // Initialisation de la liste déroulante
+
+            $("#ChargeAffairesId").on("change", function() {
+                var selectedChargeAffaireId = $(this).val();
+                var dataToDisplay = testData[selectedChargeAffaireId] || [];
+                var tbody = $('tbody');
+                tbody.empty();
+                enregistrerButton.prop('disabled', true); // Désactiver le bouton lors du changement de chargé d'affaires
+
+                if (dataToDisplay.length > 0) {
+                    $.each(dataToDisplay, function(index, item) {
+                        var row = '<tr data-groupe-id="' + item.GroupeId + '">' +
+                            '<td>' + item.GroupeNom + '</td>' +
+                            '<td class="text-center">' + item.Devise + '</td>' +
+                            '<td class="text-right">' + (item.Encours2023Dat ? parseFloat(item.Encours2023Dat).toFixed(2) : '') + '</td>' +
+                            '<td class="text-right">' + (item.Encours2023Dav ? parseFloat(item.Encours2023Dav).toFixed(2) : '') + '</td>' +
+                            '<td class="text-right">' + ((item.Encours2023Dat || 0) + (item.Encours2023Dav || 0)).toFixed(2) + '</td>' +
+                            '<td class="text-right">' + ((item.Encours2023Dat || 0) + (item.Encours2023Dav || 0)).toFixed(2) + '</td>' +
+                            '<td class="text-center">' + item.Devise + '</td>' +
+                            '<td class="text-right">' + (item.Encours2024Dat ? parseFloat(item.Encours2024Dat).toFixed(2) : '') + '</td>' +
+                            '<td class="text-right">' + (item.Encours2024Dav ? parseFloat(item.Encours2024Dav).toFixed(2) : '') + '</td>' +
+                            '<td class="text-right">' + ((item.Encours2024Dat || 0) + (item.Encours2024Dav || 0)).toFixed(2) + '</td>' +
+                            '<td class="text-right">' + ((item.Encours2024Dat || 0) + (item.Encours2024Dav || 0)).toFixed(2) + '</td>' +
+                            '<td class="text-right">' + evolution(item.Encours2023Dat, item.Encours2023Dav, item.Encours2024Dat, item.Encours2024Dav) + '</td>' +
+                            '<td class="text-center">' + item.Devise + '</td>' +
+                            '<td><input type="number" class="form-control form-control-sm text-right objectif-dat" data-index="' + index + '" value="' + (item.Objectif2025Dat ? parseFloat(item.Objectif2025Dat).toFixed(2) : '') + '" value="' + (item.Objectif2025Dat ? parseFloat(item.Objectif2025Dat).toFixed(2) : '') + '" /></td>' +
+                            '<td><input type="number" class="form-control form-control-sm text-right objectif-dav" data-index="' + index + '" value="' + (item.Objectif2025Dav ? parseFloat(item.Objectif2025Dav).toFixed(2) : '') + '" value="' + (item.Objectif2025Dav ? parseFloat(item.Objectif2025Dav).toFixed(2) : '') + '" /></td>' +
+                            '<td class="text-right objectif-total" data-index="' + index + '">' + ((item.Objectif2025Dat || 0) + (item.Objectif2025Dav || 0)).toFixed(2) + '</td>' +
+                            '<td class="text-right objectif-total" data-index="' + index + '">' + ((item.Objectif2025Dat || 0) + (item.Objectif2025Dav || 0)).toFixed(2) + '</td>' +
+                            '<td class="text-right">' + evolution(item.Encours2024Dat, item.Encours2024Dav, item.Objectif2025Dat, item.Objectif2025Dav) + '</td>' +
+                            '<td class="text-center"><button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>' +
+                            '</tr>';
+                        tbody.append(row);
+                    });
+                } else {
+                    tbody.append('<tr><td colspan="17" class="text-center">Aucune donnée disponible pour ce chargé d\'affaires.</td></tr>');
+                }
+            });
+
+            // Gestionnaire de clic pour le bouton "Enregistrer les objectifs"
+            $("form").on("submit", function(e) {
+                e.preventDefault(); // Empêcher la soumission standard du formulaire
+                var objectifs = [];
+                $("tbody tr").each(function() {
+                    var row = $(this);
+                    var groupeId = parseInt(row.data('groupe-id'));
+                    var objectifDat = parseFloat(row.find('.objectif-dat').val()) || null; // Utiliser null si vide
+                    var objectifDav = parseFloat(row.find('.objectif-dav').val()) || null; // Utiliser null si vide
+                    var employeResponsableId = parseInt($("#ChargeAffairesId").val()) || null; // Utiliser null si non sélectionné
+
+                    objectifs.push({
+                        GroupeId: groupeId,
+                        Objectif2025Dat: objectifDat,
+                        Objectif2025Dav: objectifDav,
+                        EmployeResponsableId: employeResponsableId
+                        // **Ajoutez ici les autres propriétés de CreditObjectifViewModel
+                        // en vous basant sur les noms EXACTS de votre modèle C#.**
+                        // Exemple (si votre modèle a une propriété 'DeviseId'):
+                        // DeviseId: parseInt(row.find('.devise-select').val()) || null
                     });
                 });
-                newBloc.append(removeButton);
 
-                objectifsContainer.append(newBloc);
-            }
+                console.log("Objetifs à envoyer :", objectifs);
 
-            $('#ajouter-objectif').on('click', addCreditObjectifRow);
-
-            // Ajouter un premier bloc d'objectif au chargement de la page
-            addCreditObjectifRow();
+                $.ajax({
+                    url: '/Objectivations/EnregistrerObjectifs', // **Vérifiez que cette URL est correcte !**
+                    method: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(objectifs),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response && response.isSuccess) {
+                            alert(response.message);
+                            window.location.href = '/Objectivations/SaisieCredit'; // Rediriger vers la page de saisie ou le dashboard
+                        } else if (response && response.message) {
+                            alert('Erreur lors de l\'enregistrement des objectifs : ' + response.message);
+                        } else {
+                            alert('Erreur inconnue lors de l\'enregistrement des objectifs.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Erreur lors de l\'enregistrement des objectifs : ' + xhr.responseText);
+                        console.error("Erreur AJAX :", xhr, status, error);
+                    }
+                });
+            });
         });
     </script>
-    <partial name="_ValidationScriptsPartial" />
 }
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police plus moderne et courante */
+        background-color: #f4f6f8; /* Gris clair doux pour le fond */
+        color: #333;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px; /* Ajout de padding général pour un aspect moins "collé" aux bords */
+        overflow-x: auto; /* Permet le défilement horizontal si le contenu dépasse */
+    }
+
+    .container-fluid {
+        padding-left: 15px !important; /* Augmentation du padding pour un meilleur espacement */
+        padding-right: 15px !important;
+        margin-left: auto !important; /* Centre le container horizontalement sur les écrans plus grands */
+        margin-right: auto !important;
+        max-width: 1200px; /* Limite la largeur maximale pour une meilleure lisibilité sur les grands écrans */
+        width: 100%;
+    }
+
+    h1.text-primary {
+        color: #007bff !important; /* Bleu primaire, conservez si c'est la couleur de votre marque */
+        margin-bottom: 15px; /* Augmentation de la marge inférieure */
+    }
+
+    h2.text-secondary {
+        color: #6c757d !important; /* Gris secondaire, conservez */
+        margin-bottom: 25px; /* Augmentation de la marge inférieure */
+        font-weight: normal; /* Allègement du poids de la police pour le sous-titre */
+    }
+
+    .btn-outline-info {
+        color: #17a2b8; /* Bleu info, conservez */
+        border-color: #17a2b8;
+        transition: all 0.3s ease; /* Ajout d'une transition pour un effet plus doux au survol */
+    }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+    .card {
+        border: 1px solid #e0e0e0; /* Ajout d'une bordure légère pour la séparation */
+        border-radius: 0.5rem; /* Bords plus arrondis pour un aspect plus moderne */
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05); /* Ombre légère plus subtile */
+        margin-bottom: 20px; /* Ajout de marge inférieure pour l'espacement entre les éléments */
+    }
+
+    .card-body {
+        padding: 1.25rem; /* Augmentation du padding interne de la carte */
+    }
+
+    .card-title.text-info {
+        color: #17a2b8 !important;
+        font-weight: bold;
+        margin-bottom: 1rem; /* Ajout de marge inférieure au titre de la carte */
+    }
+
+    .form-select,
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 0.3rem; /* Bords légèrement plus arrondis */
+        padding: 0.5rem 0.75rem; /* Augmentation du padding interne des contrôles de formulaire */
+        font-size: 0.9rem; /* Taille de police légèrement plus grande pour une meilleure lisibilité */
+    }
+
+    .table {
+        background-color: #fff;
+        border-radius: 0.5rem; /* Bords plus arrondis pour la table */
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05); /* Ombre légère pour la table */
+        width: 100% !important; /* Assurez-vous que la largeur est de 100% */
+        margin-left: 0 !important;
+        margin-bottom: 20px; /* Ajout de marge inférieure pour l'espacement sous la table */
+    }
+
+        .table thead.thead-light th {
+            background-color: #f8f9fa; /* Gris très clair pour l'en-tête */
+            color: #495057;
+            border-bottom: 1px solid #dee2e6; /* Bordure plus légère pour l'en-tête */
+            font-size: 0.9rem;
+            padding: 0.75rem 0.75rem; /* Augmentation du padding de l'en-tête */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-weight: 500; /* Légèrement plus gras pour l'en-tête */
+        }
+
+        .table th,
+        .table td {
+            border-color: #dee2e6;
+            padding: 0.5rem 0.75rem; /* Augmentation légère du padding des cellules */
+            vertical-align: middle;
+            font-size: 0.85rem; /* Taille de police légèrement plus grande pour les données */
+            white-space: nowrap;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Gris très clair pour les lignes paires */
+        }
+
+    .btn-primary.shadow {
+        box-shadow: 0 0.1875rem 0.25rem rgba(0, 123, 255, 0.2); /* Ombre légèrement plus prononcée avec la couleur primaire */
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem; /* Augmentation du padding du bouton */
+        border-radius: 0.3rem;
+        transition: box-shadow 0.3s ease; /* Transition pour l'effet d'ombre au survol */
+        border: none; /* Suppression de la bordure par défaut pour un aspect plus plat */
+    }
+
+        .btn-primary.shadow:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3); /* Ombre plus forte au survol */
+        }
+
+    .btn-outline-warning,
+    .btn-outline-danger {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem; /* Ajustement du padding des boutons d'action */
+        border-radius: 0.3rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-warning:hover {
+            background-color: #ffc107;
+            color: #fff;
+            box-shadow: 0 0.125rem 0.25rem rgba(255, 193, 7, 0.2); /* Ajout d'une légère ombre au survol */
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #fff;
+            box-shadow: 0 0.125rem 0.25rem rgba(220, 53, 69, 0.2); /* Ajout d'une légère ombre au survol */
+        }
+
+    .form-control.form-control-sm {
+        padding: 0.4rem 0.6rem; /* Ajustement du padding des petits contrôles de formulaire */
+        font-size: 0.8rem;
+        border-radius: 0.25rem;
+    }
+
+    .date-selector-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .date-label {
+        cursor: pointer;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.7rem;
+        border-radius: 0.25rem;
+        border: 1px solid #17a2b8;
+        color: #17a2b8;
+        background-color: transparent;
+        transition: all 0.3s ease;
+    }
+
+        .date-label:hover {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+    .datepicker-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 10px; /* Scrollbar légèrement plus épaisse */
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 5px; /* Bords plus arrondis pour le thumb */
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    /* Style pour la notification toast */
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #5cb85c;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        z-index: 1000;
+        opacity: 0.9;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+        .toast-notification.error {
+            background-color: #d9534f;
+        }
+
+        .toast-notification.warning {
+            background-color: #f0ad4e;
+            color: white;
+        }
+</style>

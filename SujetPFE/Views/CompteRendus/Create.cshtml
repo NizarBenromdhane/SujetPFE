@@ -1,0 +1,50 @@
+﻿@model SujetPFE.Domain.Entities.CompteRendu
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Créer un nouveau Compte Rendu</h1>
+
+<h4>Compte Rendu</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RDVId" class="control-label">Affaire (RDV)</label>
+                <select asp-for="RDVId" class="form-control" asp-items="ViewBag.RDVId"></select>
+                <span asp-validation-for="RDVId" class="text-danger"></span>
+                @if (ViewBag.RDVId == null || ((SelectList)ViewBag.RDVId).Count() == 0)
+                {
+                    <div class="text-warning">La liste des RDVs est vide. Veuillez vous assurer qu'il y a des RDVs enregistrés dans la base de données (ou que les données de test sont chargées).</div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="DateCreation" class="control-label">Date de Création</label>
+                <input asp-for="DateCreation" class="form-control" type="datetime-local" />
+                <span asp-validation-for="DateCreation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Contenu" class="control-label">Contenu</label>
+                <input asp-for="Contenu" class="form-control" />
+                <span asp-validation-for="Contenu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Créer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Retour à la liste</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

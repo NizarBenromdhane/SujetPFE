@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SujetPFE.Domain.Entities.CompteRendu>
+
+<h1>Liste des Comptes Rendus (TEST DB)</h1>
+
+<p>
+    <a asp-action="Create">Créer un nouveau</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Affaire (RDV)</th>
+            <th>Date de Création</th>
+            <th>Contenu</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (TempData.ContainsKey("NouveauCompteRenduTest"))
+        {
+            var nouveauCompteRendu = TempData["NouveauCompteRenduTest"] as SujetPFE.Domain.Entities.CompteRendu;
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => nouveauCompteRendu.RDV.Affaire)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => nouveauCompteRendu.DateCreation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => nouveauCompteRendu.Contenu)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@nouveauCompteRendu.Id">Modifier</a> |
+                    <a asp-action="Details" asp-route-id="@nouveauCompteRendu.Id">Détails</a> |
+                    <a asp-action="Delete" asp-route-id="@nouveauCompteRendu.Id">Supprimer</a>
+                </td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RDV.Affaire)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateCreation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contenu)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

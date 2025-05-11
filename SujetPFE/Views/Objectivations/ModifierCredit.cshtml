@@ -1,0 +1,55 @@
+﻿@model SujetPFE.Domain.Entities.CreditObjectif
+
+@{
+    ViewData["Title"] = "Modifier un objectif de crédit";
+}
+
+<h1>Modifier un objectif de crédit</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ModifierCredit" **asp-route-id="@Model.Id" ** method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Periode" class="control-label"></label>
+                <input asp-for="Periode" class="form-control" />
+                <span asp-validation-for="Periode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeCredit" class="control-label"></label>
+                <input asp-for="TypeCredit" class="form-control" />
+                <span asp-validation-for="TypeCredit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MontantObjectif" class="control-label"></label>
+                <input asp-for="MontantObjectif" class="form-control" />
+                <span asp-validation-for="MontantObjectif" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmployeId" class="control-label"></label>
+                <select asp-for="EmployeId" class="form-control" asp-items="ViewBag.Employes"></select>
+                <span asp-validation-for="EmployeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GroupeId" class="control-label"></label>
+                <select asp-for="GroupeId" class="form-control" asp-items="ViewBag.Groupes"></select>
+                <span asp-validation-for="GroupeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="CreditDashboard">Retour au tableau de bord</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,62 +1,51 @@
-﻿@model SujetPFE.Domain.Entities.SuiviIRC
+﻿@model SujetPFE.Domain.Entities.RDV
 
 @{
-    ViewData["Title"] = "Modifier un suivi IRC";
+    ViewData["Title"] = "Modifier un RDV";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Modifier</h1>
+<div class="container">
+    <h2>Modifier un RDV</h2>
 
-<h4>Suivi IRC</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ClientId" class="control-label">Client</label>
-                <select asp-for="ClientId" class="form-control" asp-items="ViewBag.ClientId"></select>
-                <span asp-validation-for="ClientId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateVisite" class="control-label">Date de la visite</label>
-                <input asp-for="DateVisite" class="form-control" type="datetime-local" />
-                <span asp-validation-for="DateVisite" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChargeAffaires" class="control-label">Chargé d'affaires</label>
-                <input asp-for="ChargeAffaires" class="form-control" />
-                <span asp-validation-for="ChargeAffaires" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NombreVisites" class="control-label">Nombre de visites</label>
-                <input asp-for="NombreVisites" class="form-control" type="number" />
-                <span asp-validation-for="NombreVisites" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NombreRDV" class="control-label">Nombre de rendez-vous</label>
-                <input asp-for="NombreRDV" class="form-control" type="number" />
-                <span asp-validation-for="NombreRDV" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Commentaires" class="control-label">Commentaires</label>
-                <textarea asp-for="Commentaires" class="form-control"></textarea>
-                <span asp-validation-for="Commentaires" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Enregistrer" class="btn btn-primary" />
-            </div>
-        </form>
+    <form asp-action="EditRDV" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="SuiviIRCId" /> <div class="form-group">
+            <label asp-for="Date"></label>
+            <input asp-for="Date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ClientId" class="control-label">Client</label>
+            <select asp-for="ClientId" class="form-control" asp-items="ViewBag.ClientId"></select>
+            <span asp-validation-for="ClientId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Affaire"></label>
+            <input asp-for="Affaire" class="form-control" />
+            <span asp-validation-for="Affaire" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Lieu"></label>
+            <input asp-for="Lieu" class="form-control" />
+            <span asp-validation-for="Lieu" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commentaires"></label>
+            <input asp-for="Commentaires" class="form-control" />
+            <span asp-validation-for="Commentaires" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NombreVisites"></label>
+            <input asp-for="NombreVisites" class="form-control" />
+            <span asp-validation-for="NombreVisites" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Enregistrer les modifications" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Index">Retour à la liste</a>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Retour à la liste</a>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

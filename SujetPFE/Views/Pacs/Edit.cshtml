@@ -3,85 +3,228 @@
 @{
     ViewData["Title"] = "Modifier PAC";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
-<h1>@ViewData["Title"]</h1>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Titre" class="control-label"></label>
-                <input asp-for="Titre" class="form-control" />
-                <span asp-validation-for="Titre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateDebut" class="control-label"></label>
-                <input asp-for="DateDebut" type="date" class="form-control" />
-                <span asp-validation-for="DateDebut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateFin" class="control-label"></label>
-                <input asp-for="DateFin" type="date" class="form-control" />
-                <span asp-validation-for="DateFin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Responsable" class="control-label"></label>
-                <input asp-for="Responsable" class="form-control" />
-                <span asp-validation-for="Responsable" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Statut" class="control-label"></label>
-                <input asp-for="Statut" class="form-control" />
-                <span asp-validation-for="Statut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Groupe" class="control-label"></label>
-                <input asp-for="Groupe" class="form-control" />
-                <span asp-validation-for="Groupe" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Affaire" class="control-label"></label>
-                <input asp-for="Affaire" class="form-control" />
-                <span asp-validation-for="Affaire" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="KPL" class="control-label"></label>
-                <input asp-for="KPL" class="form-control" />
-                <span asp-validation-for="KPL" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Recommandations" class="control-label"></label>
-                <textarea asp-for="Recommandations" class="form-control"></textarea>
-                <span asp-validation-for="Recommandations" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Limites" class="control-label"></label>
-                <textarea asp-for="Limites" class="form-control"></textarea>
-                <span asp-validation-for="Limites" class="text-danger"></span>
-            </div>
+<style>
+    .edit-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
 
-            <div class="form-group">
-                <input type="submit" value="Sauvegarder" class="btn btn-primary" />
-            </div>
-        </form>
+    .form-header {
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+
+        .form-header h1 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+    textarea.form-control {
+        min-height: 100px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(58, 123, 213, 0.3);
+        }
+
+    .back-link {
+        color: #6c757d;
+        transition: color 0.3s ease;
+    }
+
+        .back-link:hover {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+    .section-divider {
+        border-top: 1px dashed #e0e0e0;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+        .section-divider::after {
+            content: attr(data-title);
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+</style>
+
+<div class="edit-container shadow-lg animate__animated animate__fadeIn">
+    <div class="form-header">
+        <h1>
+            <i class="bi bi-pencil-square text-primary"></i> @ViewData["Title"]
+        </h1>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Retour à la liste</a>
+    <form asp-action="Edit" class="needs-validation" novalidate>
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Section Informations de base -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Titre" class="form-label"></label>
+                    <input asp-for="Titre" class="form-control" placeholder="Entrez le titre du PAC" />
+                    <span asp-validation-for="Titre" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Statut" class="form-label"></label>
+                    <select asp-for="Statut" class="form-control">
+                        <option value="Actif">Actif</option>
+                        <option value="En Attente">En Attente</option>
+                        <option value="Terminé">Terminé</option>
+                    </select>
+                    <span asp-validation-for="Statut" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Description détaillée du PAC"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+
+        <div class="section-divider" data-title="Dates"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="DateDebut" class="form-label"></label>
+                    <input asp-for="DateDebut" type="date" class="form-control" />
+                    <span asp-validation-for="DateDebut" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="DateFin" class="form-label"></label>
+                    <input asp-for="DateFin" type="date" class="form-control" />
+                    <span asp-validation-for="DateFin" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider" data-title="Responsables"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Responsable" class="form-label"></label>
+                    <input asp-for="Responsable" class="form-control" placeholder="Nom du responsable" />
+                    <span asp-validation-for="Responsable" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Groupe" class="form-label"></label>
+                    <input asp-for="Groupe" class="form-control" placeholder="Groupe concerné" />
+                    <span asp-validation-for="Groupe" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider" data-title="Contexte"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Affaire" class="form-label"></label>
+                    <input asp-for="Affaire" class="form-control" placeholder="Affaire concernée" />
+                    <span asp-validation-for="Affaire" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="KPL" class="form-label"></label>
+                    <input asp-for="KPL" class="form-control" placeholder="Indicateur KPL" />
+                    <span asp-validation-for="KPL" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider" data-title="Notes"></div>
+
+        <div class="form-group">
+            <label asp-for="Recommandations" class="form-label"></label>
+            <textarea asp-for="Recommandations" class="form-control" rows="4" placeholder="Recommandations importantes..."></textarea>
+            <span asp-validation-for="Recommandations" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Limites" class="form-label"></label>
+            <textarea asp-for="Limites" class="form-control" rows="4" placeholder="Limites et contraintes..."></textarea>
+            <span asp-validation-for="Limites" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group text-right mt-4">
+            <a asp-action="Index" class="btn btn-outline-secondary mr-2">
+                <i class="bi bi-arrow-left"></i> Retour
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Sauvegarder
+            </button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Animation pour les champs en erreur
+        $(document).ready(function () {
+            $('.input-validation-error').addClass('animate__animated animate__headShake');
+        });
+    </script>
 }

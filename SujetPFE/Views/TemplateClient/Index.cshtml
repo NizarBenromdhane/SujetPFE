@@ -1,36 +1,215 @@
 ﻿@model IEnumerable<SujetPFE.Domain.Entities.TemplateClient>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Template Client";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template Client</title>
-    <link rel="stylesheet" href="~/css/styletemp.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Template Client</h1>
 
-        <div class="filters">
-            <input type="text" id="search" placeholder="Rechercher...">
-            <select id="filterType">
+<div class="container mt-5">
+    <h1 class="text-primary mb-4"><i class="fas fa-user-cog mr-2"></i> Template Client</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="filters d-flex align-items-center">
+            <input type="text" id="search" class="form-control rounded-pill shadow-sm mr-2" placeholder="Rechercher un modèle..." aria-label="Rechercher un modèle...">
+            <select id="filterType" class="form-control rounded-pill shadow-sm" aria-label="Filtrer par type">
                 <option value="all">Tous les types</option>
                 <option value="type1">Type 1</option>
                 <option value="type2">Type 2</option>
             </select>
         </div>
-
-        <div class="template-grid" id="templateList">
+        <div>
+            <a class="btn btn-success rounded-pill shadow-sm" href="/TemplateClient/Create"><i class="fas fa-plus mr-2"></i> Créer un nouveau modèle</a>
         </div>
-
-        <button id="createTemplate">Créer un nouveau modèle</button>
     </div>
 
-    <script src="~/js/scriptTemp.js"></script>
-</body>
-</html>
+    <div class="template-grid row row-cols-1 row-cols-md-3 g-4" id="templateList">
+        <div class="col">
+            <div class="card shadow-sm h-100 rounded template-item" data-type="undefined" data-name="Nizar ben romdhane" style="display: block;">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title text-primary font-weight-bold">Nizar ben romdhane</h5>
+                        <p class="card-text"><i class="fas fa-envelope mr-2 text-muted"></i> Benromdhanenizar95@gmail.com</p>
+                        <p class="card-text"><i class="fas fa-phone mr-2 text-muted"></i> 50080972</p>
+                        <p class="card-text"><small class="text-muted"><i class="fas fa-calendar-alt mr-2"></i> Créé le Invalid Date</small></p>
+                    </div>
+                    <div class="mt-3">
+                        <div class="btn-group w-100" role="group">
+                            <a href="/TemplateClient/Details/1" class="btn btn-outline-info btn-sm rounded-pill"><i class="fas fa-info-circle mr-2"></i> Détails</a>
+                            <a href="/TemplateClient/Edit/1" class="btn btn-outline-primary btn-sm rounded-pill ml-2"><i class="fas fa-edit mr-2"></i> Modifier</a>
+                            <button onclick="confirmDelete('1')" class="btn btn-outline-danger btn-sm rounded-pill ml-2"><i class="fas fa-trash-alt mr-2"></i> Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow-sm h-100 rounded template-item" data-type="undefined" data-name="Nizar ben romdhane" style="display: block;">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title text-primary font-weight-bold">Nizar ben romdhane</h5>
+                        <p class="card-text"><i class="fas fa-envelope mr-2 text-muted"></i> Benromdhanenizar95@gmail.com</p>
+                        <p class="card-text"><i class="fas fa-phone mr-2 text-muted"></i> 50080972</p>
+                        <p class="card-text"><small class="text-muted"><i class="fas fa-calendar-alt mr-2"></i> Créé le Invalid Date</small></p>
+                    </div>
+                    <div class="mt-3">
+                        <div class="btn-group w-100" role="group">
+                            <a href="/TemplateClient/Details/2" class="btn btn-outline-info btn-sm rounded-pill"><i class="fas fa-info-circle mr-2"></i> Détails</a>
+                            <a href="/TemplateClient/Edit/2" class="btn btn-outline-primary btn-sm rounded-pill ml-2"><i class="fas fa-edit mr-2"></i> Modifier</a>
+                            <button onclick="confirmDelete('2')" class="btn btn-outline-danger btn-sm rounded-pill ml-2"><i class="fas fa-trash-alt mr-2"></i> Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow-sm h-100 rounded template-item" data-type="undefined" data-name="Bochra Ben Romdhane" style="display: block;">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title text-primary font-weight-bold">Bochra Ben Romdhane</h5>
+                        <p class="card-text"><i class="fas fa-envelope mr-2 text-muted"></i> bochrajaidi98@gmail.com</p>
+                        <p class="card-text"><i class="fas fa-phone mr-2 text-muted"></i> 23198540</p>
+                        <p class="card-text"><small class="text-muted"><i class="fas fa-calendar-alt mr-2"></i> Créé le Invalid Date</small></p>
+                    </div>
+                    <div class="mt-3">
+                        <div class="btn-group w-100" role="group">
+                            <a href="/TemplateClient/Details/3" class="btn btn-outline-info btn-sm rounded-pill"><i class="fas fa-info-circle mr-2"></i> Détails</a>
+                            <a href="/TemplateClient/Edit/3" class="btn btn-outline-primary btn-sm rounded-pill ml-2"><i class="fas fa-edit mr-2"></i> Modifier</a>
+                            <button onclick="confirmDelete('3')" class="btn btn-outline-danger btn-sm rounded-pill ml-2"><i class="fas fa-trash-alt mr-2"></i> Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow-sm h-100 rounded template-item" data-type="undefined" data-name="Bochra Ben Romdhane" style="display: block;">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title text-primary font-weight-bold">Bochra Ben Romdhane</h5>
+                        <p class="card-text"><i class="fas fa-envelope mr-2 text-muted"></i> bochrajaidi98@gmail.com</p>
+                        <p class="card-text"><i class="fas fa-phone mr-2 text-muted"></i> 23198540</p>
+                        <p class="card-text"><small class="text-muted"><i class="fas fa-calendar-alt mr-2"></i> Créé le Invalid Date</small></p>
+                    </div>
+                    <div class="mt-3">
+                        <div class="btn-group w-100" role="group">
+                            <a href="/TemplateClient/Details/4" class="btn btn-outline-info btn-sm rounded-pill"><i class="fas fa-info-circle mr-2"></i> Détails</a>
+                            <a href="/TemplateClient/Edit/4" class="btn btn-outline-primary btn-sm rounded-pill ml-2"><i class="fas fa-edit mr-2"></i> Modifier</a>
+                            <button onclick="confirmDelete('4')" class="btn btn-outline-danger btn-sm rounded-pill ml-2"><i class="fas fa-trash-alt mr-2"></i> Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/styletemp.css" />
+}
+
+@section Scripts {
+    <script>
+        // Fonction pour afficher un message de confirmation avant la suppression
+        function confirmDelete(id) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce modèle client ?")) {
+                deleteTemplate(id);
+            }
+        }
+
+        // Fonction pour supprimer un modèle client via une requête POST
+        async function deleteTemplate(id) {
+            try {
+                const response = await fetch(`/TemplateClient/Delete/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': '@Html.AntiForgeryToken()' // Important pour la sécurité
+                    }
+                });
+
+                if (response.ok) {
+                    console.log(`Modèle client ${id} supprimé avec succès.`);
+                    fetchTemplates(); // Rechargez les modèles après la suppression
+                } else {
+                    console.error(`Erreur lors de la suppression du modèle client ${id}:`, response.status);
+                    alert("Erreur lors de la suppression du modèle client.");
+                }
+            } catch (error) {
+                console.error("Erreur réseau lors de la suppression:", error);
+                alert("Erreur réseau lors de la suppression.");
+            }
+        }
+
+        // Fonction pour récupérer les modèles clients via une requête GET
+        async function fetchTemplates() {
+            try {
+                const response = await fetch('/TemplateClient/GetTemplates');
+                if (response.ok) {
+                    const templates = await response.json();
+                    displayTemplates(templates);
+                } else {
+                    console.error("Erreur lors de la récupération des modèles clients:", response.status);
+                    document.getElementById('templateList').innerHTML = '<p class="text-danger">Erreur lors du chargement des modèles clients.</p>';
+                }
+            } catch (error) {
+                console.error("Erreur réseau lors de la récupération des modèles clients:", error);
+                document.getElementById('templateList').innerHTML = '<p class="text-danger">Erreur réseau lors du chargement des modèles clients.</p>';
+            }
+        }
+
+        function displayTemplates(templates) {
+            const templateList = document.getElementById('templateList');
+            templateList.innerHTML = '';
+
+            templates.forEach(template => {
+                const card = document.createElement('div');
+                card.className = 'col';
+                card.innerHTML = `
+                    <div class="card shadow-sm h-100 rounded template-item" data-type="${template.type}" data-name="${template.nom}" style="display: block;">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title text-primary font-weight-bold">${template.nom}</h5>
+                                <p class="card-text"><i class="fas fa-envelope mr-2 text-muted"></i> ${template.email}</p>
+                                <p class="card-text"><i class="fas fa-phone mr-2 text-muted"></i> ${template.telephone}</p>
+                                <p class="card-text"><small class="text-muted"><i class="fas fa-calendar-alt mr-2"></i> Créé le ${new Date(template.dateCreation).toLocaleDateString()}</small></p>
+                            </div>
+                            <div class="mt-3">
+                                <div class="btn-group w-100" role="group">
+                                    <a href="/TemplateClient/Details/${template.id}" class="btn btn-outline-info btn-sm rounded-pill"><i class="fas fa-info-circle mr-2"></i> Détails</a>
+                                    <a href="/TemplateClient/Edit/${template.id}" class="btn btn-outline-primary btn-sm rounded-pill ml-2"><i class="fas fa-edit mr-2"></i> Modifier</a>
+                                    <button onclick="confirmDelete('${template.id}')" class="btn btn-outline-danger btn-sm rounded-pill ml-2"><i class="fas fa-trash-alt mr-2"></i> Supprimer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                templateList.appendChild(card);
+            });
+            applyFilters(); // Appliquer les filtres après le chargement initial
+        }
+
+        const searchInput = document.getElementById('search');
+        const filterTypeSelect = document.getElementById('filterType');
+
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterType = filterTypeSelect.value;
+            const templateItems = document.querySelectorAll('.template-item');
+
+            templateItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                const type = item.dataset.type;
+                const shouldShow =
+                    name.includes(searchTerm) &&
+                    (filterType === 'all' || type === filterType);
+                item.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+        filterTypeSelect.addEventListener('change', applyFilters);
+
+        // Charger les modèles clients au chargement de la page
+        fetchTemplates();
+    </script>
+}

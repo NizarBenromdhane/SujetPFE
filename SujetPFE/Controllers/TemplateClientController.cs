@@ -1,28 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SujetPFE.Domain.Entities;
 using SujetPFE.Infrastructure;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace SujetPFE.Controllers
 {
     public class TemplateClientController : Controller
     {
         private readonly PcbContext _context;
+        private readonly IAntiforgery _antiforgery;
 
-        public TemplateClientController(PcbContext context)
+        public TemplateClientController(PcbContext context, IAntiforgery antiforgery)
         {
             _context = context;
+            _antiforgery = antiforgery;
         }
 
         // GET: TemplateClients
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.TemplateClients.ToListAsync());
+            return View(); // La récupération des données se fera par JavaScript
+        }
+
+        // GET: TemplateClients/GetTemplates
+        [HttpGet]
+        public async Task<IActionResult> GetTemplates()
+        {
+            var templates = await _context.TemplateClients.ToListAsync();
+            return Json(templates);
         }
 
         // GET: TemplateClients/Details/5
@@ -50,11 +58,9 @@ namespace SujetPFE.Controllers
         }
 
         // POST: TemplateClients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nom,Email,Telephone")] TemplateClient templateClient)
+        public async Task<IActionResult> Create([Bind("Id,Nom,Email,Telephone,DateCreation")] TemplateClient templateClient)
         {
             if (ModelState.IsValid)
             {
@@ -82,11 +88,9 @@ namespace SujetPFE.Controllers
         }
 
         // POST: TemplateClients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Email,Telephone")] TemplateClient templateClient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Email,Telephone,DateCreation")] TemplateClient templateClient)
         {
             if (id != templateClient.Id)
             {
@@ -116,37 +120,19 @@ namespace SujetPFE.Controllers
             return View(templateClient);
         }
 
-        // GET: TemplateClients/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var templateClient = await _context.TemplateClients
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (templateClient == null)
-            {
-                return NotFound();
-            }
-
-            return View(templateClient);
-        }
-
         // POST: TemplateClients/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var templateClient = await _context.TemplateClients.FindAsync(id);
             if (templateClient != null)
             {
                 _context.TemplateClients.Remove(templateClient);
+                await _context.SaveChangesAsync();
+                return Ok(); // Retourne un statut 200 OK pour indiquer le succès
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return NotFound(); // Retourne un statut 404 Not Found si le modèle n'existe pas
         }
 
         private bool TemplateClientExists(int id)

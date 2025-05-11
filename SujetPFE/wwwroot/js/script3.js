@@ -78,31 +78,31 @@
         window.location.href = '/SuiviIRC/AjouterRDV';
     });
 
-    document.getElementById('modify-rdv').addEventListener('click', function () {
-        console.log('Modifier un RDV');
-        // Récupérez l'ID du RDV sélectionné à partir de votre interface utilisateur
-        const rdvId = getSelectedRdvId(); // Remplacez getSelectedRdvId() par votre fonction de récupération d'ID
-        if (rdvId) {
-            window.location.href = `/SuiviIRC/ModifierRDV/${rdvId}`;
-        } else {
-            console.error("ID du RDV non trouvé.");
-            // Affichez un message d'erreur à l'utilisateur (par exemple, une alerte)
-            alert("Veuillez sélectionner un RDV.");
-        }
-    });
+    // document.getElementById('modify-rdv').addEventListener('click', function () {
+    //     console.log('Modifier un RDV');
+    //     // Récupérez l'ID du RDV sélectionné à partir de votre interface utilisateur
+    //     const rdvId = getSelectedRdvId(); // Remplacez getSelectedRdvId() par votre fonction de récupération d'ID
+    //     if (rdvId) {
+    //         window.location.href = `/SuiviIRC/ModifierRDV/${rdvId}`;
+    //     } else {
+    //         console.error("ID du RDV non trouvé.");
+    //         // Affichez un message d'erreur à l'utilisateur (par exemple, une alerte)
+    //         alert("Veuillez sélectionner un RDV.");
+    //     }
+    // });
 
-    document.getElementById('report-rdv').addEventListener('click', function () {
-        console.log('Compte Rendu');
-        // Récupérez l'ID du RDV sélectionné à partir de votre interface utilisateur
-        const rdvId = getSelectedRdvId(); // Remplacez getSelectedRdvId() par votre fonction de récupération d'ID
-        if (rdvId) {
-            window.location.href = `/SuiviIRC/CompteRendu/${rdvId}`;
-        } else {
-            console.error("ID du RDV non trouvé.");
-            // Affichez un message d'erreur à l'utilisateur (par exemple, une alerte)
-            alert("Veuillez sélectionner un RDV.");
-        }
-    });
+    // document.getElementById('report-rdv').addEventListener('click', function () {
+    //     console.log('Compte Rendu');
+    //     // Récupérez l'ID du RDV sélectionné à partir de votre interface utilisateur
+    //     const rdvId = getSelectedRdvId(); // Remplacez getSelectedRdvId() par votre fonction de récupération d'ID
+    //     if (rdvId) {
+    //         window.location.href = `/SuiviIRC/CompteRendu/${rdvId}`;
+    //     } else {
+    //         console.error("ID du RDV non trouvé.");
+    //         // Affichez un message d'erreur à l'utilisateur (par exemple, une alerte)
+    //         alert("Veuillez sélectionner un RDV.");
+    //     }
+    // });
 
     // Fonction pour récupérer l'ID du RDV sélectionné (à implémenter)
     function getSelectedRdvId() {

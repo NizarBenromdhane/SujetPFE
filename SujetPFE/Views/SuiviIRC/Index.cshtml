@@ -11,7 +11,7 @@
             <img src="https://www.biat.com.tn/sites/default/files/2019-04/communiquenouveaulogo.jpg" alt="Logo" class="small-logo">
         </div>
         <nav class="top-nav">
-            <a href="#">HOME</a>
+            <a href="@Url.Action("Index", "Home")">HOME</a>
             <a href="/portefeuille">Portefeuille</a>
         </nav>
     </header>
@@ -67,7 +67,12 @@
                         <th>Groupe / Client</th>
                         <th>Affaire</th>
                         <th>Nombre visites</th>
+                        <th>Nombre RDV</th>
+                        <th>Dernier RDV</th>
+                        <th>Objet du Dernier RDV</th>
+                        <th>Lieu du Dernier RDV</th>
                         <th>Détails</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,10 +80,56 @@
                     {
                         <tr>
                             <td>@item.ChargeAffaires</td>
-                            <td>@item.Client.RaisonSociale</td>
+                            <td>@item.Client?.RaisonSociale</td>
                             <td>@item.Commentaires</td>
                             <td class="visit-count">@item.NombreVisites</td>
-                            <td><button class="details-btn">Détails</button></td>
+                            <td>@item.NombreRDV</td>
+                            <td>
+                                @if (item.RDVs != null && item.RDVs.OrderByDescending(r => r.Date).FirstOrDefault() is var dernierRDV && dernierRDV != null)
+                                {
+                                    @dernierRDV.Date.ToString("dd/MM/yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span>Aucun RDV</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.RDVs != null && item.RDVs.OrderByDescending(r => r.Date).FirstOrDefault() is var dernierRDVObjet && dernierRDVObjet != null)
+                                {
+                                    @dernierRDVObjet.Affaire
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.RDVs != null && item.RDVs.OrderByDescending(r => r.Date).FirstOrDefault() is var dernierRDVLieu && dernierRDVLieu != null)
+                                {
+                                    @dernierRDVLieu.Lieu
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Détails</a>
+                            </td>
+                            <td>
+                                @if (item.RDVs != null && item.RDVs.Any())
+                                {
+                                    @foreach (var rdv in item.RDVs)
+                                    {
+                                        <a asp-action="EditRDV" asp-route-id="@rdv.Id" class="btn btn-sm btn-warning">Modifier RDV</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <span>Aucun RDV à modifier</span>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -133,8 +184,9 @@
 
         <div class="rdv-actions">
             <button id="add-rdv" class="action-btn"><i class="fas fa-plus"></i> Ajouter un RDV</button>
-            <button id="modify-rdv" class="action-btn"><i class="fas fa-edit"></i> Modifier un RDV</button>
-            <button id="report-rdv" class="action-btn"><i class="fas fa-file-alt"></i> Compte Rendu</button>
+            <a href="@Url.Action("Index", "CompteRendus")" class="action-btn">
+                <i class="fas fa-file-alt"></i> Compte Rendu
+            </a>
         </div>
     </div>
 </div>

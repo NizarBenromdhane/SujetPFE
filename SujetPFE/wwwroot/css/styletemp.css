@@ -1,99 +1,161 @@
 ﻿body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f9;
+    background-color: #f4f7f9; /* Gris clair subtil */
     margin: 0;
     padding: 0;
+    color: #333; /* Couleur de texte principale */
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 95%; /* Légèrement plus large */
+    max-width: 1400px; /* Max largeur pour les grands écrans */
+    margin: 30px auto; /* Plus de marge en haut */
+    background: #fff; /* Blanc pur */
+    padding: 40px; /* Plus d'espace intérieur */
+    border-radius: 16px; /* Bords plus arrondis */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Ombre plus douce et étendue */
 }
 
 h1 {
     text-align: center;
-    color: #333;
-    margin-bottom: 30px;
+    color: #0056b3; /* Bleu BIAT (à remplacer si vous avez la couleur exacte) */
+    margin-bottom: 40px; /* Plus d'espace sous le titre */
+    font-size: 2.5em; /* Titre plus grand */
+    font-weight: 600; /* Plus gras */
+    letter-spacing: 0.5px; /* Léger espacement des lettres */
 }
 
 .filters {
     display: flex;
-    justify-content: space-between;
+    gap: 20px; /* Utilisation de gap pour l'espacement */
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
-    .filters input, .filters select {
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
+    .filters input,
+    .filters select {
+        padding: 10px 15px; /* Ajustement du padding */
+        border: 1px solid #ddd; /* Bordure plus discrète */
+        border-radius: 8px; /* Bords légèrement moins arrondis */
         font-size: 16px;
-        transition: border-color 0.3s ease;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transition pour l'ombre aussi */
     }
 
-        .filters input:focus, .filters select:focus {
+        .filters input:focus,
+        .filters select:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #007bff; /* Bleu d'accentuation */
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Ombre au focus */
         }
+
+.search-container {
+    position: relative;
+}
+
+    .search-container .fa-search {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+    }
+
+    .search-container input {
+        padding-left: 40px; /* Espace pour l'icône de recherche */
+    }
 
 .template-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Cartes légèrement plus larges */
+    gap: 20px; /* Légère réduction du gap */
 }
 
-.template-card {
-    background-color: #e9f5ff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
+.template-item {
+    background-color: #fff; /* Blanc pur pour les cartes */
+    padding: 20px; /* Légère réduction du padding intérieur */
+    border-radius: 12px; /* Bords plus arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* Ombre plus subtile par défaut */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transitions plus rapides */
+    border: 1px solid #eee; /* Légère bordure */
 }
 
-    .template-card:hover {
-        transform: translateY(-5px);
+    .template-item:hover {
+        transform: translateY(-5px); /* Effet de survol plus subtil */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12); /* Ombre plus marquée au survol */
     }
 
-    .template-card h2 {
-        font-size: 1.2em;
+    .template-item h5 { /* Utilisation de h5 pour le titre de la carte */
+        font-size: 1.2em; /* Titre de carte légèrement plus petit */
         margin-bottom: 10px;
+        color: #007bff; /* Couleur du titre de la carte */
+        font-weight: 500;
     }
 
-    .template-card p {
-        color: #666;
-        margin-bottom: 15px;
+    .template-item p {
+        color: #555; /* Couleur de texte des détails */
+        margin-bottom: 12px; /* Réduction de la marge */
+        font-size: 0.95em; /* Taille de police légèrement plus petite */
+        line-height: 1.5; /* Meilleure lisibilité */
     }
 
-    .template-card .actions {
-        display: flex;
-        justify-content: space-around;
-    }
-
-        .template-card .actions button {
-            background: none;
-            border: none;
-            font-size: 1.1em;
-            cursor: pointer;
-            color: #007bff;
+        .template-item p i {
+            margin-right: 6px;
+            color: #aaa; /* Icônes plus discrètes */
         }
 
-#createTemplate {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-}
-
-    #createTemplate:hover {
-        background-color: #0056b3;
+    .template-item .btn-group {
+        gap: 8px; /* Légère réduction du gap entre les boutons */
     }
+
+        .template-item .btn-group a,
+        .template-item .btn-group button { /* Cibler les liens et boutons */
+            background: none;
+            border: 1px solid;
+            padding: 8px 12px; /* Padding plus petit pour les boutons */
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+            .template-item .btn-group a.btn-outline-info,
+            .template-item .btn-group button.btn-outline-info {
+                color: #17a2b8;
+                border-color: #17a2b8;
+            }
+
+                .template-item .btn-group a.btn-outline-info:hover,
+                .template-item .btn-group button.btn-outline-info:hover {
+                    background-color: #17a2b8;
+                    color: white;
+                }
+
+            .template-item .btn-group a.btn-outline-primary,
+            .template-item .btn-group button.btn-outline-primary {
+                color: #007bff;
+                border-color: #007bff;
+            }
+
+                .template-item .btn-group a.btn-outline-primary:hover,
+                .template-item .btn-group button.btn-outline-primary:hover {
+                    background-color: #007bff;
+                    color: white;
+                }
+
+            .template-item .btn-group a.btn-outline-danger,
+            .template-item .btn-group button.btn-outline-danger {
+                color: #dc3545;
+                border-color: #dc3545;
+            }
+
+                .template-item .btn-group a.btn-outline-danger:hover,
+                .template-item .btn-group button.btn-outline-danger:hover {
+                    background-color: #dc3545;
+                    color: white;
+                }
+
+#createTemplate {
+    /* Le style de ce bouton est géré par Bootstrap dans la vue (le lien "Créer") */
+    display: none;
+}

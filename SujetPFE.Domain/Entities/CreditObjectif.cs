@@ -1,23 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SujetPFE.Domain.Entities
+﻿namespace SujetPFE.Domain.Entities
 {
     public class CreditObjectif
     {
         public int Id { get; set; }
+        public string Periode { get; set; }
+        public string TypeCredit { get; set; }
+        public decimal MontantObjectif { get; set; }
+        public int? EmployeId { get; set; }
+        public Employee Employe { get; set; }
+        public int? GroupeId { get; set; }
+        public Groupe Groupe { get; set; }
 
-        [Required(ErrorMessage = "La période est obligatoire.")]
-        public string Periode { get; set; } // Corrected to string
-
-        [Required(ErrorMessage = "Le type de crédit est obligatoire.")]
-        public string TypeCredit { get; set; } // Corrected to string
-
-        [Required(ErrorMessage = "Le montant objectif est obligatoire.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Le montant doit être supérieur à zéro.")]
-        public decimal MontantObjectif { get; set; } // Corrected to decimal
-
-        public int? EmployeId { get; set; } // Corrected to nullable int (if optional)
-        public int? GroupeId { get; set; }   // Corrected to nullable int (if optional)
-        // Ajoutez d'autres propriétés si nécessaire
+        // Nouvelle propriété pour l'année
+        public int Annee { get; set; }
     }
+}// Nouveau modèle pour la réception des objectifs par groupe
+public class ObjectifsGroupe
+{
+    public decimal? Objectif2025Dat { get; set; }
+    public decimal? Objectif2025Dav { get; set; }
 }

@@ -16,22 +16,40 @@ namespace SujetPFE.Controllers
             _context = context;
         }
 
-        // GET: Pacs
-        public async Task<IActionResult> Index()
+        // GET: Pacs
+        public async Task<IActionResult> Index()
         {
             return View(await _context.Pacs.ToListAsync());
         }
 
-        // GET: Pacs/Create
-        public IActionResult Create()
+        // GET: Pacs/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pac = await _context.Pacs.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (pac == null)
+            {
+                return NotFound();
+            }
+
+            return View(pac);
+        }
+
+        // GET: Pacs/Create
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Pac pac) // Pas de modification de la signature
-        {
+        public async Task<IActionResult> Create(Pac pac)
+        {
             if (ModelState.IsValid)
             {
                 _context.Add(pac);
@@ -50,8 +68,8 @@ namespace SujetPFE.Controllers
             return View(pac);
         }
 
-        // GET: Pacs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Pacs/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -60,7 +78,6 @@ namespace SujetPFE.Controllers
 
             var pac = await _context.Pacs.FirstOrDefaultAsync(m => m.Id == id);
 
-
             if (pac == null)
             {
                 return NotFound();
@@ -68,11 +85,11 @@ namespace SujetPFE.Controllers
             return View(pac);
         }
 
-        // POST: Pacs/Edit/5
-        [HttpPost]
+        // POST: Pacs/Edit/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Pac pac) // Pas de modification de la signature ici
-        {
+        public async Task<IActionResult> Edit(int id, Pac pac)
+        {
             if (id != pac.Id)
             {
                 return NotFound();
@@ -106,8 +123,8 @@ namespace SujetPFE.Controllers
             return View(pac);
         }
 
-        // GET: Pacs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Pacs/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -115,7 +132,6 @@ namespace SujetPFE.Controllers
             }
 
             var pac = await _context.Pacs.FirstOrDefaultAsync(m => m.Id == id);
-
 
             if (pac == null)
             {
@@ -125,8 +141,8 @@ namespace SujetPFE.Controllers
             return View(pac);
         }
 
-        // POST: Pacs/Delete/5
-        [HttpPost, ActionName("DeleteConfirmed")]
+        // POST: Pacs/Delete/5
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

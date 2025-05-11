@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<SujetPFE.Models.ObjectifDepotViewModel>
+
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using Newtonsoft.Json
 
@@ -15,367 +16,502 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root {
             --primary-color: #3498db;
             --secondary-color: #2c3e50;
             --accent-color: #e74c3c;
-            --light-bg: #f8f9fa;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --border-color: #dee2e6;
+            --table-header-bg: #e9ecef;
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            min-width: 100vw;
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .container-left {
-            width: auto;
-            max-width: none;
-            padding: 0 15px;
-            margin: 0;
-            float: left;
+        .container-fluid {
+            padding: 20px;
+            max-width: 1200px; /* Augmentation de la largeur maximale pour un meilleur affichage */
+            margin: 20px auto; /* Centrage du contenu */
         }
 
         .header-section {
             background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
             color: white;
-            padding: 1rem;
-            clear: both;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-section h4 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .header-section .badge {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .date-selectors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .date-selectors > div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-selectors label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
         }
 
         .selection-card {
             background-color: white;
-            padding: 1rem;
-            margin: 1rem 0;
-            float: left;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             width: 100%;
+            max-width: 350px; /* Ajustement de la largeur maximale */
         }
 
-        .left-aligned-table {
-            width: auto;
-            margin: 0;
-            padding: 0;
+        .selection-card label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            background-color: white;
+        }
+
+        .card-header {
+            background-color: var(--table-header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 25px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 0 0 10px 10px;
+        }
+
+        table {
+            width: 100%;
             border-collapse: collapse;
-            float: left;
-            clear: both;
+            margin: 0;
         }
 
-            .left-aligned-table th,
-            .left-aligned-table td {
-                padding: 12px 8px;
-                border: 1px solid #dee2e6;
-                text-align: center;
-                vertical-align: middle;
-            }
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--secondary-color);
+            font-weight: 600;
+            padding: 15px 20px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            border-bottom: 2px solid var(--border-color);
+        }
 
-            .left-aligned-table thead th {
-                background-color: #f8f9fa;
-                font-weight: 600;
-                position: sticky;
-                top: 0;
-            }
+        td {
+            padding: 12px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
 
         .group-header {
-            background-color: #e9ecef;
-            font-weight: bold;
-            text-align: left;
-            min-width: 150px;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--secondary-color);
         }
 
-        .numeric-input input {
-            width: 100%;
-            text-align: end;
-            padding: 4px;
-            border: 1px solid #ced4da;
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-size: 0.9rem;
         }
 
-        .btn-save {
-            margin: 1rem 0;
-            padding: 8px 24px;
-            float: left;
-            clear: both;
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
         }
 
-        @@media (max-width: 992px) {
-            .left-aligned-table {
-                font-size: 0.85rem;
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
+        }
 
-                .left-aligned-table th,
-                .left-aligned-table td {
-                    padding: 8px 4px;
-                }
+        .numeric-cell {
+            text-align: right;
+            font-family: 'Consolas', monospace; /* Police de chasse fixe pour un meilleur alignement */
+            font-weight: 500;
+        }
+
+        .total-row {
+            background-color: #e3f2fd !important;
+            font-weight: 600;
+        }
+
+        /* Styles spécifiques pour les inputs d'objectifs 2025 */
+        #groupes-data td:nth-child(10) input.numeric-input,
+        #groupes-data td:nth-child(11) input.numeric-input {
+            width: 100px; /* Ajustement de la largeur des cases de saisie */
+            margin-right: 5px;
+            display: inline-block;
+            padding: 8px; /* Ajustement du padding pour correspondre aux autres inputs */
+            font-size: 0.9rem; /* Uniformisation de la taille de la police */
+        }
+
+        /* Style pour l'en-tête des colonnes Tnd DAT et Tnd DAV pour un meilleur alignement */
+        #groupes-data thead th:nth-child(10),
+        #groupes-data thead th:nth-child(11) {
+            min-width: 105px; /* Assure une largeur minimale pour l'en-tête */
+            text-align: center; /* Centrage du texte de l'en-tête */
+        }
+
+        /* Style pour centrer le contenu des cellules d'objectif */
+        #groupes-data td:nth-child(10),
+        #groupes-data td:nth-child(11) {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="container-left">
+    <div class="container-fluid">
         <div class="header-section">
-            <h4>Saisie des Objectifs Dépôts</h4>
-        </div>
-
-        <div class="selection-card">
-            <label class="form-label">Chargé d'Affaires:</label>
-            <select class="form-select" id="ChargeAffairesId" name="ChargeAffairesId" style="width: 200px;">
-                <option value="">-- Sélectionnez --</option>
-                @if (chargesAffaires != null)
-                {
-                    foreach (var employee in chargesAffaires)
-                    {
-                        <option value="@employee.Value" selected="@(employee.Value == firstEmployeeId)">@employee.Text</option>
-                    }
-                }
-            </select>
-        </div>
-
-        <form asp-action="SaisieDepot" method="post" id="objectifs-form">
-            @Html.AntiForgeryToken()
-            <table class="left-aligned-table">
-                <thead>
-                    <tr>
-                        <th rowspan="2" class="group-header">Groupe</th>
-                        <th colspan="4">Encours 2023</th>
-                        <th colspan="3">Encours 2024</th>
-                        <th colspan="5">Objectifs 2025</th>
-                        <th rowspan="2">Responsable</th>
-                        <th rowspan="2">% Évolution</th>
-                    </tr>
-                    <tr>
-                        <th>Devise</th>
-                        <th>Tnd DAT</th>
-                        <th>Tnd DAV</th>
-                        <th>Total Tnd Dep</th>
-                        <th>Devise</th>
-                        <th>Tnd DAT</th>
-                        <th>Total Tnd Dep</th>
-                        <th>Devise</th>
-                        <th>Tnd DAT</th>
-                        <th>Tnd DAV</th>
-                        <th>Total Tnd</th>
-                        <th>Total Dep</th>
-                    </tr>
-                </thead>
-                <tbody id="groupes-data">
-                    @if (Model != null)
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="group-header">@item.GroupeNom</td>
-                                <td>@item.Devise</td>
-                                <td class="text-end">@Html.DisplayFor(m => item.Encours2023Dat, "{0:N}")</td>
-                                <td class="text-end">@Html.DisplayFor(m => item.Encours2023Dav, "{0:N}")</td>
-                                <td class="text-end">@((item.Encours2023Dat.GetValueOrDefault() + item.Encours2023Dav.GetValueOrDefault()).ToString("N"))</td>
-                                <td>@item.Devise</td>
-                                <td class="text-end">@Html.DisplayFor(m => item.Encours2024Dat, "{0:N}")</td>
-                                <td class="text-end">@((item.Encours2024Dat.GetValueOrDefault() + item.Encours2024Dav.GetValueOrDefault()).ToString("N"))</td>
-                                <td>@item.Devise</td>
-                                <td>
-                                    @Html.HiddenFor(m => item.GroupeId)
-                                    @Html.TextBoxFor(m => item.Objectif2025.MontantDat, new { @class = "numeric-input", type = "number", step = "0.01", min = "0" })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => item.Objectif2025.MontantDav, new { @class = "numeric-input", type = "number", step = "0.01", min = "0" })
-                                </td>
-                                <td class="text-end fw-bold">
-                                    @{
-                                        var totalObjectifTnd = (item.Objectif2025?.MontantDat ?? 0) + (item.Objectif2025?.MontantDav ?? 0);
-                                    }
-                                    @totalObjectifTnd.ToString("N2")
-                                </td>
-                                <td class="text-end fw-bold">@totalObjectifTnd.ToString("N2")</td>
-                                <td>
-                                    @Html.DropDownListFor(m => item.EmployeResponsableId, chargesAffaires, "-- Sélectionnez --", new { @class = "form-select" })
-                                </td>
-                                <td class="fw-bold">
-                                    @{
-                                        decimal encours2024Total = (item.Encours2024Dat.GetValueOrDefault() + item.Encours2024Dav.GetValueOrDefault());
-                                        decimal objectif2025Total = (item.Objectif2025?.MontantDat.GetValueOrDefault() ?? 0) + (item.Objectif2025?.MontantDav.GetValueOrDefault() ?? 0);
-                                        decimal evolution = encours2024Total != 0 ? (objectif2025Total - encours2024Total) / encours2024Total : (objectif2025Total != 0 ? 1 : 0);
-                                    }
-                                    @evolution.ToString("P2")
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="13" class="text-center py-4">
-                                <i class="bi bi-info-circle-fill fs-1 text-primary mb-3"></i>
-                                <p class="fs-4">Veuillez sélectionner un chargé d'affaires</p>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-save">
-                    <i class="bi bi-check-circle"></i> Enregistrer
+            <h4><i class="bi bi-graph-up"></i> Saisie des Objectifs Dépôts</h4>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark me-2">Exercice 2025</span>
+                <button class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-question-circle"></i> Aide
                 </button>
             </div>
-        </form>
+        </div>
+
+        <div class="date-selectors">
+            <div>
+                <label><i class="bi bi-calendar-event"></i> 31-03-2025</label>
+                <input type="date" class="form-control">
+            </div>
+            <div>
+                <label><i class="bi bi-calendar-event"></i> 30-06-2025</label>
+                <input type="date" class="form-control">
+            </div>
+            <div>
+                <label><i class="bi bi-calendar-event"></i> 30-09-2025</label>
+                <input type="date" class="form-control">
+            </div>
+            <div>
+                <label><i class="bi bi-calendar-event"></i> 31-12-2025</label>
+                <input type="date" class="form-control">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="selection-card">
+                    <label class="form-label"><i class="bi bi-person-badge"></i> Chargé d'Affaires</label>
+                    <select class="form-select" id="ChargeAffairesId" name="ChargeAffairesId">
+                        <option value="">-- Sélectionnez --</option>
+                        @if (chargesAffaires != null)
+                        {
+                            foreach (var employee in chargesAffaires)
+                            {
+                                <option value="@employee.Value" selected="@(employee.Value == firstEmployeeId)">@employee.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="bi bi-bar-chart-line"></i> Synthèse Encours</span>
+                        <span class="badge bg-primary">2024 vs 2025</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="table table-hover" id="encours-table">
+                            <thead>
+                                <tr>
+                                    <th>Groupe</th>
+                                    <th class="text-end">Encours 2024</th>
+                                    <th class="text-end">Objectifs 2025</th>
+                                </tr>
+                            </thead>
+                            <tbody id="encours-data">
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.GroupeNom</td>
+                                            <td class="numeric-cell">@((item.Encours2024Dat.GetValueOrDefault() + item.Encours2024Dav.GetValueOrDefault()).ToString("N"))</td>
+                                            <td class="numeric-cell">@(((item.Objectif2025?.MontantDat ?? 0) + (item.Objectif2025?.MontantDav ?? 0)).ToString("N"))</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">Aucune donnée disponible</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="bi bi-table"></i> Détail des Objectifs par Groupe</span>
+                        <div>
+                            <span class="badge bg-success me-2">TND</span>
+                            <span class="badge bg-info">Devise: EUR</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <form asp-action="SaisieDepot" method="post" id="objectifs-form">
+                            @Html.AntiForgeryToken()
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" class="group-header align-middle">Groupe</th>
+                                            <th colspan="4" class="text-center">Encours 2023</th>
+                                            <th colspan="3" class="text-center">Encours 2024</th>
+                                            <th colspan="3" class="text-center">Objectifs 2025</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Devise</th>
+                                            <th class="text-end">Tnd DAT</th>
+                                            <th class="text-end">Tnd DAV</th>
+                                            <th class="text-end">Total Tnd Dep</th>
+                                            <th>Devise</th>
+                                            <th class="text-end">Tnd DAT</th>
+                                            <th class="text-end">Total Tnd Dep</th>
+                                            <th>Devise</th>
+                                            <th class="text-center">Tnd DAT</th>
+                                            <th class="text-center">Tnd DAV</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="groupes-data">
+                                        @if (Model != null)
+                                        {
+                                            @for (var i = 0; i < Model.Count(); i++)
+                                            {
+                                                <tr>
+                                                    <td class="group-header">@Model.ElementAt(i).GroupeNom</td>
+                                                    <td>@Model.ElementAt(i).Devise</td>
+                                                    <td class="numeric-cell">@Html.DisplayFor(m => Model.ElementAt(i).Encours2023Dat, "{0:N}")</td>
+                                                    <td class="numeric-cell">@Html.DisplayFor(m => Model.ElementAt(i).Encours2023Dav, "{0:N}")</td>
+                                                    <td class="numeric-cell">@((Model.ElementAt(i).Encours2023Dat.GetValueOrDefault() + Model.ElementAt(i).Encours2023Dav.GetValueOrDefault()).ToString("N"))</td>
+                                                    <td>@Model.ElementAt(i).Devise</td>
+                                                    <td class="numeric-cell">@Html.DisplayFor(m => Model.ElementAt(i).Encours2024Dat, "{0:N}")</td>
+                                                    <td class="numeric-cell">@((Model.ElementAt(i).Encours2024Dat.GetValueOrDefault() + Model.ElementAt(i).Encours2024Dav.GetValueOrDefault()).ToString("N"))</td>
+                                                    <td>@Model.ElementAt(i).Devise</td>
+                                                    <td>
+                                                        @Html.HiddenFor(m => Model.ElementAt(i).GroupeId)
+                                                        @Html.TextBoxFor(m => Model.ElementAt(i).Objectif2025.MontantDat, new { @class = "form-control numeric-input", type = "number", step = "0.01", min = "0", Value = Model.ElementAt(i).Objectif2025?.MontantDat?.ToString("N2") })
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(m => Model.ElementAt(i).Objectif2025.MontantDav, new { @class = "form-control numeric-input", type = "number", step = "0.01", min = "0", Value = Model.ElementAt(i).Objectif2025?.MontantDav?.ToString("N2") })
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="11" class="text-center">Aucune donnée disponible</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Enregistrer les Objectifs</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script id="employees-data" type="application/json">
-        @Html.Raw(JsonConvert.SerializeObject(chargesAffaires))
-    </script>
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Serialize chargesAffaires to JSON for JavaScript use
+                var chargesAffairesJson = @Html.Raw(JsonConvert.SerializeObject(chargesAffaires));
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Configuration
-            const $chargeAffairesSelect = $('#ChargeAffairesId');
-            const $groupesData = $('#groupes-data');
-            const employees = JSON.parse(document.getElementById("employees-data").textContent);
+                $('#ChargeAffairesId').change(function() {
+                    var employeId = $(this).val();
 
-            // Format number with 2 decimals
-            const formatNumber = (num) => num != null ? parseFloat(num).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
-
-            // Load groupes data
-            function loadGroupesData(employeId) {
-                if (!employeId) {
-                    showEmptyState("Veuillez sélectionner un chargé d'affaires");
-                    return;
-                }
-
-                showLoadingState();
-
-                $.ajax({
-                    url: '@Url.Action("GetGroupesData", "Objectivations")',
-                    type: 'GET',
-                    data: { employeId: employeId },
-                    success: function (data) {
-                        if (data && data.length > 0) {
-                            renderGroupesTable(data);
-                        } else {
-                            showEmptyState("Aucun groupe trouvé pour ce chargé d'affaires");
-                        }
-                    },
-                    error: function (xhr) {
-                        console.error('Erreur:', xhr);
-                        showErrorState("Erreur lors du chargement des données");
+                    if (!employeId) {
+                        $('#encours-data').html('<tr><td colspan="3" class="text-center">Aucune donnée disponible</td></tr>');
+                        $('#groupes-data').html('<tr><td colspan="11" class="text-center">Aucune donnée disponible</td></tr>');
+                        return;
                     }
+
+                    // Afficher le spinner de chargement
+                    $('#encours-data').html('<tr><td colspan="3" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></td></tr>');
+                    $('#groupes-data').html('<tr><td colspan="11" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></td></tr>');
+
+                    // Requête AJAX pour récupérer les données
+                    $.ajax({
+                        url: '@Url.Action("GetGroupesData", "Objectivations")',
+                        type: 'GET',
+                        data: { employeId: employeId },
+                        success: function(data) {
+                            if (data && data.length > 0) {
+                                // Mettre à jour le tableau des encours
+                                updateEncoursTable(data);
+                                // Mettre à jour le tableau principal
+                                updateMainTable(data, chargesAffairesJson);
+                            } else {
+                                $('#encours-data').html('<tr><td colspan="3" class="text-center">Aucune donnée disponible pour ce chargé d\'affaires</td></tr>');
+                                $('#groupes-data').html('<tr><td colspan="11" class="text-center">Aucune donnée disponible pour ce chargé d\'affaires</td></tr>');
+                            }
+                        },
+                        error: function() {
+                            $('#encours-data').html('<tr><td colspan="3" class="text-center">Erreur lors du chargement des données</td></tr>');
+                            $('#groupes-data').html('<tr><td colspan="11" class="text-center">Erreur lors du chargement des données</td></tr>');
+                        }
+                    });
                 });
-            }
 
-            // Render groupes table
-        function renderGroupesTable(data) {
-            let html = '';
+                function updateEncoursTable(data) {
+                    var html = '';
+                    data.forEach(function(item) {
+                        var encours2024 = (item.encours2024Dat || 0) + (item.encours2024Dav || 0);
+                        var objectif2025 = (item.objectif2025?.montantDat || 0) + (item.objectif2025?.montantDav || 0);
 
-            data.forEach((item, i) => {
-                const encours2023Total = (item.encours2023Dat || 0) + (item.encours2023Dav || 0);
-                const encours2024Total = (item.encours2024Dat || 0) + (item.encours2024Dav || 0);
-                const objectif2025TotalTnd = (item.objectif2025?.montantDat || 0) + (item.objectif2025?.montantDav || 0);
-                let pourcentageEvolution = 0;
-                const isResponsibleSelected = item.employeResponsableId;
-
-                if (encours2024Total !== 0) {
-                    pourcentageEvolution = (objectif2025TotalTnd - encours2024Total) / encours2024Total;
-                } else if (objectif2025TotalTnd !== 0) {
-                    pourcentageEvolution = 1;
+                        html += '<tr>' +
+                            '<td>' + item.groupeNom + '</td>' +
+                            '<td class="numeric-cell">' + encours2024.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</td>' +
+                            '<td class="numeric-cell">' + objectif2025.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</td>' +
+                            '</tr>';
+                    });
+                    $('#encours-data').html(html);
                 }
 
-                html += `<tr>
-                    <td class="group-header">${item.groupeNom}</td>
-                    <td>${item.devise || 'EUR'}</td>
-                    <td class="text-end">${formatNumber(item.encours2023Dat)}</td>
-                    <td class="text-end">${formatNumber(item.encours2023Dav)}</td>
-                    <td class="text-end">${formatNumber(encours2023Total)}</td>
-                    <td>${item.devise || 'EUR'}</td>
-                    <td class="text-end">${formatNumber(item.encours2024Dat)}</td>
-                    <td class="text-end">${formatNumber(encours2024Total)}</td>
-                    <td>${item.devise || 'EUR'}</td>
-                    <td>
-                        <input type="hidden" name="[${i}].GroupeId" value="${item.groupeId}" />
-                        <input type="number" step="0.01" min="0" class="numeric-input"
-                               name="[${i}].Objectif2025.MontantDat"
-                               value="${formatNumber(item.objectif2025?.montantDat)}" />
-                    </td>
-                    <td>
-                        <input type="number" step="0.01" min="0" class="numeric-input"
-                               name="[${i}].Objectif2025.MontantDav"
-                               value="${formatNumber(item.objectif2025?.montantDav)}" />
-                    </td>
-                    <td class="text-end fw-bold">${formatNumber(objectif2025TotalTnd)}</td>
-                    <td class="text-end fw-bold">${formatNumber(objectif2025TotalTnd)}</td>
-                    <td>
-                        <select class="form-select" name="[${i}].EmployeResponsableId">
-                            <option value="">-- Sélectionnez --</option>
-                            ${employees.map(emp => {
-                                const isSelected = isResponsibleSelected == emp.Value ? 'selected' : '';
-                                return `<option value="${emp.Value}" ${isSelected}>${emp.Text}</option>`;
-                            }).join('')}
-                        </select>
-                    </td>
-                    <td class="text-end fw-bold">${isFinite(pourcentageEvolution) ? (pourcentageEvolution * 100).toFixed(2) + '%' : '100%'}</td>
-                </tr>`;
+                function updateMainTable(data, chargesAffaires) {
+                    var html = '';
+                    data.forEach(function(item, index) {
+                        var encours2023Total = (item.encours2023Dat || 0) + (item.encours2023Dav || 0);
+                        var encours2024Total = (item.encours2024Dat || 0) + (item.encours2024Dav || 0);
+
+                        html += '<tr>' +
+                            '<td class="group-header">' + item.groupeNom + '</td>' +
+                            '<td>' + (item.devise || 'EUR') + '</td>' +
+                            '<td class="numeric-cell">' + (item.encours2023Dat || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+                            '<td class="numeric-cell">' + (item.encours2023Dav || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+                            '<td class="numeric-cell">' + encours2023Total.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+                            '<td>' + (item.devise || 'EUR') + '</td>' +
+                            '<td class="numeric-cell">' + (item.encours2024Dat || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+                            '<td class="numeric-cell">' + encours2024Total.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+                            '<td>' + (item.devise || 'EUR') + '</td>' +
+                            '<td>' +
+                                '<input type="hidden" name="[' + index + '].GroupeId" value="' + item.groupeId + '" />' +
+                                '<input type="number" step="0.01" min="0" class="form-control numeric-input" name="[' + index + '].Objectif2025.MontantDat" value="' + (item.objectif2025?.montantDat || 0) + '" />' +
+                            '</td>' +
+                            '<td>' +
+                                '<input type="number" step="0.01" min="0" class="form-control numeric-input" name="[' + index + '].Objectif2025.MontantDav" value="' + (item.objectif2025?.montantDav || 0) + '" />' +
+                            '</td>' +
+                        '</tr>';
+                    });
+                    $('#groupes-data').html(html);
+                }
+
+                // Formatage automatique des inputs numériques (CORRIGÉ AVEC DÉLÉGATION)
+                $(document).on('blur', '#groupes-data .numeric-input', function() {
+                    var value = parseFloat($(this).val()) || 0;
+                    $(this).val(value.toFixed(2));
+                });
             });
-
-            $groupesData.html(html);
-        }
-
-            // Show loading state
-            function showLoadingState() {
-                $groupesData.html(`
-                    <tr>
-                        <td colspan="11" class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Chargement...</span>
-                            </div>
-                        </td>
-                    </tr>
-                `);
-            }
-
-            // Show empty state
-            function showEmptyState(message) {
-                $groupesData.html(`
-                    <tr>
-                        <td colspan="11" class="text-center py-4">
-                            <i class="bi bi-database-fill-slash fs-1 text-primary mb-3"></i>
-                            <p class="fs-5">${message}</p>
-                        </td>
-                    </tr>
-                `);
-            }
-
-            // Show error state
-            function showErrorState(message) {
-                $groupesData.html(`
-                    <tr>
-                        <td colspan="11" class="text-center py-4">
-                            <i class="bi bi-exclamation-triangle-fill fs-1 text-danger mb-3"></i>
-                            <p class="fs-5">${message}</p>
-                            <button class="btn btn-outline-primary btn-sm mt-2" onclick="window.location.reload()">
-                                <i class="bi bi-arrow-clockwise"></i> Réessayer
-                            </button>
-                        </td>
-                    </tr>
-                `);
-            }
-
-            // Event handlers
-            $chargeAffairesSelect.on('change', function() {
-                loadGroupesData($(this).val());
-            });
-
-            // Form submission
-            $('#objectifs-form').on('submit', function(e) {
-                $('button[type="submit"]').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...');
-            });
-
-            // Initial load if employee is selected
-            if ($chargeAffairesSelect.val()) {
-                loadGroupesData($chargeAffairesSelect.val());
-            }
-        });
-    </script>
+        </script>
+    }
 </body>
 </html>

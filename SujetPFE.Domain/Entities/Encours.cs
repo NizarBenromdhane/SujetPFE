@@ -28,6 +28,7 @@ namespace SujetPFE.Domain.Entities
 
         [Required]
         public int Annee { get; set; }
+        public string Devise { get; set; } = "TND"; // Valeur par défaut
 
         public string Sens { get; set; }
     }

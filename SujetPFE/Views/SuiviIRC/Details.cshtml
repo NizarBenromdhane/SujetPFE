@@ -12,7 +12,7 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Client)
+            Nom du client
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Client.RaisonSociale)
@@ -45,7 +45,7 @@
             @Html.DisplayNameFor(model => model.MoyenneRDV)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MoyenneRDV)
+            @Html.DisplayFor(model => model.MoyenneRDV.ToString("N2"))
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Commentaires)
@@ -55,7 +55,63 @@
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a> |
-    <a asp-action="Index">Retour à la liste</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifier</a> |
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+    <a asp-action="AjouterRDV" asp-route-suiviIRCId="@Model.Id" class="btn btn-primary float-end">Ajouter un RDV</a>
+</div>
+
+<hr />
+
+<div>
+    <h4>Rendez-vous Associés</h4>
+    @if (Model.RDVs != null && Model.RDVs.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Chargé d'affaires</th>
+                    <th>Groupe</th>
+                    <th>Affaire</th>
+                    <th>RDV à la demande</th>
+                    <th>Détails RDV</th>
+                    <th>Présents BIAT</th>
+                    <th>Lieu</th>
+                    <th>Présents Client</th>
+                    <th>Autres Client</th>
+                    <th>Commentaires</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rdv in Model.RDVs)
+                {
+                    <tr>
+                        <td>@rdv.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@rdv.ChargeAffaires</td>
+                        <td>@rdv.Groupe</td>
+                        <td>@rdv.Affaire</td>
+                        <td>@rdv.RdvDemande</td>
+                        <td>@rdv.RdvDetails</td>
+                        <td>@rdv.PresentsBiat</td>
+                        <td>@rdv.Lieu</td>
+                        <td>@rdv.PresentsClient</td>
+                        <td>@rdv.AutresClientInput</td>
+                        <td>@rdv.Commentaires</td>
+                        <td>
+                            <a asp-action="CompteRendu" asp-route-id="@rdv.Id" class="btn btn-info btn-sm">Compte Rendu</a>
+                            <a asp-action="EditRDV" asp-route-id="@rdv.Id" class="btn btn-warning btn-sm">Modifier</a>
+                            <a asp-action="DeleteRDV" asp-route-id="@rdv.Id" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Aucun rendez-vous associé à ce suivi.</p>
+    }
 </div>

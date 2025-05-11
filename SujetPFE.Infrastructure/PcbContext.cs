@@ -31,6 +31,8 @@ namespace SujetPFE.Infrastructure
         public DbSet<TemplateClient> TemplateClients { get; set; }
         public DbSet<PratiquesManagériales> PratiquesManagériales { get; set; }
         public DbSet<Encours> Encours { get; set; }
+        public DbSet<Devise> Devises { get; set; }
+
 
         // Ajoute ces lignes pour ton modèle Forum et Message
         public DbSet<Forum> Forums { get; set; }

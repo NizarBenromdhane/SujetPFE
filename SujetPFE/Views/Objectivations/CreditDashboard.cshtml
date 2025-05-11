@@ -184,12 +184,16 @@
                                     <td>@(objectif.GroupeId?.ToString() ?? "N/A")</td>
                                     <td>@DateTime.Now.ToString("dd/MM/yyyy")</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+                                        <a asp-action="ModifierCredit" asp-route-id="@objectif.Id" class="btn btn-sm btn-outline-primary me-1" title="Modifier">
                                             <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" title="Supprimer">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        </a>
+                                        <form method="post" asp-action="SupprimerCredit" asp-route-id="@objectif.Id" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet objectif ?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             }
@@ -390,30 +394,30 @@
                                 label: function (context) {
                                     const value = context.raw;
                                     const percentage = Math.round((value / total) * 100);
-                                    return `${context.label}: ${value.toLocaleString()} TND (${percentage}%)`;
+                                    return `${context.label}: <span class="math-inline">\{value\.toLocaleString\(\)\} TND \(</span>{percentage}%)`;
                                 }
                             }
                         },
                         datalabels: {
                             formatter: (value, ctx) => {
-                                const percentage = Math.round((value / total) * 100);
-                                return `${percentage}%`;
-                            },
-                            color: '#fff',
-                            font: {
-                                weight: 'bold',
-                                size: 12
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${percentage}%`;
+                                },
+                                color: '#fff',
+                                font: {
+                                    weight: 'bold',
+                                    size: 12
+                                }
                             }
+                        },
+                        cutout: '60%',
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
                         }
                     },
-                    cutout: '60%',
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
-                    }
-                },
-                plugins: [ChartDataLabels]
-            });
+                    plugins: [ChartDataLabels]
+                });
 
             document.querySelectorAll('.dropdown-item').forEach(item => {
                 item.addEventListener('click', function (e) {

@@ -3,33 +3,177 @@
 @{
     ViewData["Title"] = "Supprimer PAC";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
-<h1>@ViewData["Title"]</h1>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
 
-<p>Êtes-vous sûr de vouloir supprimer ce PAC ?</p>
-<div>
-    <h4>Pac</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Titre)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Titre)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Description)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DateDebut)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.DateDebut)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DateFin)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.DateFin)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Responsable)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Responsable)</dd>
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Statut)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Statut)</dd>
-    </dl>
+<style>
+    .delete-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .delete-header {
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        color: #dc3545;
+    }
+
+        .delete-header h1 {
+            font-weight: 600;
+        }
+
+    .warning-alert {
+        background-color: #fff3f3;
+        border-left: 4px solid #dc3545;
+        border-radius: 0 8px 8px 0;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-card {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-row {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .detail-value {
+        color: #212529;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+    .btn-outline-secondary {
+        border-radius: 50px;
+        padding: 0.75rem 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    @@media (max-width: 576px) {
+        .action-buttons {
+            flex-direction: column;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="delete-container shadow-lg animate__animated animate__fadeIn">
+    <div class="delete-header">
+        <h1>
+            <i class="bi bi-exclamation-triangle-fill"></i> @ViewData["Title"]
+        </h1>
+    </div>
+
+    <div class="warning-alert">
+        <h5 class="d-flex align-items-center">
+            <i class="bi bi-exclamation-octagon-fill mr-2" style="font-size: 1.5rem;"></i>
+            Attention : Cette action est irréversible
+        </h5>
+        <p class="mb-0 mt-2">Êtes-vous absolument sûr de vouloir supprimer ce PAC ? Toutes les données associées seront définitivement perdues.</p>
+    </div>
+
+    <div class="detail-card">
+        <h5 class="mb-3 text-muted">Détails du PAC à supprimer</h5>
+
+        <div class="detail-row row">
+            <div class="col-md-3 detail-label">@Html.DisplayNameFor(model => model.Titre)</div>
+            <div class="col-md-9 detail-value">@Html.DisplayFor(model => model.Titre)</div>
+        </div>
+
+        <div class="detail-row row">
+            <div class="col-md-3 detail-label">@Html.DisplayNameFor(model => model.Description)</div>
+            <div class="col-md-9 detail-value">@Html.DisplayFor(model => model.Description)</div>
+        </div>
+
+        <div class="detail-row row">
+            <div class="col-md-3 detail-label">Période</div>
+            <div class="col-md-9 detail-value">
+                <i class="bi bi-calendar-event text-info mr-2"></i>
+                @Html.DisplayFor(model => model.DateDebut)
+                <span class="mx-2">→</span>
+                <i class="bi bi-calendar-check text-success mr-2"></i>
+                @Html.DisplayFor(model => model.DateFin)
+            </div>
+        </div>
+
+        <div class="detail-row row">
+            <div class="col-md-3 detail-label">@Html.DisplayNameFor(model => model.Responsable)</div>
+            <div class="col-md-9 detail-value">
+                <i class="bi bi-person-fill text-warning mr-2"></i>
+                @Html.DisplayFor(model => model.Responsable)
+            </div>
+        </div>
+
+        <div class="detail-row row">
+            <div class="col-md-3 detail-label">@Html.DisplayNameFor(model => model.Statut)</div>
+            <div class="col-md-9 detail-value">
+                @if (Model.Statut == "Actif")
+                {
+                    <span class="badge bg-success">@Model.Statut</span>
+                }
+                else if (Model.Statut == "En Attente")
+                {
+                    <span class="badge bg-warning text-dark">@Model.Statut</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">@Model.Statut</span>
+                }
+            </div>
+        </div>
+    </div>
 
     <form asp-action="DeleteConfirmed" method="post">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Supprimer" class="btn btn-danger" /> |
-        <a asp-action="Index">Retour à la liste</a>
+        <div class="action-buttons">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Annuler
+            </a>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash-fill"></i> Confirmer la suppression
+            </button>
+        </div>
     </form>
 </div>
